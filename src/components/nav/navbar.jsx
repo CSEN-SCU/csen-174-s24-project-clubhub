@@ -10,10 +10,16 @@ function navbar() {
           <Link to="/">Home</Link>
         </li>
         <li className="nav-item">
-          <Link to="/about">About</Link>
+          <Link to="/search">Search</Link>
         </li>
         <li className="nav-item">
-          <Link to="/contact">Contact</Link>
+          <Link to="/allclubs">All Clubs</Link>
+        </li>
+        <li className="nav-item">
+          <Link to="/gpt">GPT</Link>
+        </li>
+        <li className="nav-item">
+          <Link to="/account">Account</Link>
         </li>
         <li className="nav-item">
           <Link to="/login">Login</Link>
