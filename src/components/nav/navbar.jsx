@@ -9,10 +9,13 @@ function navbar() {
           <a href="/">Home</a>
         </li>
         <li className="nav-item">
-          <a href="/about">About</a>
+          <a href="/search">Search</a>
         </li>
         <li className="nav-item">
-          <a href="/contact">Contact</a>
+          <a href="/allclubs">All Clubs</a>
+        </li>
+        <li className="nav-item">
+          <a href="/account">Account</a>
         </li>
         <li className="nav-item">
           <a href="/login">Login</a>
