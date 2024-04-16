@@ -13,7 +13,7 @@ function navbar() {
           <Link to="/search">Search</Link>
         </li>
         <li className="nav-item">
-          <Link to="/allclubs">All Clubs</Link>
+          <Link to="/clubs">All Clubs</Link>
         </li>
         <li className="nav-item">
           <Link to="/gpt">GPT</Link>
