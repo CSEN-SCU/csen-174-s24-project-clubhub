@@ -1,5 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { getFirestore, doc, setDoc } from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCVcmO3ibqY6ipNsEENaU7r7nwsOMN5P6M",
@@ -12,22 +13,27 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-export const auth = getAuth(app);
-
+const auth = getAuth(app);
+const firestore = getFirestore(app);
 const provider = new GoogleAuthProvider();
 
-export const signInWithGoogle = () => {
-  signInWithPopup(auth, provider)
-    .then((result) => {
-      const name = result.user.displayName;
-      const email = result.user.email;
-      const profilePic = result.user.photoURL;
+const signInWithGoogle = async () => {
+  try {
+    const result = await signInWithPopup(auth, provider);
+    const user = result.user;
 
-      localStorage.setItem("name", name);
-      localStorage.setItem("email", email);
-      localStorage.setItem("profilePic", profilePic);
-    })
-    .catch((error) => {
-      console.log(error);
-    });
+    const userRef = doc(firestore, "users", user.uid);
+    await setDoc(userRef, {
+      name: user.displayName,
+      email: user.email,
+      profilePic: user.photoURL,
+    }, { merge: true });
+
+    localStorage.setItem("userId", user.uid);
+    window.location.reload();
+  } catch (error) {
+    console.error("Failed to sign in with Google: ", error);
+  }
 };
+
+export { auth, firestore, signInWithGoogle };
