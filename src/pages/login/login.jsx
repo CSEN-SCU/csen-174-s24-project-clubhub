@@ -20,7 +20,7 @@ function Login() {
         const userData = docSnap.data();
         setName(userData.name);
         setEmail(userData.email);
-        setProfilePic(userData.profilePic || ""); // Ensure profilePic is always a string
+        setProfilePic(userData.profilePic || "");
       } else {
         console.log("No user data available");
       }
