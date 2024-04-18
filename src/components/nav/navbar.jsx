@@ -28,7 +28,16 @@ function Navbar() {
           </li>
         </ul>
       ) : (
-        <div></div>
+        <ul>
+          <div className="group">
+            <li>
+              <p>Logo</p>
+            </li>
+          </div>
+          <div className="group">
+
+          </div>
+        </ul>
       )}
     </nav>
   );

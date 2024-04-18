@@ -10,7 +10,7 @@ a {
 ul {
   display: flex;
   justify-content: space-between;
-  width: 80%;
+  width: 70%;
 }
 
 nav {
@@ -23,4 +23,9 @@ nav {
 .nav-item .active {
   padding-bottom: 2px;
   border-bottom: 2px solid #000;
+}
+
+.group {
+  display: flex;
+  gap: 2rem;
 }

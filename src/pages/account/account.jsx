@@ -42,10 +42,10 @@ function Account() {
     fetchUserInfo();
   }, []);
   return (
-    <div className="container">
+    <div className="account-container">
       <h1>{name}</h1>
       <h1>{email}</h1>
-      {profilePic && <img src={profilePic} alt="Profile" />}
+      {profilePic && <img id="profile" src={profilePic} alt="Profile" />}
       <button onClick={handleLogout} className="logout-button">
         Log Out
       </button>
