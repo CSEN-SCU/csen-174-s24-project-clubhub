@@ -1,12 +1,25 @@
 import React, { useState, useEffect } from "react";
-import "./login.css";
-import { signInWithGoogle, firestore } from "../../Firebase";
+import { useNavigate } from "react-router-dom";
+import { auth, firestore } from "../../Firebase";
+import { signOut } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
+import "./account.css";
 
-function Login() {
+function Account() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [profilePic, setProfilePic] = useState("");
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    try {
+      localStorage.removeItem("userId");
+      await signOut(auth);
+      navigate("/");
+    } catch (error) {
+      console.error("Failed to log out:", error);
+    }
+  };
 
   useEffect(() => {
     const fetchUserInfo = async () => {
@@ -28,27 +41,16 @@ function Login() {
 
     fetchUserInfo();
   }, []);
-
-  const signOut = () => {
-    localStorage.removeItem("userId");
-    window.location.reload();
-  };
-
   return (
     <div className="container">
-      {!localStorage.getItem("userId") && (
-        <button className="login-with-google-btn" onClick={signInWithGoogle}>
-          Sign in with Google
-        </button>
-      )}
       <h1>{name}</h1>
       <h1>{email}</h1>
       {profilePic && <img src={profilePic} alt="Profile" />}
-      {localStorage.getItem("userId") && (
-        <button onClick={signOut}>Sign out</button>
-      )}
+      <button onClick={handleLogout} className="logout-button">
+        Log Out
+      </button>
     </div>
   );
 }
 
-export default Login;
+export default Account;

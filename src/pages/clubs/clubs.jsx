@@ -1,9 +1,10 @@
 import React from 'react'
+import "./clubs.css"
 
-function clubs() {
+function Clubs() {
   return (
-    <div>clubs</div>
+    <div>Clubs</div>
   )
 }
 
-export default clubs
+export default Clubs
