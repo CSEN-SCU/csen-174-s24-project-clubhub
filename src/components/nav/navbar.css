@@ -10,6 +10,7 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  align-items: center;
   z-index: 10;
   transition: .3s;
 }
@@ -31,8 +32,8 @@
   color: rgb(179,7,56);
 }
 
-.nav__logo img {
-  width: 40px;
+.nav__logo {
+  width: 50px;
 }
 
 .copyright {

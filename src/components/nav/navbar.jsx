@@ -16,7 +16,7 @@ function Navbar() {
         </Link>
         <nav className="nav">
           <div className="nav__menu">
-            {/* {currentUser ? ( */}
+            {currentUser ? (
             <ul className="nav__list">
               <li className="nav__item">
                 <Link to="/home" className="nav__link">
@@ -44,18 +44,12 @@ function Navbar() {
                 </Link>
               </li>
             </ul>
-          {/* ) : (
+          ) : (
             <ul>
               <div className="group">
-                <li>
-                  <p>Logo</p>
-                </li>
-              </div>
-              <div className="group">
-
               </div>
             </ul>
-          )} */}
+          )}
           </div>
       </nav>
       <div className="nav__footer">
