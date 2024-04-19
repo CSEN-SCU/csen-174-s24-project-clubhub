@@ -46,7 +46,7 @@ function Account() {
       <h1>{name}</h1>
       <h1>{email}</h1>
       {profilePic && <img id="profile" src={profilePic} alt="Profile" />}
-      <button onClick={handleLogout} className="logout-button">
+      <button onClick={handleLogout} className="logout-button btn">
         Log Out
       </button>
     </div>
