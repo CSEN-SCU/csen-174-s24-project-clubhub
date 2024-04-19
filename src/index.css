@@ -1,5 +1,5 @@
-/*======== Google Fonts ========*/
 @import url('https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700&display=swap');
+
 :root {
   --first-color: rgb(179, 7, 56);
   --title-color: hsl(244, 24%, 26%);
