@@ -3,6 +3,7 @@ import React from "react";
 import "./App.css";
 import Navbar from "./components/nav/navbar";
 import Welcome from "./pages/welcome/welcome";
+import UserType from "./pages/usertype/usertype";
 import ClubPage from "./pages/clubs/ClubPage";
 import Home from "./pages/home/home";
 import GPT from "./pages/gpt/gpt";
@@ -36,6 +37,7 @@ function App() {
               </PublicRoute>
             }
           />
+          <Route path="/user-type" element={<UserType />} />
           <Route
             path="/home"
             element={
