@@ -1,0 +1,40 @@
+.home {
+    max-height: 100vh;
+    overflow-y: scroll;
+    min-width: fit-content;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.home::-webkit-scrollbar {
+    display: none;
+}
+
+.home__header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background-color: var(--body-color);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    display: flex;
+}
+
+.header__button {
+    background-color: var(--body-color);
+    padding: 30px;
+    width: 50%;
+}
+
+.header__button:hover {
+    background-color: var(--light-gray);
+    transition: .2s;
+}
+
+.home__link {
+    color: var(--text-color);
+}
+
+.home__link:active {
+    border-bottom: 5px solid var(--first-color);
+    color: var(--title-color);
+}

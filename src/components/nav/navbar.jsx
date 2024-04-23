@@ -43,6 +43,11 @@ function Navbar() {
                   <i className="icon-user"></i>
                 </Link>
               </li>
+              <li className="nav__item">
+                <button className="nav__btn btn">
+                 +
+                </button>
+              </li>
             </ul>
           ) : (
             <ul>
