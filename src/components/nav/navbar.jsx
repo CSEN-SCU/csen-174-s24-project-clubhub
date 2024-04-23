@@ -24,13 +24,8 @@ function Navbar() {
                 </Link>
               </li>
               <li className="nav__item">
-                <Link to="/search" className="nav__link">
-                  <i className="icon-magnifier"></i>
-                </Link>
-              </li>
-              <li className="nav__item">
                 <Link to="/clubs" className="nav__link">
-                  <i className="icon-layers"></i>
+                  <i className="icon-magnifier"></i>
                 </Link>
               </li>
               <li className="nav__item">
@@ -42,6 +37,11 @@ function Navbar() {
                 <Link to="/account" className="nav__link">
                   <i className="icon-user"></i>
                 </Link>
+              </li>
+              <li className="nav__item">
+                <button className="nav__btn btn">
+                 +
+                </button>
               </li>
             </ul>
           ) : (

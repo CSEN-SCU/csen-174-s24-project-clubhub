@@ -15,6 +15,11 @@
   transition: .3s;
 }
 
+.nav {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
 .nav__list {
   display: flex;
   flex-direction: column;
@@ -62,6 +67,12 @@
   align-items: center;
   /* z-index: 1; */
   transform: .3s;
+}
+
+.nav__btn {
+  padding: 0.75rem 1rem;
+  line-height: 1;
+  border-radius: 1.875rem;
 }
 
 @media screen and (max-width: 1024px) {
