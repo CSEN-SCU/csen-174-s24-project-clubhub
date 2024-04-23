@@ -1,0 +1,117 @@
+.modalBackground {
+    width: 100vw;
+    height: 100vh;
+    left: 0;
+    top: 0;
+    background-color: rgba(0,0,0,0.5);
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .modalContainer {
+    width: 65vw;
+    height: 500px;
+    border-radius: 12px;
+    background-color: white;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+    display: flex;
+    flex-direction: column;
+    padding: 25px;
+    /* max-height: 400px;  */
+    overflow-y: auto;
+  }
+
+  .modalContainer .title {
+    display: inline-block;
+    text-align: left;
+  }
+
+  h1{
+    font-size: x-large;
+  }
+  
+  
+  .titleCloseBtn {
+    display: flex;
+    justify-content: flex-end;
+  }
+  
+  .titleCloseBtn button {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .modalContainer .body {
+    flex: 50%;
+    /* display: flex;
+    justify-content: center;
+    align-items: center; */
+    font-size: 1.7rem;
+    text-align: center;
+  }
+  
+  .modalContainer .footer {
+    /* flex: 20%; */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .modalContainer .footer button {
+    width: 125px;
+    height: 30px;
+    /* margin: 10px; */
+    border: none;
+    background-color: cornflowerblue;
+    color: white;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+
+  .OpenModalBtn{
+    font-size: 20px;
+    text-align: left;
+    background-color: #f2f2f2;
+    display: flex;
+    align-items: center;
+    border-radius: 5px;
+    height: 100px;
+    width: 90vw;
+    margin-bottom: 20px;
+    cursor: pointer;
+    border: none;
+    padding-left: 20px; 
+  }
+
+  .component{
+    display: flex;
+    font-size: medium;
+    /* padding: 5px; */
+    margin-bottom: 10px;
+    display: flex; /* Enables flex layout */
+    justify-content: space-between; 
+    border-radius: 12px;
+    background-color: #f2f2f2;
+    align-items: center;
+  }
+
+  .component h5{
+    margin-left: 20px;
+    width: 25%;
+    /* background-color: orange; */
+    text-align: left;
+  }
+
+  .component p, .component a{
+    width: 75%;
+    /* background-color: pink; */
+    text-align: left;
+    margin-right: 20px
+
+  }
+
+
+
