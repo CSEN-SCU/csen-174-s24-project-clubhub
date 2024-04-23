@@ -29,7 +29,7 @@ function Navbar() {
                 </Link>
               </li>
               <li className="nav__item">
-                <Link to="/allclubs" className="nav__link">
+                <Link to="/clubs" className="nav__link">
                   <i className="icon-layers"></i>
                 </Link>
               </li>
