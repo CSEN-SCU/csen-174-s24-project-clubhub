@@ -3,7 +3,7 @@ import React from "react";
 import "./App.css";
 import Navbar from "./components/nav/navbar";
 import Welcome from "./pages/welcome/welcome";
-import Clubs from "./pages/clubs/clubs";
+import ClubPage from "./pages/clubs/ClubPage";
 import Home from "./pages/home/home";
 import GPT from "./pages/gpt/gpt";
 import Account from "./pages/account/account";
@@ -24,6 +24,7 @@ function PublicRoute({ children }) {
 function App() {
   return (
     <AuthProvider>
+      <div id="appBody">
       <Navbar />
       <div className="container">
         <Routes>
@@ -55,7 +56,7 @@ function App() {
             path="/clubs"
             element={
               <PrivateRoute>
-                <Clubs />
+                <ClubPage />
               </PrivateRoute>
             }
           />
@@ -76,6 +77,7 @@ function App() {
             }
           />
         </Routes>
+      </div>
       </div>
     </AuthProvider>
   );
