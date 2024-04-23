@@ -1,16 +1,19 @@
-// src/pages/welcome/welcome.js
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { signInWithGoogle } from "../../Firebase";
-import Logo from '../../assets/logo.png';
+import Logo from "../../assets/logo.png";
 import "./welcome.css";
 
 function Welcome() {
   const navigate = useNavigate();
 
   const handleSignIn = async () => {
-    await signInWithGoogle();
-    navigate("/");
+    const isNewUser = await signInWithGoogle();
+    if (isNewUser) {
+      navigate("/user-type");
+    } else {
+      navigate("/");
+    }
   };
 
   return (
@@ -29,7 +32,7 @@ function Welcome() {
         </button>
       </div>
       <div className="right-container">
-        <img src={Logo} alt="logo"/>
+        <img src={Logo} alt="logo" />
       </div>
     </div>
   );

@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { getAuth, GoogleAuthProvider, signInWithPopup, getAdditionalUserInfo } from "firebase/auth";
 import { getFirestore, doc, setDoc } from "firebase/firestore";
 
 const firebaseConfig = {
@@ -9,7 +9,7 @@ const firebaseConfig = {
   storageBucket: "clubhub-ca026.appspot.com",
   messagingSenderId: "1072190558895",
   appId: "1:1072190558895:web:7745514191b0563739fa5a",
-  measurementId: "G-NVPCTP2SLM"
+  measurementId: "G-NVPCTP2SLM",
 };
 
 const app = initializeApp(firebaseConfig);
@@ -20,19 +20,26 @@ const provider = new GoogleAuthProvider();
 const signInWithGoogle = async () => {
   try {
     const result = await signInWithPopup(auth, provider);
+    const additionalInfo = getAdditionalUserInfo(result);
     const user = result.user;
 
     const userRef = doc(firestore, "users", user.uid);
-    await setDoc(userRef, {
-      name: user.displayName,
-      email: user.email,
-      profilePic: user.photoURL,
-    }, { merge: true });
+    await setDoc(
+      userRef,
+      {
+        name: user.displayName,
+        email: user.email,
+        profilePic: user.photoURL,
+        userType: "None",
+      },
+      { merge: true }
+    );
 
     localStorage.setItem("userId", user.uid);
-    window.location.reload();
+    return additionalInfo?.isNewUser;
   } catch (error) {
-    console.error("Failed to sign in with Google: ", error);
+    console.error("Failed to sign in with Google:", error);
+    throw new Error("Failed to authenticate with Google.");
   }
 };
 
