@@ -1,54 +1,63 @@
-import { React, useState } from 'react'
-import data from "./ClubInfo.json"
-import Modal from "./Modal.js"
+import { React, useState, useEffect } from "react";
+import { firestore } from "../../Firebase.js";
+import { collection, query, getDocs } from "firebase/firestore";
+import Modal from "./Modal.js";
 
 function List(props) {
-    const [openModal, setOpenModal] = useState(false);
-    const [selectedItem, setSelectedItem] = useState(null);
+  const [openModal, setOpenModal] = useState(false);
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [data, setData] = useState([]);
 
-    // Create a new array by filtering the original array
-    const filteredData = data.filter((el) => {
-        //if no input the return the original
-        if (props.input === '') {
-            return el;
-        }
-        //return the item which contains the user input
-        else {
-            return el.ClubName.toLowerCase().includes(props.input)
-        }
-    })
+  useEffect(() => {
+    const fetchData = async () => {
+      const q = query(collection(firestore, "clubs"));
+      const querySnapshot = await getDocs(q);
+      const clubsData = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setData(clubsData);
+    };
+    fetchData();
+  }, []);
 
-    const handleOpenModal = (item) => {
-        setSelectedItem(item); // Set the selected item when the modal is opened
-        setOpenModal(true); // Open the modal
-      };
+  const filteredData = data.filter((el) => {
+    if (props.input === "") {
+      return el;
+    } else {
+      return el.ClubName.toLowerCase().includes(props.input.toLowerCase());
+    }
+  });
 
-      const handleCloseModal = () => {
-        setOpenModal(false); // Close the modal
-        setSelectedItem(null); // Clear the selected item
-      };
+  const handleOpenModal = (item) => {
+    setSelectedItem(item);
+    setOpenModal(true);
+  };
 
-    return (
-        <div>
-            {filteredData.map((item) => (
-                    <button
-                    key={item.ClubName} // Ensure each button has a unique key !!!!!!!!!!
-                    className="OpenModalBtn"
-                    onClick={() => handleOpenModal(item)}
-                    >
-                    {item.ClubName} 
-                    </button>
-                ))}
-                {openModal && (
-                    <Modal
-                    closeModal={handleCloseModal}
-                    clubInfo={selectedItem} // Pass the text of the selected item
-                    />
-                )}
-        </div>
-    )
+  const handleCloseModal = () => {
+    setOpenModal(false);
+    setSelectedItem(null);
+  };
+
+  return (
+    <div>
+      {filteredData.map((item) => (
+        <button
+          key={item.id}
+          className="OpenModalBtn"
+          onClick={() => handleOpenModal(item)}
+        >
+          {item.ClubName}
+        </button>
+      ))}
+      {openModal && (
+        <Modal
+          closeModal={handleCloseModal}
+          clubInfo={selectedItem}
+        />
+      )}
+    </div>
+  );
 }
 
-
-
-export default List
+export default List;
