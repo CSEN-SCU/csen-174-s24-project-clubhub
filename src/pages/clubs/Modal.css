@@ -12,7 +12,7 @@
   
   .modalContainer {
     width: 65vw;
-    height: 500px;
+    height: 80vh;
     border-radius: 12px;
     background-color: white;
     box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
@@ -46,29 +46,26 @@
   
   .modalContainer .body {
     flex: 50%;
-    /* display: flex;
-    justify-content: center;
-    align-items: center; */
     font-size: 1.7rem;
     text-align: center;
   }
   
-  .modalContainer .footer {
-    /* flex: 20%; */
+  .modalContainer .ProfileButton {
     display: flex;
     justify-content: center;
     align-items: center;
   }
   
-  .modalContainer .footer button {
-    width: 125px;
-    height: 40px;
-    /* margin: 10px; */
+  .modalContainer .ProfileButton button {
+    width: 170px;
+    height: 30px;
     border: none;
     background-color: cornflowerblue;
     color: white;
     border-radius: 8px;
     cursor: pointer;
+    margin-top: 10px;
+    margin-bottom: 20px;
   }
 
   .OpenModalBtn{
@@ -93,29 +90,269 @@
   .component{
     display: flex;
     font-size: medium;
-    /* padding: 5px; */
-    margin-bottom: 10px;
-    display: flex; /* Enables flex layout */
+    margin-bottom: 30px;
     justify-content: space-between; 
     border-radius: 12px;
     background-color: #f2f2f2;
     align-items: center;
+    padding: 20px;
+    box-sizing: border-box;
+    white-space: normal;
   }
 
   .component h5{
-    margin-left: 20px;
-    width: 25%;
+    width: 15%;
     /* background-color: orange; */
     text-align: left;
+    margin-right: 15px;
+  }
+
+  .tags{
+    width:85%;
+    text-align: left;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
   }
 
   .component p, .component a{
-    width: 75%;
+    width: 85%;
     /* background-color: pink; */
     text-align: left;
-    margin-right: 20px
+    /* margin-right: 20px */
+  }
 
+  a{
+    text-decoration: underline;
+  }
+
+  .twoStack {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    gap: 10px;
+  }
+
+  .twoStack .component{
+    width: 50%;
+  }
+
+  .twoStack .component p, .twoStack .component a{
+    width: 70%;
+  }
+
+  .twoStack h5{
+    width: 30%;
+  }
+
+  p, a{
+    overflow: hidden;
+  }
+
+  #AcademicBackground h5, #PracticeArea h5{
+    margin-bottom: 4px;
+  }
+
+  @media (max-width: 1000px) {
+    .twoStack {
+      flex-direction: column; /* This will stack the components vertically */
+      gap: 0px;
+    }
+    .twoStack .component{
+      width: 100%;
+    }
+    .component{
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;  
+    }
+    .component p, .component h5, .component a{
+      width: 100%;
+      text-align: center;
+      /* background-color: pink; */
+      margin: 0;
+    }
+
+    .tags{
+      display: grid; /* Sets Grid Layout */
+      justify-items: center; 
+    }
+
+    span{
+      width:fit-content;
+    }
+  }
+
+  
+
+
+  /*FOR ALL THE TAGS */
+
+  .science-and-engineering{
+    background-color: red;
+    color:white;
+    padding: 2px 5px;
+    border-radius: 8px;
+    white-space: nowrap;
+  }
+
+  .any-background{
+    background-color: orange;
+    color:white;
+    padding: 2px 5px;
+    border-radius: 8px;
+    white-space: nowrap;
+  }
+
+  .arts-and-design{
+    background-color: yellow;
+    color:white;
+    padding: 2px 5px;
+    border-radius: 8px;
+    white-space: nowrap;
+  }
+
+  .building-a-product{
+    background-color: green;
+    color:white;
+    padding: 2px 5px;
+    border-radius: 8px;
+    white-space: nowrap;
+  }
+
+  .building-products{
+    background-color: blue;
+    color:white;
+    padding: 2px 5px;
+    border-radius: 8px;
+    white-space: nowrap;
+  }
+
+  .business{
+    background-color: purple;
+    color:white;
+    padding: 2px 5px;
+    border-radius: 8px;
+    white-space: nowrap;
+  }
+
+  .communication{
+    background-color: pink;
+    color:white;
+    padding: 2px 5px;
+    border-radius: 8px;
+    white-space: nowrap;
+  }
+
+  .education-and-counseling-psychology{
+    background-color: teal;
+    color:white;
+    padding: 2px 5px;
+    border-radius: 8px;
+    white-space: nowrap;
+  }
+
+  .finance{
+    background-color: grey;
+    color:white;
+    padding: 2px 5px;
+    border-radius: 8px;
+    white-space: nowrap;
+  }
+
+  .innovation{
+    background-color: maroon;
+    color:white;
+    padding: 2px 5px;
+    border-radius: 8px;
+    white-space: nowrap;
+  }
+
+  .law{
+    background-color: mediumslateblue;
+    color:white;
+    padding: 2px 5px;
+    border-radius: 8px;
+    white-space: nowrap;
+  }
+
+  .leadership{
+    background-color: thistle;
+    color:white;
+    padding: 2px 5px;
+    border-radius: 8px;
+    white-space: nowrap;
   }
 
 
+  .management{
+    background-color: olivedrab;
+    color:white;
+    padding: 2px 5px;
+    border-radius: 8px;
+    white-space: nowrap;
+  }
 
+  .marketing{
+    background-color: gold;
+    color:white;
+    padding: 2px 5px;
+    border-radius: 8px;
+    white-space: nowrap;
+  }
+
+  .networking{
+    background-color: rosybrown;
+    color:white;
+    padding: 2px 5px;
+    border-radius: 8px;
+    white-space: nowrap;
+  }
+
+  .others{
+    background-color: firebrick;
+    color:white;
+    padding: 2px 5px;
+    border-radius: 8px;
+    white-space: nowrap;
+  }
+
+  .science-and-engineering{
+    background-color: salmon;
+    color:white;
+    padding: 2px 5px;
+    border-radius: 8px;
+    white-space: nowrap;
+  }
+
+  .starting-a-business{
+    background-color: darkcyan;
+    color:white;
+    padding: 2px 5px;
+    border-radius: 8px;
+    white-space: nowrap;
+  }
+
+  .starting-businesses{
+    background-color: cadetblue;
+    color:white;
+    padding: 2px 5px;
+    border-radius: 8px;
+    white-space: nowrap;
+  }
+
+  .team-working{
+    background-color: violet;
+    color:white;
+    padding: 2px 5px;
+    border-radius: 8px;
+    white-space: nowrap;
+  }
+
+  .technical{
+    background-color: hotpink;
+    color:white;
+    padding: 2px 5px;
+    border-radius: 8px;
+    white-space: nowrap;
+  }
