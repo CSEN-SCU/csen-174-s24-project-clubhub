@@ -8,7 +8,7 @@
     overflow-y: scroll;
   }
   
-  h1 {
+  #title {
     margin: 10px;
     font-size: 40px;
     color: rgb(1, 1, 59);
