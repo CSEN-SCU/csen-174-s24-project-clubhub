@@ -1,6 +1,6 @@
 import React from 'react'
 import "./post.css";
-import Avatar from "../../assets/logo.png"
+import Avatar from "../../assets/sculogo.png"
 
 function post({
     displayName,
