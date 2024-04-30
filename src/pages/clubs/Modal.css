@@ -122,8 +122,9 @@
     /* margin-right: 20px */
   }
 
-  a{
+  .modal__link {
     text-decoration: underline;
+    overflow: hidden;
   }
 
   .twoStack {
@@ -145,7 +146,7 @@
     width: 30%;
   }
 
-  p, a{
+  .modal__text {
     overflow: hidden;
   }
 
@@ -178,7 +179,7 @@
       justify-items: center; 
     }
 
-    span{
+    .modal__span{
       width:fit-content;
     }
   }
