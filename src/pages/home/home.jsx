@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Post from "./post";
 import "./home.css";
 
 function Home() {
@@ -33,62 +34,11 @@ function Home() {
       </div>
 
       {/* Post */}
-      {/* Post */}
-      {/* Post */}
-      <h3>hello</h3>
-      <h3>hello</h3>
-      <h3>hello</h3>
-      <h3>hello</h3>
-      <h3>hello</h3>
-      <h3>hello</h3>
-      <h3>hello</h3>
-      <h3>hello</h3>
-      <h3>hello</h3>
-      <h3>hello</h3>
-      <h3>hello</h3>
-      <h3>hello</h3>
-      <h3>hello</h3>
-      <h3>hello</h3>
-      <h3>hello</h3>
-      <h3>hello</h3>
-      <h3>hello</h3>
-      <h3>hello</h3>
-      <h3>hello</h3>
-      <h3>hello</h3>
-      <h3>hello</h3>
-      <h3>hello</h3>
-      <h3>hello</h3>
-      <h3>hello</h3>
-      <h3>hello</h3>
-      <h3>hello</h3>
-      <h3>hello</h3>
-      <h3>hello</h3>
-      <h3>hello</h3>
-      <h3>hello</h3>
-      <h3>hello</h3>
-      <h3>hello</h3>
-      <h3>hello</h3>
-      <h3>hello</h3>
-      <h3>hello</h3>
-      <h3>hello</h3>
-      <h3>hello</h3>
-      <h3>hello</h3>
-      <h3>hello</h3>
-      <h3>hello</h3>
-      <h3>hello</h3>
-      <h3>hello</h3>
-      <h3>hello</h3>
-      <h3>hello</h3>
-      <h3>hello</h3>
-      <h3>hello</h3>
-      <h3>hello</h3>
-      <h3>hello</h3>
-      <h3>hello</h3>
-      <h3>hello</h3>
-      <h3>hello</h3>
-      <h3>hello</h3>
-      <h3>hello</h3>
-      <h3>hello</h3>
+      <Post />
+      <Post />
+      <Post />
+      <Post />
+      <Post />
     </div>
   )
 }
