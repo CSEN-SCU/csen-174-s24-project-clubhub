@@ -1,7 +1,4 @@
 .account-container {
-  display: flexbox;
-  justify-content: center;
-  margin-top: 15vh;
   max-height: 100vh;
   overflow-y: scroll;
   min-width: fit-content;
