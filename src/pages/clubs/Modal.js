@@ -10,7 +10,7 @@ function Modal({closeModal, clubInfo}){
             <button onClick={()=> closeModal(false)}> X </button>
         </div>
             <div className = "title">
-                <h1>{clubInfo.ClubName}</h1>
+                <h1 id="clubname">{clubInfo.ClubName}</h1>
             </div>
             <div className = "body">
 
