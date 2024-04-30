@@ -28,7 +28,7 @@
 }
 
 .header__button:hover {
-    background-color: var(--light-gray);
+    background-color: rgba(0, 0, 0, 0.05);
     transition: .2s;
 }
 
