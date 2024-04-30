@@ -5,7 +5,7 @@
   --title-color: hsl(244, 24%, 26%);
   --text-color: hsl(244, 16%, 43%);
   --body-color: hsl(260, 60%, 98%);
-  --light-gray: rgba(0, 0, 0, 0.05);
+  --light-gray: rgba(0, 0, 0, 0.1);
   --container-color: #fff;
 
   --body-font: 'Rubik', sans-serif;
