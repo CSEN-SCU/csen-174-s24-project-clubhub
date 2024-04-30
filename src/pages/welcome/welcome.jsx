@@ -1,6 +1,6 @@
 import React from "react";
 import { studentSignInWithGoogle, clubSignInWithGoogle } from "../../Firebase";
-import Logo from "../../assets/logo.png";
+import SCULogo from "../../assets/sculogo.png";
 import "./welcome.css";
 
 function Welcome() {
@@ -29,7 +29,7 @@ function Welcome() {
         </div>
       </div>
       <div className="right-container">
-        <img id="logo" src={Logo} alt="logo" />
+        <img id="logo" src={SCULogo} alt="logo" />
       </div>
     </div>
   );
