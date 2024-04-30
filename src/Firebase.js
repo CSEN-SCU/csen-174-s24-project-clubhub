@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { getAuth, GoogleAuthProvider, signInWithPopup, getAdditionalUserInfo } from "firebase/auth";
+import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { getFirestore, doc, setDoc } from "firebase/firestore";
 
 const firebaseConfig = {
@@ -17,10 +17,9 @@ const auth = getAuth(app);
 const firestore = getFirestore(app);
 const provider = new GoogleAuthProvider();
 
-const signInWithGoogle = async () => {
+const studentSignInWithGoogle = async () => {
   try {
     const result = await signInWithPopup(auth, provider);
-    const additionalInfo = getAdditionalUserInfo(result);
     const user = result.user;
 
     const userRef = doc(firestore, "users", user.uid);
@@ -30,17 +29,39 @@ const signInWithGoogle = async () => {
         name: user.displayName,
         email: user.email,
         profilePic: user.photoURL,
-        userType: "None",
+        userType: "student",
       },
       { merge: true }
     );
 
     localStorage.setItem("userId", user.uid);
-    return additionalInfo?.isNewUser;
+  } catch (error) {
+    console.error("Failed to sign in with Google:", error);
+    throw new Error("Failed to authenticate with Google.");
+  }
+};
+const clubSignInWithGoogle = async () => {
+  try {
+    const result = await signInWithPopup(auth, provider);
+    const user = result.user;
+
+    const userRef = doc(firestore, "users", user.uid);
+    await setDoc(
+      userRef,
+      {
+        name: user.displayName,
+        email: user.email,
+        profilePic: user.photoURL,
+        userType: "club owner",
+      },
+      { merge: true }
+    );
+
+    localStorage.setItem("userId", user.uid);
   } catch (error) {
     console.error("Failed to sign in with Google:", error);
     throw new Error("Failed to authenticate with Google.");
   }
 };
 
-export { auth, firestore, signInWithGoogle };
+export { auth, firestore, studentSignInWithGoogle, clubSignInWithGoogle };

@@ -37,13 +37,14 @@ function Modal({ closeModal, clubInfo }) {
         <div className="body">
           <div id="AboutUs" className="component">
             <h5>About Us</h5>
-            <p>{clubInfo.AboutUs}</p>
+            <p className="modal__text">{clubInfo.AboutUs}</p>
           </div>
           <div id="AcademicBackground" className="component">
             <h5>Academic Background</h5>
             <div className="tags">
               {clubInfo?.AcademicBackground?.map((word, index) => (
-                <span key={index} className={slugify(word)}>
+                <span key={index} className={`${slugify(word)} modal__span`}
+                >
                   {word}
                 </span>
               ))}
@@ -53,7 +54,7 @@ function Modal({ closeModal, clubInfo }) {
             <h5>Practice Area</h5>
             <div className="tags">
               {clubInfo?.PracticeArea?.map((word, index) => (
-                <span key={index} className={slugify(word)}>
+                <span key={index} className={`${slugify(word)} modal__span`}>
                   {word}
                 </span>
               ))}
@@ -63,66 +64,66 @@ function Modal({ closeModal, clubInfo }) {
           <div className="twoStack">
             <div className="component" id="ContactName">
               <h5>Contact Name</h5>
-              <p>{clubInfo.ContactName}</p>
+              <p className="modal__text">{clubInfo.ContactName}</p>
             </div>
             <div className="component" id="ContactEmail">
               <h5>Contact Email</h5>
-              <p>{clubInfo.Contact}</p>
+              <p className="modal__text">{clubInfo.Contact}</p>
             </div>
           </div>
 
           <div className="twoStack">
             <div className="component" id="Website">
               <h5>Website</h5>
-              <a href={clubInfo.Website}> {clubInfo.Website} </a>
+              <a className="modal__link" href={clubInfo.Website}> {clubInfo.Website} </a>
             </div>
             <div className="component" id="ChatChannel">
               <h5>Chat Channel</h5>
-              <a href={clubInfo.ChatChannel}>{clubInfo.ChatChannel}</a>
+              <a className="modal__link" href={clubInfo.ChatChannel}>{clubInfo.ChatChannel}</a>
             </div>
           </div>
 
           <div className="twoStack">
             <div className="component" id="UnderOrGrad">
               <h5>Undergrate or Graduate</h5>
-              <p>{clubInfo.UndergraduateorGraduate}</p>
+              <p className="modal__text">{clubInfo.UndergraduateorGraduate}</p>
             </div>
             <div className="component" id="CurrentProjects">
               <h5>Current Projects</h5>
-              <p>{clubInfo.CurrentProjects}</p>
+              <p className="modal__text">{clubInfo.CurrentProjects}</p>
             </div>
           </div>
 
           <div className="twoStack">
             <div className="component" id="TimeCommitment">
               <h5>Time Commitment</h5>
-              <p>{clubInfo.TimeCommitment}</p>
+              <p className="modal__text">{clubInfo.TimeCommitment}</p>
             </div>
             <div className="component" id="RelaxedSerious">
               <h5>Relaxed or Seriousness</h5>
-              <p>{clubInfo.RelaxedSerious}</p>
+              <p className="modal__text">{clubInfo.RelaxedSerious}</p>
             </div>
           </div>
 
           <div className="twoStack">
             <div className="component" id="MembershipFee">
               <h5>Membership Fee</h5>
-              <p>{clubInfo.MembershipFee}</p>
+              <p className="modal__text">{clubInfo.MembershipFee}</p>
             </div>
             <div className="component" id="NationalOrganization">
               <h5>National Organization</h5>
-              <p>{clubInfo.NationalOrganization}</p>
+              <p className="modal__text">{clubInfo.NationalOrganization}</p>
             </div>
           </div>
 
           <div className="twoStack">
             <div className="component" id="IntroductionVideo">
               <h5>Introduction Video</h5>
-              <p>{clubInfo.IntroductionVideo}</p>
+              <p className="modal__text">{clubInfo.IntroductionVideo}</p>
             </div>
             <div className="component" id="CoverPhoto">
               <h5>Cover Photo</h5>
-              <p>{clubInfo.CoverPhoto}</p>
+              <p className="modal__text">{clubInfo.CoverPhoto}</p>
               {/* Need to find how to access this */}
             </div>
           </div>
