@@ -15,7 +15,7 @@
     top: 0;
     z-index: 100;
     background-color: var(--body-color);
-    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    border-bottom: 1px solid var(--light-gray);
     border-width: 100%;
     display: flex;
 }
@@ -28,7 +28,7 @@
 }
 
 .header__button:hover {
-    background-color: rgba(0, 0, 0, 0.05);
+    background-color: var(--light-gray);
     transition: .2s;
 }
 

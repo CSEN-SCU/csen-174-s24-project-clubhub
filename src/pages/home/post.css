@@ -1,11 +1,14 @@
 .post {
     display: flex;
     align-items: flex-start;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
     margin: 0 auto;
     padding: 20px 10px;
     width: 700px;
     
+}
+
+.post__container {
+    border-bottom: 1px solid var(--light-gray);
 }
 
 .post__body {
@@ -21,6 +24,7 @@
 .post__image {
     border-radius: 20px;
     width: 500px;
+    box-shadow: var(--shadow);
 }
 
 .post__headerText {
@@ -28,5 +32,5 @@
 }
 
 .post__headerDesc {
-    margin-bottom: 15px;
+    margin-bottom: 20px;
 }

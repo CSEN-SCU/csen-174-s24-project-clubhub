@@ -9,7 +9,7 @@ function post({
     avatar
 }) {
   return (
-    <div>
+    <div className='post__container'>
       <div className='post'>
         <div className="post__avatar">
           <img src={Avatar} alt="Avatar" />
