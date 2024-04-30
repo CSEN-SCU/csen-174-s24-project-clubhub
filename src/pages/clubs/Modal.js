@@ -29,9 +29,9 @@ function Modal({ closeModal, clubInfo }) {
           <button onClick={() => closeModal(false)}> X </button>
         </div>
         <div className="title">
-          <h1 id="clubname">{clubInfo.ClubName}</h1>
+          <h2>{clubInfo.ClubName}</h2>
           <div className="ProfileButton">
-            <button>Club Profile Page</button>
+            <button className="btn">Club Profile Page</button>
           </div>
         </div>
         <div className="body">
