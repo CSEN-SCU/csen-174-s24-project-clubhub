@@ -13,7 +13,7 @@ function ClubPage() {
 
   return (
     <div className="main">
-      <h1>Search for Your Favorite Clubs</h1>
+      <h1 id="title">Search for Your Favorite Clubs</h1>
       <div className="search">
         <input
             type="text"
