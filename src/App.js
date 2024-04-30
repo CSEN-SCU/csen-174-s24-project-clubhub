@@ -8,7 +8,6 @@ import ClubPage from "./pages/clubs/ClubPage";
 import Home from "./pages/home/home";
 import GPT from "./pages/gpt/gpt";
 import Account from "./pages/account/account";
-import Search from "./pages/search/search";
 import { Route, Routes, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 
@@ -43,14 +42,6 @@ function App() {
             element={
               <PrivateRoute>
                 <Home />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/search"
-            element={
-              <PrivateRoute>
-                <Search />
               </PrivateRoute>
             }
           />
