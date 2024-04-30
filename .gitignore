@@ -4,6 +4,7 @@
 /node_modules
 /.pnp
 .pnp.js
+/src/clubhub-ca026-firebase-adminsdk-z6y6t-649749ce21.json
 
 # testing
 /coverage
