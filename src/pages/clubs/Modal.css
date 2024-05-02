@@ -3,7 +3,7 @@
     height: 100vh;
     left: 0;
     top: 0;
-    background-color: rgba(0,0,0,0.5);
+    background-color: var(--light-gray);
     position: absolute;
     display: flex;
     justify-content: center;
@@ -14,25 +14,26 @@
     width: 65vw;
     height: 80vh;
     border-radius: 12px;
-    background-color: white;
+    background-color: var(--body-color);
     box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
     display: flex;
     flex-direction: column;
-    padding: 25px;
+    padding: 30px;
     /* max-height: 400px;  */
     overflow-y: auto;
   }
 
   .modalContainer .title {
     display: inline-block;
-    text-align: left;
+    text-align: center;
+  }
+  
+  .title h2 {
+    font-weight: var(--font-bold);
+    margin-top: -10px;
+    color: var(--title-color)
   }
 
-  #clubname {
-    font-size: x-large;
-  }
-  
-  
   .titleCloseBtn {
     display: flex;
     justify-content: flex-end;
@@ -42,11 +43,11 @@
     background-color: transparent;
     border: none;
     cursor: pointer;
+    width: 20px;
   }
   
   .modalContainer .body {
     flex: 50%;
-    font-size: 1.7rem;
     text-align: center;
   }
   
@@ -61,50 +62,56 @@
     height: 30px;
     border: none;
     background-color: cornflowerblue;
-    color: white;
+    color: var(--body-color);
     border-radius: 8px;
     cursor: pointer;
-    margin-top: 10px;
-    margin-bottom: 20px;
+    margin-top: 20px;
+    margin-bottom: 25px;
+    padding: 0;
   }
 
   .OpenModalBtn{
-    font-size: 20px;
     text-align: left;
     background-color: #f2f2f2;
     display: flex;
     align-items: center;
-    border-radius: 5px;
+    border-radius: 20px;
     height: 100px;
-    width: 90vw;
+    width: 80vw;
     margin-bottom: 20px;
     cursor: pointer;
-    border: none;
-    padding-left: 20px; 
+    border: 1px solid var(--light-gray);
+    padding-left: 30px;
+    font-size: var(--h2-font-size);
+    font-weight: var(--font-semibold);
+    color: var(--title-color);
+    box-shadow: var(--shadow);
   }
 
   .OpenModalBtn:hover {
-    background-color: #ddd; /* Change to your desired hover color */
+    background-color: var(--light-gray); /* Change to your desired hover color */
   }
 
   .component{
     display: flex;
-    font-size: medium;
+    font-size: var(--normal-font-size);
     margin-bottom: 30px;
     justify-content: space-between; 
+    border: 1px solid var(--light-gray);
     border-radius: 12px;
     background-color: #f2f2f2;
     align-items: center;
-    padding: 20px;
+    padding: 25px;
     box-sizing: border-box;
     white-space: normal;
+    box-shadow: var(--shadow);
   }
 
   .component h5{
+    font-size: var(--small-font-size);
     width: 15%;
-    /* background-color: orange; */
     text-align: left;
-    margin-right: 15px;
+    margin-right: 20px;
   }
 
   .tags{
@@ -112,7 +119,7 @@
     text-align: left;
     display: flex;
     flex-wrap: wrap;
-    gap: 5px;
+    gap: 7px;
   }
 
   .component p, .component a{
@@ -189,16 +196,8 @@
 
   /*FOR ALL THE TAGS */
 
-  .science-and-engineering{
-    background-color: red;
-    color:white;
-    padding: 2px 5px;
-    border-radius: 8px;
-    white-space: nowrap;
-  }
-
   .any-background{
-    background-color: orange;
+    background-color: #b30738;
     color:white;
     padding: 2px 5px;
     border-radius: 8px;
@@ -206,7 +205,7 @@
   }
 
   .arts-and-design{
-    background-color: yellow;
+    background-color: #862633;
     color:white;
     padding: 2px 5px;
     border-radius: 8px;
@@ -214,7 +213,7 @@
   }
 
   .building-a-product{
-    background-color: green;
+    background-color: #eaaa00;
     color:white;
     padding: 2px 5px;
     border-radius: 8px;
@@ -222,7 +221,7 @@
   }
 
   .building-products{
-    background-color: blue;
+    background-color: #5b6770;
     color:white;
     padding: 2px 5px;
     border-radius: 8px;
@@ -230,7 +229,7 @@
   }
 
   .business{
-    background-color: purple;
+    background-color: #737b4c;
     color:white;
     padding: 2px 5px;
     border-radius: 8px;
@@ -238,7 +237,7 @@
   }
 
   .communication{
-    background-color: pink;
+    background-color: #b0aa7e;
     color:white;
     padding: 2px 5px;
     border-radius: 8px;
@@ -246,7 +245,7 @@
   }
 
   .education-and-counseling-psychology{
-    background-color: teal;
+    background-color: #ddcba4;
     color:white;
     padding: 2px 5px;
     border-radius: 8px;
@@ -254,7 +253,7 @@
   }
 
   .finance{
-    background-color: grey;
+    background-color: #7f9c90;
     color:white;
     padding: 2px 5px;
     border-radius: 8px;
@@ -262,7 +261,7 @@
   }
 
   .innovation{
-    background-color: maroon;
+    background-color: #a4dbe8;
     color:white;
     padding: 2px 5px;
     border-radius: 8px;
@@ -270,7 +269,7 @@
   }
 
   .law{
-    background-color: mediumslateblue;
+    background-color: #d57800;
     color:white;
     padding: 2px 5px;
     border-radius: 8px;
@@ -278,7 +277,7 @@
   }
 
   .leadership{
-    background-color: thistle;
+    background-color: #033b4c;
     color:white;
     padding: 2px 5px;
     border-radius: 8px;
@@ -287,7 +286,7 @@
 
 
   .management{
-    background-color: olivedrab;
+    background-color: #4e4540;
     color:white;
     padding: 2px 5px;
     border-radius: 8px;
@@ -295,7 +294,7 @@
   }
 
   .marketing{
-    background-color: gold;
+    background-color: #546575;
     color:white;
     padding: 2px 5px;
     border-radius: 8px;
@@ -303,7 +302,7 @@
   }
 
   .networking{
-    background-color: rosybrown;
+    background-color: #b30738;
     color:white;
     padding: 2px 5px;
     border-radius: 8px;
@@ -311,7 +310,7 @@
   }
 
   .others{
-    background-color: firebrick;
+    background-color: #862633;
     color:white;
     padding: 2px 5px;
     border-radius: 8px;
@@ -319,7 +318,7 @@
   }
 
   .science-and-engineering{
-    background-color: salmon;
+    background-color: #eaaa00;
     color:white;
     padding: 2px 5px;
     border-radius: 8px;
@@ -327,7 +326,7 @@
   }
 
   .starting-a-business{
-    background-color: darkcyan;
+    background-color: #5b6770;
     color:white;
     padding: 2px 5px;
     border-radius: 8px;
@@ -335,7 +334,7 @@
   }
 
   .starting-businesses{
-    background-color: cadetblue;
+    background-color: #737b4c;
     color:white;
     padding: 2px 5px;
     border-radius: 8px;
@@ -343,7 +342,7 @@
   }
 
   .team-working{
-    background-color: violet;
+    background-color: #b0aa7e;
     color:white;
     padding: 2px 5px;
     border-radius: 8px;
@@ -351,7 +350,7 @@
   }
 
   .technical{
-    background-color: hotpink;
+    background-color: #ddcba4;
     color:white;
     padding: 2px 5px;
     border-radius: 8px;

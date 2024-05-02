@@ -9,7 +9,6 @@ function post({
     avatar
 }) {
   return (
-    <div className='post__container'>
       <div className='post'>
         <div className="post__avatar">
           <img src={Avatar} alt="Avatar" />
@@ -28,7 +27,6 @@ function post({
           <img className="post__image" src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExbHZhNXNqcmszb2l6NnlicDBjN2JkeG51dTdzYTQ0MXB1ZWl6dnpvbCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/LHZyixOnHwDDy/giphy.gif" alt="" />
         </div>
       </div>
-    </div>
   )
 }
 
