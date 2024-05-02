@@ -10,19 +10,40 @@ export function useAuth() {
 
 export const AuthProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
+  const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setCurrentUser(user);
+      const userType = localStorage.getItem("userType");
+      if (user && userType === "student") {
+        if (user.email.endsWith("@scu.edu")) {
+          setCurrentUser(user);
+          setError(null);
+        } else {
+          localStorage.clear();
+          sessionStorage.clear();
+          setError("SCU_EMAIL_REQUIRED");
+          setCurrentUser(null);
+        }
+      } else if (user && userType === "club owner") {
+        setCurrentUser(user);
+        setError(null);
+      } else {
+        localStorage.clear();
+        sessionStorage.clear();
+        setCurrentUser(null);
+      }
       setLoading(false);
     });
 
-    return unsubscribe;
+    return () => unsubscribe();
   }, []);
 
   const value = {
     currentUser,
+    error,
+    loading,
   };
 
   return (
