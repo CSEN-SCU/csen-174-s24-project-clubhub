@@ -30,7 +30,7 @@ function Navbar() {
   return (
     <>
       <aside className={toggle ? "aside show-menu" : "aside"}>
-        <Link to="/home" className="nav__logo">
+        <Link to="/" className="nav__logo">
           <img src={Logo} alt="Home" />
         </Link>
         <nav className="nav">
