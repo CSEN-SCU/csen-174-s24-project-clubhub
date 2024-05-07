@@ -1,9 +1,52 @@
-import React from "react";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { studentSignInWithGoogle, clubSignInWithGoogle } from "../../Firebase";
 import SCULogo from "../../assets/sculogo.png";
 import "./welcome.css";
 
 function Welcome() {
+  const navigate = useNavigate();
+  const [error, setError] = useState(null);
+
+  const handleStudentLogin = async () => {
+    localStorage.setItem("userType", "student");
+    try {
+      await studentSignInWithGoogle();
+      if (localStorage.getItem("hadError") === "club") {
+        localStorage.removeItem("hadError");
+        window.location.href = "/home";
+      }
+    } catch (error) {
+      localStorage.setItem("hadError", "student");
+      if (error.message === "SCU_EMAIL_REQUIRED") {
+        navigate("/error", {
+          state: { message: "Please sign in with a scu.edu email." },
+        });
+      } else {
+        setError("Failed to authenticate. Please try again.");
+      }
+    }
+  };
+
+  const handleClubLogin = async () => {
+    localStorage.setItem("userType", "club owner");
+    try {
+      await clubSignInWithGoogle();
+      if (localStorage.getItem("hadError") === "student") {
+        localStorage.removeItem("hadError");
+        window.location.href = "/home";
+      }
+    } catch (error) {
+      localStorage.setItem("hadError", "club");
+      if (error.message === "NOT_A_CLUB_OWNER") {
+        navigate("/error", {
+          state: { message: "Your email is not associated with a club." },
+        });
+      } else {
+        setError("Failed to authenticate. Please try again.");
+      }
+    }
+  };
 
   return (
     <div className="welcome-container">
@@ -19,11 +62,14 @@ function Welcome() {
         <div className="login-container">
           <button
             className="student login-with-google-btn"
-            onClick={studentSignInWithGoogle}
+            onClick={handleStudentLogin}
           >
             Student Login
           </button>
-          <button className="club login-with-google-btn" onClick={clubSignInWithGoogle}>
+          <button
+            className="club login-with-google-btn"
+            onClick={handleClubLogin}
+          >
             Club Login
           </button>
         </div>
@@ -31,6 +77,7 @@ function Welcome() {
       <div className="right-container">
         <img id="logo" src={SCULogo} alt="logo" />
       </div>
+      {error && <p className="error-message">{error}</p>}
     </div>
   );
 }

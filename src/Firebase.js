@@ -1,6 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { getFirestore, doc, setDoc } from "firebase/firestore";
+import { collection, query, where, getDocs } from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCVcmO3ibqY6ipNsEENaU7r7nwsOMN5P6M",
@@ -22,6 +23,10 @@ const studentSignInWithGoogle = async () => {
     const result = await signInWithPopup(auth, provider);
     const user = result.user;
 
+    if (!user.email.endsWith("@scu.edu")) {
+      throw new Error("SCU_EMAIL_REQUIRED");
+    }
+
     const userRef = doc(firestore, "users", user.uid);
     await setDoc(
       userRef,
@@ -36,31 +41,40 @@ const studentSignInWithGoogle = async () => {
 
     localStorage.setItem("userId", user.uid);
   } catch (error) {
-    console.error("Failed to sign in with Google:", error);
-    throw new Error("Failed to authenticate with Google.");
+    console.error("Failed to sign in with Google:", error.message);
+    throw error;
   }
 };
+
 const clubSignInWithGoogle = async () => {
   try {
     const result = await signInWithPopup(auth, provider);
     const user = result.user;
 
-    const userRef = doc(firestore, "users", user.uid);
-    await setDoc(
-      userRef,
-      {
-        name: user.displayName,
-        email: user.email,
-        profilePic: user.photoURL,
-        userType: "club owner",
-      },
-      { merge: true }
-    );
+    const clubsRef = collection(firestore, "clubs");
+    const q = query(clubsRef, where("Contact", "==", user.email));
+    const querySnapshot = await getDocs(q);
 
-    localStorage.setItem("userId", user.uid);
+    if (querySnapshot.empty) {
+      console.error("No matching club found for email:", user.email);
+      throw new Error("NOT_A_CLUB_OWNER");
+    } else {
+      const userRef = doc(firestore, "users", user.uid);
+      await setDoc(
+        userRef,
+        {
+          name: user.displayName,
+          email: user.email,
+          profilePic: user.photoURL,
+          userType: "club owner",
+        },
+        { merge: true }
+      );
+      localStorage.setItem("userId", user.uid);
+    }
   } catch (error) {
-    console.error("Failed to sign in with Google:", error);
-    throw new Error("Failed to authenticate with Google.");
+    console.error("Failed to sign in with Google:", error.message);
+    throw error;
   }
 };
 

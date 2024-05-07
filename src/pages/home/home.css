@@ -18,13 +18,14 @@
     border-bottom: 1px solid var(--light-gray);
     border-width: 100%;
     display: flex;
+    justify-content: center;
 }
 
 .header__button {
     background-color: var(--body-color);
     padding: 25px;
     padding-top: 30px;
-    width: 50%;
+    width: 40%;
 }
 
 .header__button:hover {
