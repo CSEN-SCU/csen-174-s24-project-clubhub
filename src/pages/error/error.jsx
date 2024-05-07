@@ -17,7 +17,7 @@ function Error() {
     <div className="error-container">
       <h1>Oops! {message}</h1>
       <p>Please contact support if you believe that this is an error.</p>
-      <h3>clubhub@gmail.com</h3>
+      <h3>scuclubhub@gmail.com</h3>
       <button id="goback" onClick={goBack}>
         Go back to the home page
       </button>
