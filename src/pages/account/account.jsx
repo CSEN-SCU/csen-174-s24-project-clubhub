@@ -12,7 +12,7 @@ function Account() {
   const [profilePic, setProfilePic] = useState("");
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
-  const [bio, setBio] = useState("This is my bio.");
+  const [bio, setBio] = useState("Tell the community about yourself...");
   const [isEditing, setIsEditing] = useState(false);
   const [editedBio, setEditedBio] = useState("");
   const [showHighlighted, setShowHighlighted] = useState(false);
@@ -83,22 +83,25 @@ function Account() {
   const renderBioSection = () => {
     if (isEditing) {
       return (
-        <div>
+        <div className="render__bio__container">
           <textarea
             value={editedBio}
             onChange={handleInputChange}
-            rows="4"
-            cols="50"
+            rows="1"
+            cols="30"
+            className="bio__textArea"
           />
-          <button onClick={handleSaveClick}>Save</button>
-          <button onClick={handleCancelClick}>Cancel</button>
+          <div className="bio__btn__container">
+            <button className="btn save__btn" onClick={handleSaveClick}>Save</button>
+            <button className="btn cancel__btn" onClick={handleCancelClick}>Cancel</button>
+          </div>
         </div>
       );
     } else {
       return (
         <div>
-          <div>{bio}</div>
-          <button onClick={handleEditClick}>Edit</button>
+          <p className="bio__text">{bio}</p>
+          <button className="btn edit__btn" onClick={handleEditClick}>Edit</button>
         </div>
       );
     }
@@ -163,24 +166,27 @@ function Account() {
     <div className="account-container">
       <div className="top-half">
         <div className="profile-info">
-          {profilePic && <img id="profile" src={profilePic} alt="Profile" />}
-          <h1>Following</h1>
-          <h2>10</h2>
+          {profilePic && <img src={profilePic} alt="Profile" />}
         </div>
       </div>
       <div className="bottom-half">
-        <div>
-          <h1>{name}</h1>
-          <h2>{email}</h2>
+        <div className="bottom__half__container">
+          <div className="nameEmailContainer">
+            <h1>{name}</h1>
+            <p>{email}</p>
+          </div>
+          <div className="following__container">
+            <h3>Following</h3>
+            <p>10</p>
+          </div>
         </div>
         {renderBioSection()}
       </div>
       <div className="main-content">
         <div className="posts-tabs">
-          <button onClick={handleRegularClick} className={!showHighlighted ? "active" : ""}>Regular Posts</button>
-          <button onClick={handleHighlightedClick} className={showHighlighted ? "active" : ""}>Highlighted Posts</button>
+          <button onClick={handleRegularClick} className={`header__btn__acc ${!showHighlighted ? "active" : ""}`}>Regular Posts</button>
+          <button onClick={handleHighlightedClick} className={`header__btn__acc ${showHighlighted ? "active" : ""}`}>Highlighted Posts</button>
         </div>
-        <hr className="underline" />
         <div className="posts-list">
           {showHighlighted ? (
             <div>
