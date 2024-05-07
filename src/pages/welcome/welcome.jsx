@@ -12,9 +12,16 @@ function Welcome() {
     localStorage.setItem("userType", "student");
     try {
       await studentSignInWithGoogle();
+      if (localStorage.getItem("hadError") === "club") {
+        localStorage.removeItem("hadError");
+        window.location.href = "/home";
+      }
     } catch (error) {
+      localStorage.setItem("hadError", "student");
       if (error.message === "SCU_EMAIL_REQUIRED") {
-        navigate("/error");
+        navigate("/error", {
+          state: { message: "Please sign in with a scu.edu email." },
+        });
       } else {
         setError("Failed to authenticate. Please try again.");
       }
@@ -25,10 +32,21 @@ function Welcome() {
     localStorage.setItem("userType", "club owner");
     try {
       await clubSignInWithGoogle();
+      if (localStorage.getItem("hadError") === "student") {
+        localStorage.removeItem("hadError");
+        window.location.href = "/home";
+      }
     } catch (error) {
-      setError("Failed to authenticate. Please try again.");
+      localStorage.setItem("hadError", "club");
+      if (error.message === "NOT_A_CLUB_OWNER") {
+        navigate("/error", {
+          state: { message: "Your email is not associated with a club." },
+        });
+      } else {
+        setError("Failed to authenticate. Please try again.");
+      }
     }
-  }
+  };
 
   return (
     <div className="welcome-container">

@@ -12,11 +12,8 @@ import { Route, Routes, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 
 function PrivateRoute({ children }) {
-  const { currentUser, error } = useAuth();
-
-  if (error && error === "SCU_EMAIL_REQUIRED") {
-    return <Navigate to="/error" />;
-  }  return currentUser ? children : <Navigate to="/" />;
+  const { currentUser } = useAuth();
+  return currentUser ? children : <Navigate to="/" />;
 }
 
 function PublicRoute({ children }) {
