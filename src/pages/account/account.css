@@ -8,23 +8,18 @@
 
 .top-half {
   position: relative;
-  background-color: rgba(0, 0, 0, 0.2); /* Semi-transparent gray background */
+  background-color: var(--light-gray); /* Semi-transparent gray background */
   width: 100%;
 }
 
 .profile-info {
-  position: relative;
-  text-align: left;
-  padding: 20px;
-  width: 100%;
   height: 200px;
-  padding-left: 10%;
 }
 
 .profile-info img {
   position: absolute;
   top: 0;
-  left: 15%;
+  margin-left: 200px;
   transform: translate(-110%, 125px);
   width: 150px;
   height: 150px;
@@ -32,72 +27,103 @@
   border: 5px solid white;
 }
 
-.profile-info h1 {
-  margin-top: 50px; /* Adjust the margin for the "Following" count */
-}
-
-.profile-info h2,
-.profile-info h1 {
+.following__container{
   text-align: center;
 }
 
 .main-content {
-  padding: 20px;
+  padding: 10px;
 }
 
 .logout-button {
-  margin-top: 20px;
+  margin: 20px;
 }
 
 .bottom-half {
   display: flex;
-  flex-direction: column; /* Stack the children vertically */
+  flex-direction: column;
   width: 100%;
-  margin-top: 100px;
-  margin-left: 7%;
+  margin-top: 90px;
+  padding: 0 50px;
 }
 
-.posts-tabs {
-  margin-bottom: 10px; /* Add margin at the bottom */
-}
-
-.posts-tabs button {
-  margin-right: 10px; /* Add margin between the buttons */
-}
-
-.underline {
-  border: none;
-  border-top: 1px solid #ccc; /* Faint line */
-  margin-top: 10px; /* Add margin at the top */
-}
-
-.posts-tabs {
-  margin-left: 0%;
-}
-
-footer {
+.bottom__half__container {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
 }
 
-.post-item {
-  margin-left: 6%;
-  width: 100%;
+.nameEmailContainer {
+  display: flex;
+  align-items: flex-end;
+  gap: 15px;
+  margin: 10px 0;
+  margin-bottom: 0;
 }
 
-.post-item img {
-  width: 150px;
-  height: 150px;
+.nameEmailContainer h1 {
+  font-weight: var(--font-bold);
+}
+
+.render__bio__container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.bio__text{
+  margin: 10px 0;
+  margin-bottom: 12px;
+}
+
+.bio__textArea {
+  margin-top: 8px;
+  border-radius: 5px;
+  border: 1px solid var(--light-gray);
+  background-color: var(--body-color);
+  padding: 5px;
+  color: var(--text-color);
+  width: 30%;
+}
+
+.bio__btn__container {
+  display: flex;
+  gap: 10px;
+}
+
+.edit__btn, .save__btn, .cancel__btn {
+  font-size: var(--small-font-size);
+  padding: 0.50rem 1.50rem;
+}
+
+.header__btn__acc {
+  background-color: var(--body-color);
+  padding: 25px;
+  width: 50%;
+}
+
+.header__btn__acc:hover {
+  background-color: var(--light-gray);
+  transition: .2s;
+}
+
+.header__btn__acc.active {
+  border-bottom: 5px solid var(--first-color);
+  color: var(--title-color);
+}
+
+.posts-tabs{
+  margin-left: 0%;
+  border-bottom: 1px solid var(--light-gray);
 }
 
 .posts-list {
   display: flex;
   flex-wrap: wrap;
-  justify-content: left;
+  justify-content: center;
   margin-left: 0%;
   width: 100%;
+  padding: 10px;
 }
 
 .post-item {
@@ -106,9 +132,9 @@ footer {
   margin: 20px;
   padding: 20px;
   border: 1px solid #ccc;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  width: 1500px;
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  width: 100%;
 }
 
 .post-flyer {
