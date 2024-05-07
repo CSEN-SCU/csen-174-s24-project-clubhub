@@ -22,6 +22,10 @@ const studentSignInWithGoogle = async () => {
     const result = await signInWithPopup(auth, provider);
     const user = result.user;
 
+    if (!user.email.endsWith("@scu.edu")) {
+      throw new Error("SCU_EMAIL_REQUIRED");
+    }
+
     const userRef = doc(firestore, "users", user.uid);
     await setDoc(
       userRef,
@@ -36,10 +40,11 @@ const studentSignInWithGoogle = async () => {
 
     localStorage.setItem("userId", user.uid);
   } catch (error) {
-    console.error("Failed to sign in with Google:", error);
-    throw new Error("Failed to authenticate with Google.");
+    console.error("Failed to sign in with Google:", error.message);
+    throw error;
   }
 };
+
 const clubSignInWithGoogle = async () => {
   try {
     const result = await signInWithPopup(auth, provider);
