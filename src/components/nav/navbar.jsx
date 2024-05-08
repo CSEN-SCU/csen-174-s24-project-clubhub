@@ -5,11 +5,13 @@ import { doc, getDoc } from "firebase/firestore";
 import { firestore } from "../../Firebase";
 import Logo from "../../assets/logo.png";
 import "./navbar.css";
+import Post from "../../pages/posting/Post";
 
 function Navbar() {
   const { currentUser } = useAuth();
   const [toggle, showMenu] = useState(false);
   const [userType, setUserType] = useState("");
+  const [openModal, setOpenModal] = useState(false);
 
   useEffect(() => {
     const fetchUserType = async () => {
@@ -26,6 +28,14 @@ function Navbar() {
 
     fetchUserType();
   }, [currentUser]);
+
+  const handleOpenModal = (item) => {
+    setOpenModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setOpenModal(false);
+  };
 
   return (
     <>
@@ -59,8 +69,14 @@ function Navbar() {
                 </li>
                 {userType === "club owner" && (
                   <li className="nav__item">
-                    <button className="nav__btn btn">+</button>
+                    <button 
+                      className="nav__btn btn"
+                      onClick={() => handleOpenModal()}
+                    >+</button>
                   </li>
+                )}
+                {openModal && (
+                  <Post closeModal={handleCloseModal} />
                 )}
               </ul>
             ) : (

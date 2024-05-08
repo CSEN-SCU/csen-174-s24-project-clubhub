@@ -1,0 +1,152 @@
+.postBackground {
+    width: 100vw;
+    height: 100vh;
+    left: 0;
+    top: 0;
+    background-color: var(--light-gray);
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 998;
+  }
+  
+  .postContainer {
+    width: 65vw;
+    height: 80vh;
+    border-radius: 12px;
+    background-color: var(--body-color);
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+    display: flex;
+    flex-direction: column;
+    padding: 30px;
+    /* max-height: 400px;  */
+    overflow-y: auto;
+    z-index: 999;
+  }
+
+  .postTitle {
+    display: inline-block;
+    text-align: center;
+    margin-top: 50px;
+    /* background-color: blue; */
+  }
+  
+  .postTitle h2 {
+    font-weight: var(--font-bold);
+    margin-top: -10px;
+    color: var(--title-color)
+  }
+
+  .postCloseBtn {
+    display: flex;
+    justify-content: flex-end;
+  }
+  
+  .postCloseBtn button {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    width: 20px;
+  }
+  
+  .postBody {
+    /* flex: 50%; */
+    margin-top: 30px;
+    display: flex;
+    text-align: center;
+    height: 80%;
+    /* background-color: pink; */
+
+  }
+
+  .imagePreview{
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center vertically within the preview container */
+    justify-content: center; /* Center horizontally within the preview container */
+    margin-top: 10px;
+  }
+
+  .postDescInput{
+    width:100%;
+    height: 100%;
+    border-radius: 20px;
+    background-color: #f2f2f2;
+    border: none;
+    /* box-shadow: var(--shadow); */
+    padding: 20px;
+    resize: none;
+  }
+  
+  .postFileContainer{
+    width: 50%;
+    /* background-color: red; */
+    /* display: flex;
+    justify-content: center; */
+    display: flex; /* Flexbox for easy centering */
+    flex-direction: column; /* Column direction to stack elements vertically */
+    align-items: center; /* Center horizontally */
+    justify-content: center; /* Center vertically */
+  }
+
+  .postRemoveFileBtn{
+    margin-top: 15px;
+    width: 150px;
+    height: 30px;
+    background-color: #e1e1e1;
+    border-radius: 5px;
+    box-shadow: var(--shadow);
+  }
+  
+
+  .postFileInput{
+    /* background-color: pink; */
+  }
+
+  .postImage{
+    max-width: 250px;
+  }
+
+  .postDescContainer{
+    width:50%;
+    padding: 20px;
+  }
+
+  .PostFooter{
+    margin-top: 20px;
+    /* background-color: orange; */
+  }
+
+  .postSubmitBtn{
+    width: 150px;
+    height: 30px;
+    background-color: #e1e1e1;
+    border-radius: 5px;
+    box-shadow: var(--shadow);
+  }
+
+
+  @media (max-width: 1200px) {
+    .postBody {
+      flex-direction: column;
+    }
+
+    .postFileContainer{
+      width:100%;
+    }
+
+    .postDescContainer{
+      width:100%;
+      height: 100%;
+    }
+
+    .postImage{
+      max-height: 275px;
+    }
+  } 
+
+  
+
+
+  
