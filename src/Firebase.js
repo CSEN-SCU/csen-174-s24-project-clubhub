@@ -2,6 +2,7 @@ import { initializeApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { getFirestore, doc, setDoc } from "firebase/firestore";
 import { collection, query, where, getDocs } from "firebase/firestore";
+import { getStorage } from "firebase/storage";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCVcmO3ibqY6ipNsEENaU7r7nwsOMN5P6M",
@@ -16,6 +17,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const firestore = getFirestore(app);
+const storage = getStorage(app);
 const provider = new GoogleAuthProvider();
 
 const studentSignInWithGoogle = async () => {
@@ -35,6 +37,8 @@ const studentSignInWithGoogle = async () => {
         email: user.email,
         profilePic: user.photoURL,
         userType: "student",
+        following: [],
+        follower: []
       },
       { merge: true }
     );
@@ -51,6 +55,21 @@ const clubSignInWithGoogle = async () => {
     const result = await signInWithPopup(auth, provider);
     const user = result.user;
 
+    const userRef = doc(firestore, "users", user.uid);
+    await setDoc(
+      userRef,
+      {
+        name: user.displayName,
+        email: user.email,
+        profilePic: user.photoURL,
+        userType: "club owner",
+        following: [],
+        follower: []
+      },
+      { merge: true }
+    );
+
+    localStorage.setItem("userId", user.uid);
     const clubsRef = collection(firestore, "clubs");
     const q = query(clubsRef, where("Contact", "==", user.email));
     const querySnapshot = await getDocs(q);
@@ -78,4 +97,4 @@ const clubSignInWithGoogle = async () => {
   }
 };
 
-export { auth, firestore, studentSignInWithGoogle, clubSignInWithGoogle };
+export { auth, firestore, storage, studentSignInWithGoogle, clubSignInWithGoogle };
