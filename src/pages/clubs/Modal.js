@@ -34,6 +34,10 @@ const checkIfClubHasAccount = async (clubInfo) => {
   }
 };
 
+const stopClickPropagation = (e) => {
+  e.stopPropagation();
+};
+
 function Modal({ closeModal, clubInfo }) {
   const [hasAccount, setHasAccount] = useState(false);
 
@@ -47,8 +51,8 @@ function Modal({ closeModal, clubInfo }) {
   }, [clubInfo]);
 
   return (
-    <div className="modalBackground">
-      <div className="modalContainer">
+    <div className="modalBackground" onClick={() => closeModal(false)}>
+      <div className="modalContainer" onClick={stopClickPropagation}>
         <div className="titleCloseBtn">
           <button onClick={() => closeModal(false)}> X </button>
         </div>
