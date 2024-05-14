@@ -26,13 +26,14 @@
 .modalContainer .title {
   display: inline-block;
   text-align: center;
+  margin-bottom: 5px;
 }
 
 .title h2 {
   font-weight: var(--font-bold);
   margin-top: -10px;
   color: var(--title-color);
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
 }
 
 .titleCloseBtn {
@@ -45,6 +46,7 @@
   border: none;
   cursor: pointer;
   width: 20px;
+  height: 25px;
 }
 
 .modalContainer .body {

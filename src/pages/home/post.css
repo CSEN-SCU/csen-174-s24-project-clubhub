@@ -28,6 +28,13 @@
 .post__headerText {
     margin-bottom: 10px;
     margin-top: 5px;
+    display: flex;
+    align-items: flex-end;
+    gap: 1rem;
+}
+
+.post__time {
+    font-size: var(--smaller-font-size);
 }
 
 .post__headerDesc {

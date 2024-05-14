@@ -152,6 +152,7 @@
 
 .post-content h4 {
   margin-bottom: 10px;
+  color: var(--title-color);
 }
 
 /* Responsive adjustments */
