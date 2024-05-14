@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { auth, firestore, storage } from "../../Firebase";
+import { auth, firestore } from "../../Firebase";
 import { signOut } from "firebase/auth";
-import { doc, getDoc, getDocs, collection, query, orderBy, setDoc, updateDoc } from "firebase/firestore";
-import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import { doc, getDoc, getDocs, collection, query, orderBy, setDoc } from "firebase/firestore";
 import "./account.css";
 // import ACM_flyer from "../../assets/ACM_flyer.png";
 // import ACM2 from "../../assets/ACM2.png";
@@ -12,10 +11,14 @@ import "./account.css";
 // import ACM5 from "../../assets/ACM5.png";
 import ACMH1 from "../../assets/ACMH1.png";
 import ACMH2 from "../../assets/ACMH2.png";
+import { useSearchParams } from "react-router-dom";
+
 
 // import flyer from '/ACM-flyer.png';
 
-function Account() {
+function Account(
+  // userId
+) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [profilePic, setProfilePic] = useState("");
@@ -27,13 +30,26 @@ function Account() {
   const [showHighlighted, setShowHighlighted] = useState(false);
   const [userPosts, setUserPosts] = useState([]);
 
+
   useEffect(() => {
     fetchUserInfo();
     fetchUserPosts();
-  }, []);
+  }, );
 
+  const [searchParams] = useSearchParams();
+  console.log(searchParams.get('id'));
+
+  let userId;
+
+  if (searchParams.get('id') === '1111'){
+     userId = localStorage.getItem("userId");
+  }
+  else{
+    userId = searchParams.get('id')
+  }
+  
   const fetchUserInfo = async () => {
-    const userId = localStorage.getItem("userId");
+    // const userId = localStorage.getItem("userId");
     if (!userId) return;
 
     const userRef = doc(firestore, "users", userId);
@@ -54,8 +70,9 @@ function Account() {
     }
   };
 
+
     const fetchUserPosts = async () => {
-    const userId = localStorage.getItem("userId");
+    // const userId = localStorage.getItem("userId");
     if (!userId) return;
 
     const userPostsRef = collection(firestore, `users/${userId}/posts`);
@@ -108,11 +125,7 @@ function Account() {
   };
 
   const handleSaveClick = () => {
-    if (editedBio.trim() === "") {
-      setBio("Tell the community about yourself...");
-    } else {
-      setBio(editedBio);
-    }
+    setBio(editedBio); // Save the edited bio
     setIsEditing(false);
   };
 
@@ -132,62 +145,18 @@ function Account() {
     setShowHighlighted(true);
   };
 
-  const handleTextAreaClick = () => {
-    if (bio === "Tell the community about yourself...") {
-      setEditedBio("");
-    }
-  };
-
-  const handleFileChange = (e) => {
-    handleUpload(e.target.files[0]);
-  };
-
-  const handleUpload = async (file) => {
-    if (!file) return;
-
-    const storageRef = ref(storage, `profilePics/${file.name}`);
-    const uploadTask = uploadBytesResumable(storageRef, file);
-
-    uploadTask.on(
-      "state_changed",
-      (snapshot) => {},
-      (error) => {
-        console.error("Upload failed:", error);
-      },
-      async () => {
-        const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-        setProfilePic(downloadURL);
-
-        // Update the profilePic field in Firestore
-        const userId = localStorage.getItem("userId");
-        if (!userId) return;
-
-        const userRef = doc(firestore, "users", userId);
-        try {
-          await updateDoc(userRef, {
-            profilePic: downloadURL,
-          });
-        } catch (error) {
-          console.error("Error updating profile picture:", error);
-        }
-      }
-    );
-  };
-
   const renderBioSection = () => {
     if (isEditing) {
       return (
         <div className="render__bio__container">
           <textarea
             value={editedBio}
-            onClick={handleTextAreaClick}
             onChange={handleInputChange}
             rows="1"
             cols="30"
-            maxLength="150"
             className="bio__textArea"
           />
-          <div className="acc__btn__container">
+          <div className="bio__btn__container">
             <button className="btn save__btn" onClick={handleSaveClick}>Save</button>
             <button className="btn cancel__btn" onClick={handleCancelClick}>Cancel</button>
           </div>
@@ -195,12 +164,9 @@ function Account() {
       );
     } else {
       return (
-        <div className="bio__option">
+        <div>
           <p className="bio__text">{bio}</p>
-          <div className="acc__btn__container">
-            <button className="btn edit__btn" onClick={handleEditClick}>Edit</button>
-            <button onClick={handleLogout} className="logout-button btn">Log Out</button>
-          </div>
+          <button className="btn edit__btn" onClick={handleEditClick}>Edit</button>
         </div>
       );
     }
@@ -245,13 +211,13 @@ function Account() {
       id: 1,
       title: "Highlighted Post 1",
       content: "This is the content of highlighted post 1.",
-      flyerUrl: ACMH1,
+      flyerUrl: ACMH1
     },
     {
       id: 2,
       title: "Highlighted Post 2",
       content: "This is the content of highlighted post 2.",
-      flyerUrl: ACMH2,
+      flyerUrl: ACMH2
     },
   ];
 
@@ -263,19 +229,7 @@ function Account() {
     <div className="account-container">
       <div className="top-half">
         <div className="profile-info">
-          <label htmlFor="profilePicInput">
-            {profilePic ? (
-              <img src={profilePic} alt="Profile" />
-            ) : (
-              <div>Profile Picture</div>
-            )}
-          </label>
-          <input
-            id="profilePicInput"
-            type="file"
-            onChange={handleFileChange}
-            style={{ display: "none" }}
-          />
+          {profilePic && <img src={profilePic} alt="Profile" />}
         </div>
       </div>
       <div className="bottom-half">
@@ -293,18 +247,8 @@ function Account() {
       </div>
       <div className="main-content">
         <div className="posts-tabs">
-          <button
-            onClick={handleRegularClick}
-            className={`header__btn__acc ${!showHighlighted ? "active" : ""}`}
-          >
-            Regular Posts
-          </button>
-          <button
-            onClick={handleHighlightedClick}
-            className={`header__btn__acc ${showHighlighted ? "active" : ""}`}
-          >
-            Highlighted Posts
-          </button>
+          <button onClick={handleRegularClick} className={`header__btn__acc ${!showHighlighted ? "active" : ""}`}>Regular Posts</button>
+          <button onClick={handleHighlightedClick} className={`header__btn__acc ${showHighlighted ? "active" : ""}`}>Highlighted Posts</button>
         </div>
         <div className="posts-list">
           {showHighlighted ? (
@@ -335,6 +279,11 @@ function Account() {
           )}
         </div>
       </div>
+      <footer>
+        <button onClick={handleLogout} className="logout-button btn">
+          Log Out
+        </button>
+      </footer>
     </div>
   );
 }
