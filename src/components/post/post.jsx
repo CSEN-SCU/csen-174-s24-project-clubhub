@@ -1,6 +1,7 @@
 import React from "react";
 import "./post.css";
 import Avatar from "../../assets/sculogo.png";
+import { Link } from "react-router-dom";
 
 const formatDate = (timestamp) => {
   let date;
@@ -28,12 +29,15 @@ function post({
   timestamp,
   text,
   image,
+  userID,
   // avatar
 }) {
   return (
     <div className="post">
       <div className="post__avatar">
-        <img src={Avatar} alt="Avatar" />
+        <Link to={`/profile/${userID}`}>
+          <img src={Avatar} alt="Avatar" />
+        </Link>{" "}
       </div>
       <div className="post__body">
         <div className="post__header">
