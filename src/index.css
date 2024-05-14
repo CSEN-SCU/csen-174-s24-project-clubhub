@@ -2,11 +2,13 @@
 
 :root {
   --first-color: rgb(179, 7, 56);
+  --second-color: rgb(150, 9, 9);
   --title-color: hsl(244, 24%, 26%);
   --text-color: hsl(244, 16%, 43%);
   --body-color: hsl(260, 60%, 98%);
   --light-gray: rgba(0, 0, 0, 0.1);
   --container-color: #fff;
+  --white: #f4f3f3;
 
   --body-font: 'Rubik', sans-serif;
   --h1-font-size: 2.25rem;
