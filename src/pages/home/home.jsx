@@ -62,6 +62,7 @@ function Home() {
           text= {post.text}
           image= {post.imageUrl}
           userID= {post.userID}
+          title = {post.title}
           // avatar={post.avatar}
         />
       ))}

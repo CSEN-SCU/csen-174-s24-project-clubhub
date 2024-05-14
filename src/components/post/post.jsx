@@ -30,6 +30,7 @@ function post({
   text,
   image,
   userID,
+  title,
   // avatar
 }) {
   return (
@@ -47,6 +48,9 @@ function post({
             </Link>
             <p className="post__time">{formatDate(timestamp)}</p>
             {/* <p className='post__time'>Feb 12 • 3:00 pm</p> */}
+            <h3>
+                {title}
+            </h3>
           </div>
           <div className="post__headerDesc">
             <p>{text}</p>

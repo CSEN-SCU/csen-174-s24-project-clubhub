@@ -2,14 +2,14 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { auth, firestore, storage } from "../../Firebase";
 import { signOut } from "firebase/auth";
-import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { doc, getDoc, getDocs, collection, query, orderBy, setDoc, updateDoc } from "firebase/firestore";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import "./account.css";
-import ACM_flyer from "../../assets/ACM_flyer.png";
-import ACM2 from "../../assets/ACM2.png";
-import ACM3 from "../../assets/ACM3.png";
-import ACM4 from "../../assets/ACM4.png";
-import ACM5 from "../../assets/ACM5.png";
+// import ACM_flyer from "../../assets/ACM_flyer.png";
+// import ACM2 from "../../assets/ACM2.png";
+// import ACM3 from "../../assets/ACM3.png";
+// import ACM4 from "../../assets/ACM4.png";
+// import ACM5 from "../../assets/ACM5.png";
 import ACMH1 from "../../assets/ACMH1.png";
 import ACMH2 from "../../assets/ACMH2.png";
 
@@ -25,9 +25,11 @@ function Account() {
   const [isEditing, setIsEditing] = useState(false);
   const [editedBio, setEditedBio] = useState("");
   const [showHighlighted, setShowHighlighted] = useState(false);
+  const [userPosts, setUserPosts] = useState([]);
 
   useEffect(() => {
     fetchUserInfo();
+    fetchUserPosts();
   }, []);
 
   const fetchUserInfo = async () => {
@@ -37,7 +39,6 @@ function Account() {
     const userRef = doc(firestore, "users", userId);
     try {
       const docSnap = await getDoc(userRef);
-
       if (docSnap.exists()) {
         const userData = docSnap.data();
         setName(userData.name);
@@ -50,6 +51,44 @@ function Account() {
       console.error("Error fetching user info:", error);
     } finally {
       setLoading(false);
+    }
+  };
+
+    const fetchUserPosts = async () => {
+    const userId = localStorage.getItem("userId");
+    if (!userId) return;
+
+    const userPostsRef = collection(firestore, `users/${userId}/posts`);
+    const q = query(userPostsRef, orderBy('timestamp', 'desc'));
+    try {
+      const snapshot = await getDocs(q);
+      const postData = snapshot.docs.map((doc) => doc.data());
+      setUserPosts(postData);
+    } catch (error) {
+      console.error("Error fetching user posts:", error);
+    }finally {
+      setLoading(false);
+    }
+  };
+
+  const handleHighlightClick = async (postId) => {
+    const userId = localStorage.getItem("userId");
+    if (!userId || !postId) return;
+  
+    const postRef = doc(firestore, `users/${userId}/posts`, postId);
+    const highlightedPostsRef = collection(firestore, `users/${userId}/highlightedPosts`);
+  
+    try {
+      const postSnapshot = await getDoc(postRef);
+      if (postSnapshot.exists()) {
+        const postData = postSnapshot.data();
+        await setDoc(doc(highlightedPostsRef), postData);
+        console.log("Post highlighted successfully!");
+      } else {
+        console.log("Post does not exist.");
+      }
+    } catch (error) {
+      console.error("Error highlighting post:", error);
     }
   };
 
@@ -167,38 +206,38 @@ function Account() {
     }
   };
 
-  const regularPosts = [
-    {
-      id: 1,
-      title: "Regular Post 1",
-      content: "This is the content of regular post 1.",
-      flyerUrl: ACM_flyer,
-    },
-    {
-      id: 2,
-      title: "Regular Post 2",
-      content: "This is the content of regular post 2.",
-      flyerUrl: ACM2,
-    },
-    {
-      id: 3,
-      title: "Regular Post 3",
-      content: "This is the content of regular post 3.",
-      flyerUrl: ACM3,
-    },
-    {
-      id: 4,
-      title: "Regular Post 4",
-      content: "This is the content of regular post 4.",
-      flyerUrl: ACM4,
-    },
-    {
-      id: 5,
-      title: "Regular Post 5",
-      content: "This is the content of regular post 5.",
-      flyerUrl: ACM5,
-    },
-  ];
+  // const regularPosts = [
+  //   {
+  //     id: 1,
+  //     title: "Regular Post 1",
+  //     content: "This is the content of regular post 1.",
+  //     flyerUrl: ACM_flyer,
+  //   },
+  //   {
+  //     id: 2,
+  //     title: "Regular Post 2",
+  //     content: "This is the content of regular post 2.",
+  //     flyerUrl: ACM2,
+  //   },
+  //   {
+  //     id: 3,
+  //     title: "Regular Post 3",
+  //     content: "This is the content of regular post 3.",
+  //     flyerUrl: ACM3,
+  //   },
+  //   {
+  //     id: 4,
+  //     title: "Regular Post 4",
+  //     content: "This is the content of regular post 4.",
+  //     flyerUrl: ACM4,
+  //   },
+  //   {
+  //     id: 5,
+  //     title: "Regular Post 5",
+  //     content: "This is the content of regular post 5.",
+  //     flyerUrl: ACM5,
+  //   },
+  // ];
 
   // Hardcoded sample highlighted posts with flyer images
   const highlightedPosts = [
@@ -282,15 +321,16 @@ function Account() {
             </div>
           ) : (
             <div>
-              {regularPosts.map((post) => (
-                <div key={post.id} className="post-item">
-                  <img src={post.flyerUrl} alt="Flyer" className="post-flyer" />
+              {userPosts.map((post) => (
+            <div key={post.id} className="post-item">
+              <img src={post.imageUrl} alt="Flyer" className="post-flyer" />
                   <div className="post-content">
                     <h4>{post.title}</h4>
-                    <p>{post.content}</p>
+                    <p>{post.text}</p>
                   </div>
-                </div>
-              ))}
+                  <button onClick={() => handleHighlightClick(post.id)}>Highlight Post</button>
+            </div>
+            ))}
             </div>
           )}
         </div>
