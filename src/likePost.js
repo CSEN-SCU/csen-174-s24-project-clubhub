@@ -1,4 +1,3 @@
-// likePost.js
 import { firestore } from './Firebase';
 import { doc, setDoc, FieldValue } from "firebase/firestore";
 
