@@ -8,6 +8,7 @@ import { doc } from "firebase/firestore";
 
 function Post({ closeModal }) {
   const [text, setText] = useState("");
+  const [title, setTitle] = useState("");
   const [imageUrl, setImageUrl] = useState(""); // State for image preview URL
   const user = auth.currentUser;
   const userID = user.uid;
@@ -18,6 +19,10 @@ function Post({ closeModal }) {
   // Handle text input change
   const handleTextChange = (e) => {
     setText(e.target.value);
+  };
+
+  const handleTitleChange = (e) => {
+    setTitle(e.target.value);
   };
 
   // Handle file input change and create a preview URL
@@ -51,6 +56,7 @@ function Post({ closeModal }) {
       if (userDocRef.exists()) {
         const userData = userDocRef.data();
         postData.name = userData.name; // Include the user's name in the post data
+        postData.title = title;
       } else {
         console.log("No such document!");
       }
@@ -83,6 +89,7 @@ function Post({ closeModal }) {
 
         setText("");
         setImageUrl("");
+        setTitle("");
         fileInputRef.current.value = ""; //either reset the feild and leave the modal open
 
         closeModal(false); //or close the modal
@@ -138,7 +145,14 @@ function Post({ closeModal }) {
 
           {/* Text input for description */}
 
-          <div className="postDescContainer">
+          <div className = "postDescContainer">
+          <textarea
+              type="text"
+              className = "postTitleInput"
+              placeholder="Enter title of your event..."
+              value={title}
+              onChange={handleTitleChange}
+            />
             <textarea
               type="text"
               className="postDescInput"
