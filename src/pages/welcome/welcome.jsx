@@ -51,7 +51,7 @@ function Welcome() {
   return (
     <div className="welcome-container">
       <div className="left-container">
-        <h1>Find your favorite Clubs!</h1>
+        <h1>Find your favorite clubs!</h1>
         <p id="desc">
           FOR SCU students and organizations WHO need a centralized way to
           find/advertise club events ClubHub is a website THAT posts fliers,
@@ -61,13 +61,13 @@ function Welcome() {
         </p>
         <div className="login-container">
           <button
-            className="student login-with-google-btn"
+            className="student login-with-google-btn btn"
             onClick={handleStudentLogin}
           >
             Student Login
           </button>
           <button
-            className="club login-with-google-btn"
+            className="club login-with-google-btn btn"
             onClick={handleClubLogin}
           >
             Club Login

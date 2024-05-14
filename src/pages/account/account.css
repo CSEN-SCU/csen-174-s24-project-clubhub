@@ -35,10 +35,6 @@
   padding: 10px;
 }
 
-.logout-button {
-  margin: 20px;
-}
-
 .bottom-half {
   display: flex;
   flex-direction: column;
@@ -91,14 +87,12 @@
   resize: none;
 }
 
-.bio__btn__container {
+.acc__btn__container {
   display: flex;
   gap: 10px;
 }
 
-.edit__btn,
-.save__btn,
-.cancel__btn {
+.edit__btn, .save__btn, .cancel__btn, .logout-button {
   font-size: var(--small-font-size);
   padding: 0.5rem 1.5rem;
 }
@@ -134,6 +128,7 @@
 }
 
 .post-item {
+  background-color: var(--white);
   display: flex;
   align-items: center;
   margin: 20px;
