@@ -158,6 +158,7 @@ label:hover {
 
 .post-content h4 {
   margin-bottom: 10px;
+  color: var(--title-color);
 }
 
 @media (max-width: 768px) {
