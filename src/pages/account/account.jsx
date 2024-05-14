@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { auth, firestore } from "../../Firebase";
+import { auth, firestore, storage } from "../../Firebase";
 import { signOut } from "firebase/auth";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import "./account.css";
 import ACM_flyer from "../../assets/ACM_flyer.png";
 import ACM2 from "../../assets/ACM2.png";
@@ -98,6 +99,42 @@ function Account() {
     }
   };
 
+  const handleFileChange = (e) => {
+    handleUpload(e.target.files[0]);
+  };
+
+  const handleUpload = async (file) => {
+    if (!file) return;
+
+    const storageRef = ref(storage, `profilePics/${file.name}`);
+    const uploadTask = uploadBytesResumable(storageRef, file);
+
+    uploadTask.on(
+      "state_changed",
+      (snapshot) => {},
+      (error) => {
+        console.error("Upload failed:", error);
+      },
+      async () => {
+        const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+        setProfilePic(downloadURL);
+
+        // Update the profilePic field in Firestore
+        const userId = localStorage.getItem("userId");
+        if (!userId) return;
+
+        const userRef = doc(firestore, "users", userId);
+        try {
+          await updateDoc(userRef, {
+            profilePic: downloadURL,
+          });
+        } catch (error) {
+          console.error("Error updating profile picture:", error);
+        }
+      }
+    );
+  };
+
   const renderBioSection = () => {
     if (isEditing) {
       return (
@@ -187,7 +224,19 @@ function Account() {
     <div className="account-container">
       <div className="top-half">
         <div className="profile-info">
-          {profilePic && <img src={profilePic} alt="Profile" />}
+          <label htmlFor="profilePicInput">
+            {profilePic ? (
+              <img src={profilePic} alt="Profile" />
+            ) : (
+              <div>Profile Picture</div>
+            )}
+          </label>
+          <input
+            id="profilePicInput"
+            type="file"
+            onChange={handleFileChange}
+            style={{ display: "none" }}
+          />
         </div>
       </div>
       <div className="bottom-half">

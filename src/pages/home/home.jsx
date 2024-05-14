@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import Post from "./post";
+import Post from "../../components/post/post";
 import "./home.css";
 import { firestore } from '../../Firebase';
 import { collection, getDocs, query, orderBy } from 'firebase/firestore';
@@ -61,6 +61,7 @@ function Home() {
           timestamp= {post.timestamp}
           text= {post.text}
           image= {post.imageUrl}
+          userID= {post.userID}
           // avatar={post.avatar}
         />
       ))}

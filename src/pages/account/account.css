@@ -8,12 +8,17 @@
 
 .top-half {
   position: relative;
-  background-color: var(--light-gray); /* Semi-transparent gray background */
+  background-color: var(--light-gray);
   width: 100%;
 }
 
 .profile-info {
   height: 200px;
+}
+
+label:hover {
+  cursor: pointer;
+  opacity: 50%;
 }
 
 .profile-info img {
@@ -78,13 +83,14 @@
 
 .bio__textArea {
   margin-top: 8px;
-  border-radius: 5px;
-  border: 1px solid var(--light-gray);
-  background-color: var(--body-color);
+  border: none;
+  background-color: transparent;
   padding: 5px;
   color: var(--text-color);
   width: 30%;
+  height: 70px;
   resize: none;
+  outline: none;
 }
 
 .acc__btn__container {
@@ -155,7 +161,6 @@
   color: var(--title-color);
 }
 
-/* Responsive adjustments */
 @media (max-width: 768px) {
   .post-item {
     flex-direction: column;
