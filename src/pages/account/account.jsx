@@ -68,7 +68,11 @@ function Account() {
   };
 
   const handleSaveClick = () => {
-    setBio(editedBio); // Save the edited bio
+    if (editedBio.trim() === "") {
+      setBio("Tell the community about yourself...");
+    } else {
+      setBio(editedBio);
+    }
     setIsEditing(false);
   };
 
@@ -88,28 +92,42 @@ function Account() {
     setShowHighlighted(true);
   };
 
+  const handleTextAreaClick = () => {
+    if (bio === "Tell the community about yourself...") {
+      setEditedBio("");
+    }
+  };
+
   const renderBioSection = () => {
     if (isEditing) {
       return (
         <div className="render__bio__container">
           <textarea
             value={editedBio}
+            onClick={handleTextAreaClick}
             onChange={handleInputChange}
             rows="1"
             cols="30"
+            maxLength="150"
             className="bio__textArea"
           />
           <div className="bio__btn__container">
-            <button className="btn save__btn" onClick={handleSaveClick}>Save</button>
-            <button className="btn cancel__btn" onClick={handleCancelClick}>Cancel</button>
+            <button className="btn save__btn" onClick={handleSaveClick}>
+              Save
+            </button>
+            <button className="btn cancel__btn" onClick={handleCancelClick}>
+              Cancel
+            </button>
           </div>
         </div>
       );
     } else {
       return (
-        <div>
+        <div className="bio__option">
           <p className="bio__text">{bio}</p>
-          <button className="btn edit__btn" onClick={handleEditClick}>Edit</button>
+          <button className="btn edit__btn" onClick={handleEditClick}>
+            Edit
+          </button>
         </div>
       );
     }
@@ -154,13 +172,13 @@ function Account() {
       id: 1,
       title: "Highlighted Post 1",
       content: "This is the content of highlighted post 1.",
-      flyerUrl: ACMH1
+      flyerUrl: ACMH1,
     },
     {
       id: 2,
       title: "Highlighted Post 2",
       content: "This is the content of highlighted post 2.",
-      flyerUrl: ACMH2
+      flyerUrl: ACMH2,
     },
   ];
 
@@ -190,8 +208,18 @@ function Account() {
       </div>
       <div className="main-content">
         <div className="posts-tabs">
-          <button onClick={handleRegularClick} className={`header__btn__acc ${!showHighlighted ? "active" : ""}`}>Regular Posts</button>
-          <button onClick={handleHighlightedClick} className={`header__btn__acc ${showHighlighted ? "active" : ""}`}>Highlighted Posts</button>
+          <button
+            onClick={handleRegularClick}
+            className={`header__btn__acc ${!showHighlighted ? "active" : ""}`}
+          >
+            Regular Posts
+          </button>
+          <button
+            onClick={handleHighlightedClick}
+            className={`header__btn__acc ${showHighlighted ? "active" : ""}`}
+          >
+            Highlighted Posts
+          </button>
         </div>
         <div className="posts-list">
           {showHighlighted ? (

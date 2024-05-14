@@ -1,7 +1,7 @@
-// import React from 'react'
 import "./Modal.css";
-import React from "react";
-//import { React, useState } from "react";
+import React, { useState, useEffect } from "react";
+import { firestore } from "../../Firebase";
+import { collection, query, where, getDocs } from "firebase/firestore";
 
 function slugify(input) {
   if (!input) return "";
@@ -21,18 +21,48 @@ function slugify(input) {
   return slug;
 }
 
+const checkIfClubHasAccount = async (clubInfo) => {
+  const usersRef = collection(firestore, "users");
+  const q = query(usersRef, where("email", "==", clubInfo.Contact));
+  const querySnapshot = await getDocs(q);
+
+  if (querySnapshot.empty) {
+    console.log("No matching user found for email:", clubInfo.Contact);
+    return false;
+  } else {
+    return true;
+  }
+};
+
+const stopClickPropagation = (e) => {
+  e.stopPropagation();
+};
+
 function Modal({ closeModal, clubInfo }) {
+  const [hasAccount, setHasAccount] = useState(false);
+
+  useEffect(() => {
+    const checkAccount = async () => {
+      const hasAccount = await checkIfClubHasAccount(clubInfo);
+      setHasAccount(hasAccount);
+    };
+
+    checkAccount();
+  }, [clubInfo]);
+
   return (
-    <div className="modalBackground">
-      <div className="modalContainer">
+    <div className="modalBackground" onClick={() => closeModal(false)}>
+      <div className="modalContainer" onClick={stopClickPropagation}>
         <div className="titleCloseBtn">
           <button onClick={() => closeModal(false)}> X </button>
         </div>
         <div className="title">
           <h2>{clubInfo.ClubName}</h2>
-          <div className="ProfileButton">
-            <button className="btn">Club Profile Page</button>
-          </div>
+          {hasAccount && (
+            <div className="ProfileButton">
+              <button className="btn">Club Profile Page</button>
+            </div>
+          )}
         </div>
         <div className="body">
           <div id="AboutUs" className="component">
@@ -43,8 +73,7 @@ function Modal({ closeModal, clubInfo }) {
             <h5>Academic Background</h5>
             <div className="tags">
               {clubInfo?.AcademicBackground?.map((word, index) => (
-                <span key={index} className={`${slugify(word)} modal__span`}
-                >
+                <span key={index} className={`${slugify(word)} modal__span`}>
                   {word}
                 </span>
               ))}
@@ -75,11 +104,16 @@ function Modal({ closeModal, clubInfo }) {
           <div className="twoStack">
             <div className="component" id="Website">
               <h5>Website</h5>
-              <a className="modal__link" href={clubInfo.Website}> {clubInfo.Website} </a>
+              <a className="modal__link" href={clubInfo.Website}>
+                {" "}
+                {clubInfo.Website}{" "}
+              </a>
             </div>
             <div className="component" id="ChatChannel">
               <h5>Chat Channel</h5>
-              <a className="modal__link" href={clubInfo.ChatChannel}>{clubInfo.ChatChannel}</a>
+              <a className="modal__link" href={clubInfo.ChatChannel}>
+                {clubInfo.ChatChannel}
+              </a>
             </div>
           </div>
 

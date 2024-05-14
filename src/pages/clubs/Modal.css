@@ -1,358 +1,359 @@
 .modalBackground {
-    width: 100vw;
-    height: 100vh;
-    left: 0;
-    top: 0;
-    background-color: var(--light-gray);
-    position: absolute;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  
-  .modalContainer {
-    width: 65vw;
-    height: 80vh;
-    border-radius: 12px;
-    background-color: var(--body-color);
-    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
-    display: flex;
-    flex-direction: column;
-    padding: 30px;
-    /* max-height: 400px;  */
-    overflow-y: auto;
-  }
+  width: 100vw;
+  height: 100vh;
+  left: 0;
+  top: 0;
+  background-color: var(--light-gray);
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
-  .modalContainer .title {
-    display: inline-block;
-    text-align: center;
-  }
-  
-  .title h2 {
-    font-weight: var(--font-bold);
-    margin-top: -10px;
-    color: var(--title-color)
-  }
+.modalContainer {
+  width: 65vw;
+  height: 80vh;
+  border-radius: 12px;
+  background-color: var(--body-color);
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+  display: flex;
+  flex-direction: column;
+  padding: 30px;
+  /* max-height: 400px;  */
+  overflow-y: auto;
+}
 
-  .titleCloseBtn {
-    display: flex;
-    justify-content: flex-end;
-  }
-  
-  .titleCloseBtn button {
-    background-color: transparent;
-    border: none;
-    cursor: pointer;
-    width: 20px;
-  }
-  
-  .modalContainer .body {
-    flex: 50%;
-    text-align: center;
-  }
-  
-  .modalContainer .ProfileButton {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  
-  .modalContainer .ProfileButton button {
-    width: 170px;
-    height: 30px;
-    border: none;
-    background-color: cornflowerblue;
-    color: var(--body-color);
-    border-radius: 8px;
-    cursor: pointer;
-    margin-top: 20px;
-    margin-bottom: 25px;
-    padding: 0;
-  }
+.modalContainer .title {
+  display: inline-block;
+  text-align: center;
+}
 
-  .OpenModalBtn{
-    text-align: left;
-    background-color: #f2f2f2;
-    display: flex;
-    align-items: center;
-    border-radius: 20px;
-    height: 100px;
-    width: 80vw;
-    margin-bottom: 20px;
-    cursor: pointer;
-    border: 1px solid var(--light-gray);
-    padding-left: 30px;
-    font-size: var(--h2-font-size);
-    font-weight: var(--font-semibold);
-    color: var(--title-color);
-    box-shadow: var(--shadow);
-  }
+.title h2 {
+  font-weight: var(--font-bold);
+  margin-top: -10px;
+  color: var(--title-color);
+  margin-bottom: 1rem;
+}
 
-  .OpenModalBtn:hover {
-    background-color: var(--light-gray); /* Change to your desired hover color */
-  }
+.titleCloseBtn {
+  display: flex;
+  justify-content: flex-end;
+}
 
-  .component{
-    display: flex;
-    font-size: var(--normal-font-size);
-    margin-bottom: 30px;
-    justify-content: space-between; 
-    border: 1px solid var(--light-gray);
-    border-radius: 12px;
-    background-color: #f2f2f2;
-    align-items: center;
-    padding: 25px;
-    box-sizing: border-box;
-    white-space: normal;
-    box-shadow: var(--shadow);
-  }
+.titleCloseBtn button {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  width: 20px;
+}
 
-  .component h5{
-    font-size: var(--small-font-size);
-    width: 15%;
-    text-align: left;
-    margin-right: 20px;
-  }
+.modalContainer .body {
+  flex: 50%;
+  text-align: center;
+}
 
-  .tags{
-    width:85%;
-    text-align: left;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 7px;
-  }
+.modalContainer .ProfileButton {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
-  .component p, .component a{
-    width: 85%;
-    /* background-color: pink; */
-    text-align: left;
-    /* margin-right: 20px */
-  }
+.modalContainer .ProfileButton button {
+  width: 170px;
+  height: 30px;
+  border: none;
+  background-color: cornflowerblue;
+  color: var(--body-color);
+  border-radius: 8px;
+  cursor: pointer;
+  margin-bottom: 25px;
+  padding: 0;
+}
 
-  .modal__link {
-    text-decoration: underline;
-    overflow: hidden;
-  }
+.OpenModalBtn {
+  text-align: left;
+  background-color: #f2f2f2;
+  display: flex;
+  align-items: center;
+  border-radius: 20px;
+  height: 100px;
+  width: 80vw;
+  margin-bottom: 20px;
+  cursor: pointer;
+  border: 1px solid var(--light-gray);
+  padding-left: 30px;
+  font-size: var(--h2-font-size);
+  font-weight: var(--font-semibold);
+  color: var(--title-color);
+  box-shadow: var(--shadow);
+}
 
+.OpenModalBtn:hover {
+  background-color: var(--light-gray); /* Change to your desired hover color */
+}
+
+.component {
+  display: flex;
+  font-size: var(--normal-font-size);
+  margin-bottom: 30px;
+  justify-content: space-between;
+  border: 1px solid var(--light-gray);
+  border-radius: 12px;
+  background-color: #f2f2f2;
+  align-items: center;
+  padding: 25px;
+  box-sizing: border-box;
+  white-space: normal;
+  box-shadow: var(--shadow);
+}
+
+.component h5 {
+  font-size: var(--small-font-size);
+  width: 15%;
+  text-align: left;
+  margin-right: 20px;
+}
+
+.tags {
+  width: 85%;
+  text-align: left;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.component p,
+.component a {
+  width: 85%;
+  /* background-color: pink; */
+  text-align: left;
+  /* margin-right: 20px */
+}
+
+.modal__link {
+  text-decoration: underline;
+  overflow: hidden;
+}
+
+.twoStack {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  gap: 10px;
+}
+
+.twoStack .component {
+  width: 50%;
+}
+
+.twoStack .component p,
+.twoStack .component a {
+  width: 70%;
+}
+
+.twoStack h5 {
+  width: 30%;
+}
+
+.modal__text {
+  overflow: hidden;
+}
+
+#AcademicBackground h5,
+#PracticeArea h5 {
+  margin-bottom: 4px;
+}
+
+@media (max-width: 1000px) {
   .twoStack {
-    display: flex;
-    flex-direction: row;
+    flex-direction: column; /* This will stack the components vertically */
+    gap: 0px;
+  }
+  .twoStack .component {
     width: 100%;
-    gap: 10px;
+  }
+  .component {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  .component p,
+  .component h5,
+  .component a {
+    width: 100%;
+    text-align: center;
+    /* background-color: pink; */
+    margin: 0;
   }
 
-  .twoStack .component{
-    width: 50%;
+  .tags {
+    display: grid; /* Sets Grid Layout */
+    justify-items: center;
   }
 
-  .twoStack .component p, .twoStack .component a{
-    width: 70%;
+  .modal__span {
+    width: fit-content;
   }
+}
 
-  .twoStack h5{
-    width: 30%;
-  }
+/*FOR ALL THE TAGS */
 
-  .modal__text {
-    overflow: hidden;
-  }
+.any-background {
+  background-color: #b30738;
+  color: white;
+  padding: 2px 5px;
+  border-radius: 8px;
+  white-space: nowrap;
+}
 
-  #AcademicBackground h5, #PracticeArea h5{
-    margin-bottom: 4px;
-  }
+.arts-and-design {
+  background-color: #862633;
+  color: white;
+  padding: 2px 5px;
+  border-radius: 8px;
+  white-space: nowrap;
+}
 
-  @media (max-width: 1000px) {
-    .twoStack {
-      flex-direction: column; /* This will stack the components vertically */
-      gap: 0px;
-    }
-    .twoStack .component{
-      width: 100%;
-    }
-    .component{
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;  
-    }
-    .component p, .component h5, .component a{
-      width: 100%;
-      text-align: center;
-      /* background-color: pink; */
-      margin: 0;
-    }
+.building-a-product {
+  background-color: #eaaa00;
+  color: white;
+  padding: 2px 5px;
+  border-radius: 8px;
+  white-space: nowrap;
+}
 
-    .tags{
-      display: grid; /* Sets Grid Layout */
-      justify-items: center; 
-    }
+.building-products {
+  background-color: #5b6770;
+  color: white;
+  padding: 2px 5px;
+  border-radius: 8px;
+  white-space: nowrap;
+}
 
-    .modal__span{
-      width:fit-content;
-    }
-  }
+.business {
+  background-color: #737b4c;
+  color: white;
+  padding: 2px 5px;
+  border-radius: 8px;
+  white-space: nowrap;
+}
 
-  
+.communication {
+  background-color: #b0aa7e;
+  color: white;
+  padding: 2px 5px;
+  border-radius: 8px;
+  white-space: nowrap;
+}
 
+.education-and-counseling-psychology {
+  background-color: #ddcba4;
+  color: white;
+  padding: 2px 5px;
+  border-radius: 8px;
+  white-space: nowrap;
+}
 
-  /*FOR ALL THE TAGS */
+.finance {
+  background-color: #7f9c90;
+  color: white;
+  padding: 2px 5px;
+  border-radius: 8px;
+  white-space: nowrap;
+}
 
-  .any-background{
-    background-color: #b30738;
-    color:white;
-    padding: 2px 5px;
-    border-radius: 8px;
-    white-space: nowrap;
-  }
+.innovation {
+  background-color: #a4dbe8;
+  color: white;
+  padding: 2px 5px;
+  border-radius: 8px;
+  white-space: nowrap;
+}
 
-  .arts-and-design{
-    background-color: #862633;
-    color:white;
-    padding: 2px 5px;
-    border-radius: 8px;
-    white-space: nowrap;
-  }
+.law {
+  background-color: #d57800;
+  color: white;
+  padding: 2px 5px;
+  border-radius: 8px;
+  white-space: nowrap;
+}
 
-  .building-a-product{
-    background-color: #eaaa00;
-    color:white;
-    padding: 2px 5px;
-    border-radius: 8px;
-    white-space: nowrap;
-  }
+.leadership {
+  background-color: #033b4c;
+  color: white;
+  padding: 2px 5px;
+  border-radius: 8px;
+  white-space: nowrap;
+}
 
-  .building-products{
-    background-color: #5b6770;
-    color:white;
-    padding: 2px 5px;
-    border-radius: 8px;
-    white-space: nowrap;
-  }
+.management {
+  background-color: #4e4540;
+  color: white;
+  padding: 2px 5px;
+  border-radius: 8px;
+  white-space: nowrap;
+}
 
-  .business{
-    background-color: #737b4c;
-    color:white;
-    padding: 2px 5px;
-    border-radius: 8px;
-    white-space: nowrap;
-  }
+.marketing {
+  background-color: #546575;
+  color: white;
+  padding: 2px 5px;
+  border-radius: 8px;
+  white-space: nowrap;
+}
 
-  .communication{
-    background-color: #b0aa7e;
-    color:white;
-    padding: 2px 5px;
-    border-radius: 8px;
-    white-space: nowrap;
-  }
+.networking {
+  background-color: #b30738;
+  color: white;
+  padding: 2px 5px;
+  border-radius: 8px;
+  white-space: nowrap;
+}
 
-  .education-and-counseling-psychology{
-    background-color: #ddcba4;
-    color:white;
-    padding: 2px 5px;
-    border-radius: 8px;
-    white-space: nowrap;
-  }
+.others {
+  background-color: #862633;
+  color: white;
+  padding: 2px 5px;
+  border-radius: 8px;
+  white-space: nowrap;
+}
 
-  .finance{
-    background-color: #7f9c90;
-    color:white;
-    padding: 2px 5px;
-    border-radius: 8px;
-    white-space: nowrap;
-  }
+.science-and-engineering {
+  background-color: #eaaa00;
+  color: white;
+  padding: 2px 5px;
+  border-radius: 8px;
+  white-space: nowrap;
+}
 
-  .innovation{
-    background-color: #a4dbe8;
-    color:white;
-    padding: 2px 5px;
-    border-radius: 8px;
-    white-space: nowrap;
-  }
+.starting-a-business {
+  background-color: #5b6770;
+  color: white;
+  padding: 2px 5px;
+  border-radius: 8px;
+  white-space: nowrap;
+}
 
-  .law{
-    background-color: #d57800;
-    color:white;
-    padding: 2px 5px;
-    border-radius: 8px;
-    white-space: nowrap;
-  }
+.starting-businesses {
+  background-color: #737b4c;
+  color: white;
+  padding: 2px 5px;
+  border-radius: 8px;
+  white-space: nowrap;
+}
 
-  .leadership{
-    background-color: #033b4c;
-    color:white;
-    padding: 2px 5px;
-    border-radius: 8px;
-    white-space: nowrap;
-  }
+.team-working {
+  background-color: #b0aa7e;
+  color: white;
+  padding: 2px 5px;
+  border-radius: 8px;
+  white-space: nowrap;
+}
 
-
-  .management{
-    background-color: #4e4540;
-    color:white;
-    padding: 2px 5px;
-    border-radius: 8px;
-    white-space: nowrap;
-  }
-
-  .marketing{
-    background-color: #546575;
-    color:white;
-    padding: 2px 5px;
-    border-radius: 8px;
-    white-space: nowrap;
-  }
-
-  .networking{
-    background-color: #b30738;
-    color:white;
-    padding: 2px 5px;
-    border-radius: 8px;
-    white-space: nowrap;
-  }
-
-  .others{
-    background-color: #862633;
-    color:white;
-    padding: 2px 5px;
-    border-radius: 8px;
-    white-space: nowrap;
-  }
-
-  .science-and-engineering{
-    background-color: #eaaa00;
-    color:white;
-    padding: 2px 5px;
-    border-radius: 8px;
-    white-space: nowrap;
-  }
-
-  .starting-a-business{
-    background-color: #5b6770;
-    color:white;
-    padding: 2px 5px;
-    border-radius: 8px;
-    white-space: nowrap;
-  }
-
-  .starting-businesses{
-    background-color: #737b4c;
-    color:white;
-    padding: 2px 5px;
-    border-radius: 8px;
-    white-space: nowrap;
-  }
-
-  .team-working{
-    background-color: #b0aa7e;
-    color:white;
-    padding: 2px 5px;
-    border-radius: 8px;
-    white-space: nowrap;
-  }
-
-  .technical{
-    background-color: #ddcba4;
-    color:white;
-    padding: 2px 5px;
-    border-radius: 8px;
-    white-space: nowrap;
-  }
+.technical {
+  background-color: #ddcba4;
+  color: white;
+  padding: 2px 5px;
+  border-radius: 8px;
+  white-space: nowrap;
+}

@@ -27,7 +27,7 @@
   border: 5px solid white;
 }
 
-.following__container{
+.following__container {
   text-align: center;
 }
 
@@ -71,9 +71,13 @@
   gap: 10px;
 }
 
-.bio__text{
+.bio__text {
   margin: 10px 0;
   margin-bottom: 12px;
+}
+
+.bio__option {
+  width: 30%;
 }
 
 .bio__textArea {
@@ -84,6 +88,7 @@
   padding: 5px;
   color: var(--text-color);
   width: 30%;
+  resize: none;
 }
 
 .bio__btn__container {
@@ -91,9 +96,11 @@
   gap: 10px;
 }
 
-.edit__btn, .save__btn, .cancel__btn {
+.edit__btn,
+.save__btn,
+.cancel__btn {
   font-size: var(--small-font-size);
-  padding: 0.50rem 1.50rem;
+  padding: 0.5rem 1.5rem;
 }
 
 .header__btn__acc {
@@ -104,7 +111,7 @@
 
 .header__btn__acc:hover {
   background-color: var(--light-gray);
-  transition: .2s;
+  transition: 0.2s;
 }
 
 .header__btn__acc.active {
@@ -112,7 +119,7 @@
   color: var(--title-color);
 }
 
-.posts-tabs{
+.posts-tabs {
   margin-left: 0%;
   border-bottom: 1px solid var(--light-gray);
 }

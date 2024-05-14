@@ -35,6 +35,10 @@ function Post({ closeModal }) {
     fileInputRef.current.value = ""; // Reset the file input
   };
 
+  const stopClickPropagation = (e) => {
+    e.stopPropagation();
+  };
+
   const handleSubmit = async () => {
     alert(`You entered: ${text}`);
     try {
@@ -48,39 +52,41 @@ function Post({ closeModal }) {
         const userData = userDocRef.data();
         postData.name = userData.name; // Include the user's name in the post data
       } else {
-        console.log('No such document!');
+        console.log("No such document!");
       }
-  
+
       if (fileInputRef.current.files.length > 0) {
         const file = fileInputRef.current.files[0];
         const storageRef = ref(storage, `images/${file.name}`);
         const uploadResult = await uploadBytes(storageRef, file);
         const downloadURL = await getDownloadURL(uploadResult.ref);
-  
+
         postData.imageUrl = downloadURL; // Include the image URL
       }
-  
+
       // Add to the main collection (e.g., "posts")
       const docRef = await addDoc(collection(firestore, "posts"), {
         ...postData,
         userID: userID, // Add user ID to the main post
       });
-  
+
       // Add to the user's document or collection
       if (userID) {
-        const userPostsCollection = collection(firestore, `users/${userID}/posts`); // Collection under the user
+        const userPostsCollection = collection(
+          firestore,
+          `users/${userID}/posts`
+        ); // Collection under the user
         await addDoc(userPostsCollection, {
           ...postData,
           mainPostRef: docRef.id, // Optionally store a reference to the main post
         });
-      
+
         setText("");
         setImageUrl("");
         fileInputRef.current.value = ""; //either reset the feild and leave the modal open
 
         closeModal(false); //or close the modal
-    
-  
+
         alert("Post submitted successfully!");
       } else {
         // If no file is selected, just add the text to Firestore
@@ -88,7 +94,7 @@ function Post({ closeModal }) {
           text: text,
           timestamp: new Date(),
         });
-  
+
         alert("Post submitted successfully!");
       }
     } catch (error) {
@@ -98,8 +104,8 @@ function Post({ closeModal }) {
   };
 
   return (
-    <div className="postBackground">
-      <div className="postContainer">
+    <div className="postBackground" onClick={() => closeModal(false)}>
+      <div className="postContainer" onClick={stopClickPropagation}>
         <div className="postCloseBtn">
           <button onClick={() => closeModal(false)}> X </button>
         </div>
@@ -108,32 +114,34 @@ function Post({ closeModal }) {
         </div>
         <div className="postBody">
           {/* File input for image upload */}
-          <div className = "postFileContainer">
-              <input
+          <div className="postFileContainer">
+            <input
               type="file"
-              className = "postFileInput"
+              className="postFileInput"
               ref={fileInputRef} // Set the ref to the file input
               onChange={handleFileChange}
-              
             />
             {imageUrl && (
-            <div className="imagePreview">
-              <img 
-                src={imageUrl} 
-                alt="Preview" 
-                className="postImage" // CSS class for styling
-                 />
-              <button className = "postRemoveFileBtn" onClick={removeFile}>Remove File</button> {/* "Remove File" button */}
-            </div>
-          )}
+              <div className="imagePreview">
+                <img
+                  src={imageUrl}
+                  alt="Preview"
+                  className="postImage" // CSS class for styling
+                />
+                <button className="postRemoveFileBtn" onClick={removeFile}>
+                  Remove File
+                </button>{" "}
+                {/* "Remove File" button */}
+              </div>
+            )}
           </div>
 
           {/* Text input for description */}
 
-          <div className = "postDescContainer">
+          <div className="postDescContainer">
             <textarea
               type="text"
-              className = "postDescInput"
+              className="postDescInput"
               placeholder="Description of your event..."
               value={text}
               onChange={handleTextChange}
@@ -141,11 +149,12 @@ function Post({ closeModal }) {
           </div>
 
           {/* Submit button */}
-          
         </div>
 
-        <div className = "PostFooter">
-            <button className = "postSubmitBtn" onClick={handleSubmit}>Submit</button>
+        <div className="PostFooter">
+          <button className="postSubmitBtn" onClick={handleSubmit}>
+            Submit
+          </button>
         </div>
       </div>
     </div>
