@@ -16,6 +16,11 @@
   height: 200px;
 }
 
+label:hover {
+  cursor: pointer;
+  opacity: 50%;
+}
+
 .profile-info img {
   position: absolute;
   top: 0;
