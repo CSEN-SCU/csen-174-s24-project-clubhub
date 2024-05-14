@@ -36,14 +36,14 @@ function post({
   return (
     <div className="post">
       <div className="post__avatar">
-        <Link to={`/profile/${userID}`}>
+        <Link to={`/account?id=${userID}`}>
           <img src={Avatar} alt="Avatar" />
         </Link>
       </div>
       <div className="post__body">
         <div className="post__header">
           <div className="post__headerText">
-            <Link to={`/profile/${userID}`}>
+            <Link to={`/account?id=${userID}`}>
               <h2>{displayName}</h2>
             </Link>
             <p className="post__time">{formatDate(timestamp)}</p>

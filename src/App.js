@@ -23,6 +23,10 @@ function PublicRoute({ children }) {
 }
 
 function App() {
+  const userId = localStorage.getItem("userId");
+  // if(userId){
+  //   console.log(userId.type())
+  // }
   return (
     <AuthProvider>
       <div id="appBody">
@@ -70,10 +74,11 @@ function App() {
               }
             />
             <Route
-              path="/account"
+              path="/account/*"
               element={
                 <PrivateRoute>
-                  <Account />
+                  <Account 
+                  userId = {userId}/>
                 </PrivateRoute>
               }
             />
