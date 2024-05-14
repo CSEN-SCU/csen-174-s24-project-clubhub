@@ -111,13 +111,9 @@ function Account() {
             maxLength="150"
             className="bio__textArea"
           />
-          <div className="bio__btn__container">
-            <button className="btn save__btn" onClick={handleSaveClick}>
-              Save
-            </button>
-            <button className="btn cancel__btn" onClick={handleCancelClick}>
-              Cancel
-            </button>
+          <div className="acc__btn__container">
+            <button className="btn save__btn" onClick={handleSaveClick}>Save</button>
+            <button className="btn cancel__btn" onClick={handleCancelClick}>Cancel</button>
           </div>
         </div>
       );
@@ -125,9 +121,10 @@ function Account() {
       return (
         <div className="bio__option">
           <p className="bio__text">{bio}</p>
-          <button className="btn edit__btn" onClick={handleEditClick}>
-            Edit
-          </button>
+          <div className="acc__btn__container">
+            <button className="btn edit__btn" onClick={handleEditClick}>Edit</button>
+            <button onClick={handleLogout} className="logout-button btn">Log Out</button>
+          </div>
         </div>
       );
     }
@@ -249,11 +246,6 @@ function Account() {
           )}
         </div>
       </div>
-      <footer>
-        <button onClick={handleLogout} className="logout-button btn">
-          Log Out
-        </button>
-      </footer>
     </div>
   );
 }

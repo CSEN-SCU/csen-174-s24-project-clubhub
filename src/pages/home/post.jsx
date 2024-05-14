@@ -16,9 +16,9 @@ function post({
         <div className="post__body">
           <div className="post__header">
             <div className="post__headerText">
-              <h3>
+              <h2>
                 {displayName}
-              </h3>
+              </h2>
             </div>
             <div className="post__headerDesc">
               <p>{text}</p>
