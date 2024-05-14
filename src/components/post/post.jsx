@@ -37,12 +37,14 @@ function post({
       <div className="post__avatar">
         <Link to={`/profile/${userID}`}>
           <img src={Avatar} alt="Avatar" />
-        </Link>{" "}
+        </Link>
       </div>
       <div className="post__body">
         <div className="post__header">
           <div className="post__headerText">
-            <h2>{displayName}</h2>
+            <Link to={`/profile/${userID}`}>
+              <h2>{displayName}</h2>
+            </Link>
             <p className="post__time">{formatDate(timestamp)}</p>
             {/* <p className='post__time'>Feb 12 • 3:00 pm</p> */}
           </div>
