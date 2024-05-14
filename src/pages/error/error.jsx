@@ -18,8 +18,8 @@ function Error() {
       <h1>Oops! {message}</h1>
       <p>Please contact support if you believe that this is an error.</p>
       <h3>scuclubhub@gmail.com</h3>
-      <button id="goback" onClick={goBack}>
-        Go back to the home page
+      <button className="btn" id="goback" onClick={goBack}>
+        Return to home page
       </button>
     </div>
   );

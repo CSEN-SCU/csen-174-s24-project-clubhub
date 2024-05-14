@@ -58,6 +58,7 @@ function Home() {
         <Post
           key={index}
           displayName= {post.name}
+          timestamp= {post.timestamp}
           text= {post.text}
           image= {post.imageUrl}
           // avatar={post.avatar}
