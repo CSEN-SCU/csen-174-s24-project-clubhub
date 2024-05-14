@@ -101,6 +101,7 @@ label:hover {
 .edit__btn, .save__btn, .cancel__btn, .logout-button {
   font-size: var(--small-font-size);
   padding: 0.5rem 1.5rem;
+  margin-top: 5px;
 }
 
 .header__btn__acc {
