@@ -3,6 +3,8 @@ import { React, useState, useRef } from "react";
 import { firestore, storage, auth } from "../../Firebase";
 import { collection, addDoc } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { getDoc } from "firebase/firestore";
+import { doc } from "firebase/firestore";
 
 function Post({ closeModal }) {
   const [text, setText] = useState("");
@@ -40,6 +42,14 @@ function Post({ closeModal }) {
         text: text,
         timestamp: new Date(),
       };
+
+      const userDocRef = await getDoc(doc(firestore, `users/${userID}`));
+      if (userDocRef.exists()) {
+        const userData = userDocRef.data();
+        postData.name = userData.name; // Include the user's name in the post data
+      } else {
+        console.log('No such document!');
+      }
   
       if (fileInputRef.current.files.length > 0) {
         const file = fileInputRef.current.files[0];
