@@ -61,6 +61,7 @@ function Account() {
           const userData = docSnap.data();
           setName(userData.name);
           setEmail(userData.email);
+          setBio(userData.bio || "Tell the community about yourself...");
           setProfilePic(userData.profilePic || "");
         } else {
           console.log("No user data available");
@@ -129,12 +130,23 @@ function Account() {
     setEditedBio(bio); // Set the editedBio state to the current bio
   };
 
-  const handleSaveClick = () => {
-    if (editedBio.trim() === "") {
-      setBio("Tell the community about yourself...");
-    } else {
-      setBio(editedBio);
+  const updateBio = async () => {
+    const userId = localStorage.getItem("userId");
+    if (!userId) return;
+
+    const userRef = doc(firestore, "users", userId);
+    try {
+      await updateDoc(userRef, {
+        bio: editedBio,
+      });
+      console.log("Bio updated successfully!");
+    } catch (error) {
+      console.error("Error updating bio:", error);
     }
+  };
+
+  const handleSaveClick = () => {
+    updateBio();
     setIsEditing(false);
   };
 

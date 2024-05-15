@@ -62,6 +62,7 @@ const clubSignInWithGoogle = async () => {
         name: user.displayName,
         email: user.email,
         profilePic: user.photoURL,
+        bio: "",
         userType: "club owner",
         following: [],
         follower: []
