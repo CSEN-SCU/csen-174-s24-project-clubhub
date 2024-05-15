@@ -12,7 +12,12 @@ import {
   onSnapshot,
   updateDoc,
 } from "firebase/firestore";
-import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import {
+  ref,
+  uploadBytesResumable,
+  getDownloadURL,
+  deleteObject,
+} from "firebase/storage";
 import "./account.css";
 import ACMH1 from "../../assets/ACMH1.png";
 import ACMH2 from "../../assets/ACMH2.png";
@@ -174,6 +179,7 @@ function Account() {
       },
       async () => {
         const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+        const oldProfilePic = profilePic;
         setProfilePic(downloadURL);
 
         const userId = localStorage.getItem("userId");
@@ -184,6 +190,13 @@ function Account() {
           await updateDoc(userRef, {
             profilePic: downloadURL,
           });
+
+          if (oldProfilePic) {
+            const oldProfilePicRef = ref(storage, oldProfilePic);
+            deleteObject(oldProfilePicRef).catch((error) => {
+              console.error("Error deleting old profile picture:", error);
+            });
+          }
         } catch (error) {
           console.error("Error updating profile picture:", error);
         }
