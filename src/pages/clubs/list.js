@@ -8,16 +8,17 @@ function List(props) {
   const [selectedItem, setSelectedItem] = useState(null);
   const [data, setData] = useState([]);
 
+  const fetchData = async () => {
+    const q = query(collection(firestore, "clubs"), orderBy("ClubName"));
+    const querySnapshot = await getDocs(q);
+    const clubsData = querySnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+    setData(clubsData);
+  };
+
   useEffect(() => {
-    const fetchData = async () => {
-      const q = query(collection(firestore, "clubs"), orderBy("ClubName"));
-      const querySnapshot = await getDocs(q);
-      const clubsData = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-      setData(clubsData);
-    };
     fetchData();
   }, []);
 
