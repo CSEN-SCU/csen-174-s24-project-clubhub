@@ -5,11 +5,11 @@ import { signOut } from "firebase/auth";
 import {
   doc,
   getDoc,
-  getDocs,
   collection,
   query,
   orderBy,
   setDoc,
+  onSnapshot,
   updateDoc,
 } from "firebase/firestore";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
@@ -18,12 +18,10 @@ import ACMH1 from "../../assets/ACMH1.png";
 import ACMH2 from "../../assets/ACMH2.png";
 import { useSearchParams } from "react-router-dom";
 
-
 function Account() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [profilePic, setProfilePic] = useState("");
-  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const [bio, setBio] = useState("Tell the community about yourself...");
   const [isEditing, setIsEditing] = useState(false);
@@ -53,36 +51,37 @@ function Account() {
 
     const userRef = doc(firestore, "users", userId);
     try {
-      const docSnap = await getDoc(userRef);
-      if (docSnap.exists()) {
-        const userData = docSnap.data();
-        setName(userData.name);
-        setEmail(userData.email);
-        setProfilePic(userData.profilePic || "");
-      } else {
-        console.log("No user data available");
-      }
+      onSnapshot(userRef, (docSnap) => {
+        if (docSnap.exists()) {
+          const userData = docSnap.data();
+          setName(userData.name);
+          setEmail(userData.email);
+          setProfilePic(userData.profilePic || "");
+        } else {
+          console.log("No user data available");
+        }
+      });
     } catch (error) {
       console.error("Error fetching user info:", error);
-    } finally {
-      setLoading(false);
     }
   };
 
   const fetchUserPosts = async () => {
-    // const userId = localStorage.getItem("userId");
+    const userId = localStorage.getItem("userId");
     if (!userId) return;
 
     const userPostsRef = collection(firestore, `users/${userId}/posts`);
     const q = query(userPostsRef, orderBy("timestamp", "desc"));
     try {
-      const snapshot = await getDocs(q);
-      const postData = snapshot.docs.map((doc) => doc.data());
-      setUserPosts(postData);
+      onSnapshot(q, (snapshot) => {
+        const postData = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        setUserPosts(postData);
+      });
     } catch (error) {
       console.error("Error fetching user posts:", error);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -233,40 +232,6 @@ function Account() {
     }
   };
 
-  // const regularPosts = [
-  //   {
-  //     id: 1,
-  //     title: "Regular Post 1",
-  //     content: "This is the content of regular post 1.",
-  //     flyerUrl: ACM_flyer,
-  //   },
-  //   {
-  //     id: 2,
-  //     title: "Regular Post 2",
-  //     content: "This is the content of regular post 2.",
-  //     flyerUrl: ACM2,
-  //   },
-  //   {
-  //     id: 3,
-  //     title: "Regular Post 3",
-  //     content: "This is the content of regular post 3.",
-  //     flyerUrl: ACM3,
-  //   },
-  //   {
-  //     id: 4,
-  //     title: "Regular Post 4",
-  //     content: "This is the content of regular post 4.",
-  //     flyerUrl: ACM4,
-  //   },
-  //   {
-  //     id: 5,
-  //     title: "Regular Post 5",
-  //     content: "This is the content of regular post 5.",
-  //     flyerUrl: ACM5,
-  //   },
-  // ];
-
-  // Hardcoded sample highlighted posts with flyer images
   const highlightedPosts = [
     {
       id: 1,

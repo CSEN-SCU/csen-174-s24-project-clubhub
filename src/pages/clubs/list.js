@@ -1,6 +1,6 @@
 import { React, useState, useEffect } from "react";
 import { firestore } from "../../Firebase.js";
-import { collection, query, getDocs, orderBy } from "firebase/firestore";
+import { collection, query, orderBy, onSnapshot } from "firebase/firestore";
 import Modal from "./Modal.js";
 
 function List(props) {
@@ -8,18 +8,17 @@ function List(props) {
   const [selectedItem, setSelectedItem] = useState(null);
   const [data, setData] = useState([]);
 
-  const fetchData = async () => {
-    const q = query(collection(firestore, "clubs"), orderBy("ClubName"));
-    const querySnapshot = await getDocs(q);
-    const clubsData = querySnapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
-    setData(clubsData);
-  };
-
   useEffect(() => {
-    fetchData();
+    const q = query(collection(firestore, "clubs"), orderBy("ClubName"));
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+      const clubsData = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setData(clubsData);
+    });
+
+    return () => unsubscribe();
   }, []);
 
   const filteredData = data.filter((el) => {
