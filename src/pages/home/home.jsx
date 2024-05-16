@@ -10,6 +10,7 @@ function Home() {
   const [activeLink, setActiveLink] = useState("explore");
   
   useEffect(() => {
+
     const fetchPosts = async() => {
       const postsCollection = collection(firestore, "posts");
       let q;
@@ -26,7 +27,8 @@ function Home() {
           setPosts(fetchedPosts);
         },
         (error) => {
-          console.error("Error fetching posts !!!:", error);
+
+          console.error("Error fetching posts:", error);
         }
       );
 
@@ -65,14 +67,10 @@ function Home() {
         console.error("Error fetching posts:", error);
       }
       // const q = query(postsCollection, orderBy("timestamp", "desc"));
-
-
     };
 
     fetchPosts();
   }, [activeLink]);
-
-  // State to track the active link
 
   // Function to handle link click
   const handleLinkClick = (linkName) => {

@@ -37,9 +37,7 @@ function Account() {
   const [userPosts, setUserPosts] = useState([]);
   const [characterCount, setCharacterCount] = useState(0);
 
-
   const [searchParams] = useSearchParams();
-  console.log(searchParams.get("id"));
 
   let userId;
 
@@ -60,6 +58,17 @@ function Account() {
     }
     return null;
   };
+
+  const [searchParams] = useSearchParams();
+  console.log(searchParams.get("id"));
+
+  let userId;
+
+  if (searchParams.get("id") === "1111") {
+    userId = localStorage.getItem("userId");
+  } else {
+    userId = searchParams.get("id");
+  }
 
   const fetchUserInfo = async () => {
     if (!userId) return;
