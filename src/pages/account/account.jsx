@@ -5,7 +5,6 @@ import { signOut } from "firebase/auth";
 import {
   doc,
   getDoc,
-  getDocs,
   collection,
   query,
   orderBy,
@@ -19,14 +18,14 @@ import {
   getDownloadURL,
   deleteObject,
 } from "firebase/storage";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPencilAlt } from "@fortawesome/free-solid-svg-icons";
 import "./account.css";
 import ACMH1 from "../../assets/ACMH1.png";
 import ACMH2 from "../../assets/ACMH2.png";
 import { useSearchParams } from "react-router-dom";
 import FollowButton from "../../components/follow/FollowButton";
-import AccPost from './AccPost';
-
-// import flyer from '/ACM-flyer.png';
+import AccPost from "./AccPost";
 
 function Account() {
   const [name, setName] = useState("");
@@ -52,14 +51,14 @@ function Account() {
   };
 
   const closeModal = () => {
-      setShowModal(false);
-      setSelectedPost(null);
+    setShowModal(false);
+    setSelectedPost(null);
   };
 
   const truncateText = (text, maxLength) => {
     if (text.length <= maxLength) return text;
     return text.slice(0, text.lastIndexOf(" ", maxLength)) + "...";
-};
+  };
 
   useEffect(() => {
     fetchUserInfo();
@@ -74,10 +73,16 @@ function Account() {
 
   const renderFollowButton = () => {
     if (userId !== localStorage.getItem("userId")) {
-      return <FollowButton currentUserId={localStorage.getItem("userId")} targetUserId = {userId} />;
+      return (
+        <FollowButton
+          currentUserId={localStorage.getItem("userId")}
+          targetUserId={userId}
+        />
+      );
     }
     return null;
   };
+
   if (searchParams.get("id") === "1111") {
     userId = localStorage.getItem("userId");
   } else {
@@ -122,7 +127,6 @@ function Account() {
       console.error("Error fetching user posts:", error);
     }
   };
-  
 
   const handleHighlightClick = async (postId) => {
     const userId = localStorage.getItem("userId");
@@ -309,9 +313,18 @@ function Account() {
     <div className="account-container">
       <div className="top-half">
         <div className="profile-info">
-          <label htmlFor="profilePicInput">
+          <label
+            htmlFor="profilePicInput"
+            className={isEditing ? "lower-opacity" : ""}
+          >
             {profilePic ? (
-              <img src={profilePic} alt="Profile" />
+              <div className="profile-pic-wrapper">
+                <img src={profilePic} alt="Profile" />
+                <FontAwesomeIcon
+                  icon={faPencilAlt}
+                  className={`edit-icon ${isEditing ? "icon-is-editing" : ""}`}
+                />
+              </div>
             ) : (
               <div>Profile Picture</div>
             )}
@@ -321,6 +334,7 @@ function Account() {
             type="file"
             onChange={handleFileChange}
             style={{ display: "none" }}
+            disabled={!isEditing}
           />
         </div>
       </div>
@@ -370,8 +384,12 @@ function Account() {
           ) : (
             <div className="post__themselves">
               {userPosts.map((post) => (
-            <div key={post.id} className="post-item" onClick={() => handlePostClick(post)}>
-              <img src={post.imageUrl} alt="Flyer" className="post-flyer" />
+                <div
+                  key={post.id}
+                  className="post-item"
+                  onClick={() => handlePostClick(post)}
+                >
+                  <img src={post.imageUrl} alt="Flyer" className="post-flyer" />
                   <div className="post-content">
                     <h4>{post.name}</h4>
                     <h3>{post.title}</h3>
