@@ -1,52 +1,110 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import Post from "../../components/post/post";
 import "./home.css";
-import { firestore } from '../../Firebase';
-import { collection, getDocs, query, orderBy } from 'firebase/firestore';
+import { firestore } from "../../Firebase";
+import { collection, query, orderBy, onSnapshot, doc, getDoc, where, getDocs } from "firebase/firestore";
+import { auth } from "../../Firebase";
 
 function Home() {
   const [posts, setPosts] = useState([]);
-
+  const [activeLink, setActiveLink] = useState("explore");
+  
   useEffect(() => {
-    const fetchPosts = async () => {
+
+    const fetchPosts = async() => {
+      const postsCollection = collection(firestore, "posts");
+      let q;
       try {
-        // const postsCollection = firestore.collection('posts');
-        const postsCollection = collection(firestore, 'posts');
-        const q = query(postsCollection, orderBy('timestamp', 'desc'));
-        const snapshot = await getDocs(q);
-        const fetchedPosts = snapshot.docs.map(doc => doc.data());
-        setPosts(fetchedPosts);
+        if(activeLink == "explore"){
+          q = query(postsCollection, orderBy("timestamp", "desc"));
+          const unsubscribe = onSnapshot(
+        q,
+        (snapshot) => {
+          const fetchedPosts = snapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+          }));
+          setPosts(fetchedPosts);
+        },
+        (error) => {
+
+          console.error("Error fetching posts:", error);
+        }
+      );
+
+      return () => unsubscribe();
+        }
+        else if(activeLink == "following"){
+          const user = auth.currentUser;
+          const userID = user.uid;
+          const currentUserRef = doc(firestore, 'users', userID);
+          const currentUserDoc = await getDoc(currentUserRef);
+          const following = currentUserDoc.data().following || [];
+          if (following.length > 0) { // Check if 'following' array is not empty
+            q = query(postsCollection, where('userID', 'in', following), orderBy('timestamp', 'desc'));
+            const unsubscribe = onSnapshot(
+              q,
+              (snapshot) => {
+                const fetchedPosts = snapshot.docs.map((doc) => ({
+                  id: doc.id,
+                  ...doc.data(),
+                }));
+                setPosts(fetchedPosts);
+              },
+              (error) => {
+                console.error("Error fetching posts !!!:", error);
+              }
+            );
+      
+            return () => unsubscribe();
+          } else {
+            // Handle case where 'following' array is empty
+            console.log("No users followed.");
+            setPosts([]); // Set posts to empty array
+          }
+        }
       } catch (error) {
-        console.error('Error fetching posts:', error);
+        console.error("Error fetching posts:", error);
       }
+      // const q = query(postsCollection, orderBy("timestamp", "desc"));
     };
 
     fetchPosts();
-  }, []);
-
-  // State to track the active link
-  const [activeLink, setActiveLink] = useState('explore');
+  }, [activeLink]);
 
   // Function to handle link click
   const handleLinkClick = (linkName) => {
     setActiveLink(linkName); // Update the active link in state
   };
 
-
   return (
     <div className="home">
       {/* Header */}
       <div className="home__header">
-        <button className='header__button' onClick={() => handleLinkClick('explore')}>
+        <button
+          className="header__button"
+          onClick={() => handleLinkClick("explore")}
+        >
           <h2>
-            <a className={`home__link ${activeLink === 'explore' ? 'active' : ''}`}>
+            <a
+              className={`home__link ${
+                activeLink === "explore" ? "active" : ""
+              }`}
+            >
               Explore
             </a>
           </h2>
         </button>
-        <button className='header__button' onClick={() => handleLinkClick('following')}>
+        <button
+          className="header__button"
+          onClick={() => handleLinkClick("following")}
+        >
           <h2>
-            <a className={`home__link ${activeLink === 'following' ? 'active' : ''}`}>
+            <a
+              className={`home__link ${
+                activeLink === "following" ? "active" : ""
+              }`}
+            >
               Following
             </a>
           </h2>
@@ -54,20 +112,20 @@ function Home() {
       </div>
 
       {/* Post */}
-      {posts.map((post, index) => (
+      {posts.map((post) => (
         <Post
-          key={index}
-          displayName= {post.name}
-          timestamp= {post.timestamp}
-          text= {post.text}
-          image= {post.imageUrl}
-          userID= {post.userID}
-          title = {post.title}
+          key={post.id}
+          displayName={post.name}
+          timestamp={post.timestamp}
+          text={post.text}
+          image={post.imageUrl}
+          userID={post.userID}
+          title={post.title}
           // avatar={post.avatar}
         />
       ))}
     </div>
-  )
+  );
 }
 
-export default Home
+export default Home;
