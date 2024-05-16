@@ -5,6 +5,7 @@ import { signOut } from "firebase/auth";
 import {
   doc,
   getDoc,
+  getDocs,
   collection,
   query,
   orderBy,
@@ -22,6 +23,7 @@ import "./account.css";
 import ACMH1 from "../../assets/ACMH1.png";
 import ACMH2 from "../../assets/ACMH2.png";
 import { useSearchParams } from "react-router-dom";
+import FollowButton from "../../components/follow/FollowButton";
 
 function Account() {
   const [name, setName] = useState("");
@@ -35,10 +37,27 @@ function Account() {
   const [userPosts, setUserPosts] = useState([]);
   const [characterCount, setCharacterCount] = useState(0);
 
+  const [searchParams] = useSearchParams();
+
+  let userId;
+
   useEffect(() => {
     fetchUserInfo();
     fetchUserPosts();
-  }, []);
+  }, [searchParams.get("id")]);
+
+  if (searchParams.get("id") === "1111") {
+    userId = localStorage.getItem("userId");
+  } else {
+    userId = searchParams.get("id");
+  }
+
+  const renderFollowButton = () => {
+    if (userId !== localStorage.getItem("userId")) {
+      return <FollowButton currentUserId={localStorage.getItem("userId")} targetUserId = {userId} />;
+    }
+    return null;
+  };
 
   const [searchParams] = useSearchParams();
   console.log(searchParams.get("id"));
@@ -72,7 +91,6 @@ function Account() {
   };
 
   const fetchUserPosts = async () => {
-    const userId = localStorage.getItem("userId");
     if (!userId) return;
 
     const userPostsRef = collection(firestore, `users/${userId}/posts`);
@@ -89,6 +107,7 @@ function Account() {
       console.error("Error fetching user posts:", error);
     }
   };
+  
 
   const handleHighlightClick = async (postId) => {
     const userId = localStorage.getItem("userId");
@@ -291,6 +310,7 @@ function Account() {
           </div>
         </div>
         {renderBioSection()}
+        {renderFollowButton()}
       </div>
       <div className="main-content">
         <div className="posts-tabs">
