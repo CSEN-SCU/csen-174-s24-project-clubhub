@@ -83,12 +83,14 @@ label:hover {
 
 .bio__textArea {
   margin-top: 8px;
+  border: none;
   background-color: transparent;
   padding: 5px;
   color: var(--text-color);
   width: 30%;
-  height: 60px;
+  height: 70px;
   resize: none;
+  outline: none;
 }
 
 .acc__btn__container {
@@ -96,10 +98,7 @@ label:hover {
   gap: 10px;
 }
 
-.edit__btn,
-.save__btn,
-.cancel__btn,
-.logout-button {
+.edit__btn, .save__btn, .cancel__btn, .logout-button {
   font-size: var(--small-font-size);
   padding: 0.5rem 1.5rem;
   margin-top: 5px;

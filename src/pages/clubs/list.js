@@ -1,6 +1,6 @@
 import { React, useState, useEffect } from "react";
 import { firestore } from "../../Firebase.js";
-import { collection, query, orderBy, getDocs } from "firebase/firestore";
+import { collection, query, getDocs, orderBy } from "firebase/firestore";
 import Modal from "./Modal.js";
 
 function List(props) {
@@ -10,23 +10,14 @@ function List(props) {
 
   useEffect(() => {
     const fetchData = async () => {
-      let clubsData = localStorage.getItem("clubsData");
-      if (clubsData) {
-        clubsData = JSON.parse(clubsData);
-      } else {
-        const q = query(collection(firestore, "clubs"), orderBy("ClubName"));
-        const querySnapshot = await getDocs(q);
-        clubsData = querySnapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-        console.log("Fetched")
-        localStorage.setItem("clubsData", JSON.stringify(clubsData));
-      }
+      const q = query(collection(firestore, "clubs"), orderBy("ClubName"));
+      const querySnapshot = await getDocs(q);
+      const clubsData = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
       setData(clubsData);
     };
-    console.log(localStorage.getItem("clubsData"));
-
     fetchData();
   }, []);
 

@@ -1,4 +1,4 @@
-import { firestore } from '../../Firebase';
+import { firestore } from './Firebase';
 import { doc, updateDoc, arrayUnion, arrayRemove } from 'firebase/firestore';
 
 /**

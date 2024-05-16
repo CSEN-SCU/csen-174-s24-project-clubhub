@@ -1,12 +1,12 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { studentSignInWithGoogle, clubSignInWithGoogle } from "../../Firebase";
 import SCULogo from "../../assets/sculogo.png";
-import Slider from "react-slick";
 import "./welcome.css";
 
 function Welcome() {
   const navigate = useNavigate();
+  const [error, setError] = useState(null);
 
   const handleStudentLogin = async () => {
     localStorage.setItem("userType", "student");
@@ -22,6 +22,8 @@ function Welcome() {
         navigate("/error", {
           state: { message: "Please sign in with a scu.edu email." },
         });
+      } else {
+        setError("Failed to authenticate. Please try again.");
       }
     }
   };
@@ -40,6 +42,8 @@ function Welcome() {
         navigate("/error", {
           state: { message: "Your email is not associated with a club." },
         });
+      } else {
+        setError("Failed to authenticate. Please try again.");
       }
     }
   };
@@ -73,6 +77,7 @@ function Welcome() {
       <div className="right-container">
         <img id="logo" src={SCULogo} alt="logo" />
       </div>
+      {error && <p className="error-message">{error}</p>}
     </div>
   );
 }
