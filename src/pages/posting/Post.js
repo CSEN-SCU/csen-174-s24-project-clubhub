@@ -135,7 +135,7 @@ function Post({ closeModal }) {
                   alt="Preview"
                   className="postImage" // CSS class for styling
                 />
-                <button className="postRemoveFileBtn" onClick={removeFile}>
+                <button className="postRemoveFileBtn btn" onClick={removeFile}>
                   Remove File
                 </button>{" "}
                 {/* "Remove File" button */}
@@ -166,7 +166,7 @@ function Post({ closeModal }) {
         </div>
 
         <div className="PostFooter">
-          <button className="postSubmitBtn" onClick={handleSubmit}>
+          <button className="postSubmitBtn btn" onClick={handleSubmit}>
             Submit
           </button>
         </div>

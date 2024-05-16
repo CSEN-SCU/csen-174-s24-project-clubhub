@@ -24,6 +24,9 @@ import ACMH1 from "../../assets/ACMH1.png";
 import ACMH2 from "../../assets/ACMH2.png";
 import { useSearchParams } from "react-router-dom";
 import FollowButton from "../../components/follow/FollowButton";
+import AccPost from './AccPost';
+
+// import flyer from '/ACM-flyer.png';
 
 function Account() {
   const [name, setName] = useState("");
@@ -40,6 +43,23 @@ function Account() {
   const [searchParams] = useSearchParams();
 
   let userId;
+  const [showModal, setShowModal] = useState(false);
+  const [selectedPost, setSelectedPost] = useState(null);
+
+  const handlePostClick = (post) => {
+    setSelectedPost(post);
+    setShowModal(true);
+  };
+
+  const closeModal = () => {
+      setShowModal(false);
+      setSelectedPost(null);
+  };
+
+  const truncateText = (text, maxLength) => {
+    if (text.length <= maxLength) return text;
+    return text.slice(0, text.lastIndexOf(" ", maxLength)) + "...";
+};
 
   useEffect(() => {
     fetchUserInfo();
@@ -58,12 +78,6 @@ function Account() {
     }
     return null;
   };
-
-  const [searchParams] = useSearchParams();
-  console.log(searchParams.get("id"));
-
-  let userId;
-
   if (searchParams.get("id") === "1111") {
     userId = localStorage.getItem("userId");
   } else {
@@ -329,25 +343,27 @@ function Account() {
         </div>
         <div className="posts-list">
           {showHighlighted ? (
-            <div>
+            <div className="post__themselves">
               {highlightedPosts.map((post) => (
                 <div key={post.id} className="post-item">
                   <img src={post.flyerUrl} alt="Flyer" className="post-flyer" />
                   <div className="post-content">
-                    <h4>{post.title}</h4>
+                    <h4>{post.name}</h4>
+                    <h3>{post.title}</h3>
                     <p>{post.content}</p>
                   </div>
                 </div>
               ))}
             </div>
           ) : (
-            <div>
+            <div className="post__themselves">
               {userPosts.map((post) => (
-                <div key={post.id} className="post-item">
-                  <img src={post.imageUrl} alt="Flyer" className="post-flyer" />
+            <div key={post.id} className="post-item" onClick={() => handlePostClick(post)}>
+              <img src={post.imageUrl} alt="Flyer" className="post-flyer" />
                   <div className="post-content">
-                    <h4>{post.title}</h4>
-                    <p>{post.text}</p>
+                    <h4>{post.name}</h4>
+                    <h3>{post.title}</h3>
+                    <p>{truncateText(post.text, 115)}</p>
                   </div>
                   <button onClick={() => handleHighlightClick(post.id)}>
                     Highlight Post
@@ -358,6 +374,7 @@ function Account() {
           )}
         </div>
       </div>
+      {showModal && <AccPost closeModal={closeModal} post={selectedPost} />}
     </div>
   );
 }
