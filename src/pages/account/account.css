@@ -16,9 +16,22 @@
   height: 200px;
 }
 
-label:hover {
-  cursor: pointer;
+.edit-icon {
+  position: absolute;
+  top: 180px;
+  left: 80px;
+  display: none;
+  height: 50px;
+  width: 50px;
+}
+
+.icon-is-editing {
+  display: block;
+}
+
+.lower-opacity {
   opacity: 50%;
+  cursor: pointer;
 }
 
 .profile-info img {
