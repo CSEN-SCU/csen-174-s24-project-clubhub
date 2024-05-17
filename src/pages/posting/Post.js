@@ -78,15 +78,6 @@ function Post({ closeModal }) {
 
       // Add to the user's document or collection
       if (userID) {
-        const userPostsCollection = collection(
-          firestore,
-          `users/${userID}/posts`
-        ); // Collection under the user
-        await addDoc(userPostsCollection, {
-          ...postData,
-          mainPostRef: docRef.id, // Optionally store a reference to the main post
-        });
-
         setText("");
         setImageUrl("");
         setTitle("");
@@ -138,12 +129,9 @@ function Post({ closeModal }) {
                 <button className="postRemoveFileBtn btn" onClick={removeFile}>
                   Remove File
                 </button>{" "}
-                {/* "Remove File" button */}
               </div>
             )}
           </div>
-
-          {/* Text input for description */}
 
           <div className = "postDescContainer">
           <textarea
@@ -161,8 +149,6 @@ function Post({ closeModal }) {
               onChange={handleTextChange}
             />
           </div>
-
-          {/* Submit button */}
         </div>
 
         <div className="PostFooter">
