@@ -8,6 +8,8 @@ import {
   collection,
   query,
   orderBy,
+  arrayUnion,
+  arrayRemove,
   setDoc,
   onSnapshot,
   updateDoc,
@@ -38,6 +40,7 @@ function Account() {
   const [editedBio, setEditedBio] = useState("");
   const [showHighlighted, setShowHighlighted] = useState(false);
   const [userPosts, setUserPosts] = useState([]);
+  const [highlightedPosts, setHighlightedPosts] = useState([]);
   const [characterCount, setCharacterCount] = useState(0);
 
   const [searchParams] = useSearchParams();
@@ -64,6 +67,7 @@ function Account() {
   useEffect(() => {
     fetchUserInfo();
     fetchUserPosts();
+    fetchHighlightedPosts();
   }, [searchParams.get("id")]);
 
   if (searchParams.get("id") === "1111") {
@@ -137,29 +141,90 @@ function Account() {
     }
   };
 
+  const fetchHighlightedPosts = async () => {
+    const userId = localStorage.getItem("userId");
+    if (!userId) return;
+  
+    const userRef = doc(firestore, "users", userId);
+  
+    try {
+      // Fetch the user's highlighted post IDs
+      const userSnapshot = await getDoc(userRef);
+      if (userSnapshot.exists()) {
+        const userData = userSnapshot.data();
+        const highlightedPostIds = userData.highlightedPosts || [];
+  
+        if (highlightedPostIds.length > 0) {
+          // Fetch the highlighted posts from the posts collection
+          const postsCollectionRef = collection(firestore, "posts");
+          const postsQuery = query(postsCollectionRef, where("__name__", "in", highlightedPostIds));
+  
+          onSnapshot(postsQuery, (snapshot) => {
+            const postData = snapshot.docs.map((doc) => ({
+              id: doc.id,
+              ...doc.data(),
+            }));
+            setHighlightedPosts(postData);
+          });
+        } else {
+          // No highlighted posts
+          setHighlightedPosts([]);
+        }
+      } else {
+        console.log("User document does not exist.");
+      }
+    } catch (error) {
+      console.error("Error fetching highlighted posts:", error);
+    }
+  };
+  
+
   const handleHighlightClick = async (postId) => {
     const userId = localStorage.getItem("userId");
     if (!userId || !postId) return;
-
-    const postRef = doc(firestore, `users/${userId}/posts`, postId);
-    const highlightedPostsRef = collection(
-      firestore,
-      `users/${userId}/highlightedPosts`
-    );
-
+  
+    const userRef = doc(firestore, "users", userId);
+  
     try {
-      const postSnapshot = await getDoc(postRef);
-      if (postSnapshot.exists()) {
-        const postData = postSnapshot.data();
-        await setDoc(doc(highlightedPostsRef), postData);
-        console.log("Post highlighted successfully!");
+      const userSnapshot = await getDoc(userRef);
+      if (userSnapshot.exists()) {
+        const userData = userSnapshot.data();
+        const highlightedPostIds = userData.highlightedPosts || [];
+  
+        if (highlightedPostIds.includes(postId)) {
+          await updateDoc(userRef, {
+            highlightedPosts: arrayRemove(postId),
+          });
+          console.log("Post unhighlighted successfully!");
+  
+          setHighlightedPosts((prevHighlightedPosts) =>
+            prevHighlightedPosts.filter((post) => post.id !== postId)
+          );
+        } else {
+          await updateDoc(userRef, {
+            highlightedPosts: arrayUnion(postId),
+          });
+          console.log("Post highlighted successfully!");
+  
+          const postRef = doc(firestore, "posts", postId);
+          const postSnapshot = await getDoc(postRef);
+          if (postSnapshot.exists()) {
+            const postData = { id: postSnapshot.id, ...postSnapshot.data() };
+            setHighlightedPosts((prevHighlightedPosts) => [
+              ...prevHighlightedPosts,
+              postData,
+            ]);
+          }
+        }
       } else {
-        console.log("Post does not exist.");
+        console.log("User document does not exist.");
       }
     } catch (error) {
-      console.error("Error highlighting post:", error);
+      console.error("Error toggling highlight:", error);
     }
   };
+  
+  
 
   const handleLogout = async () => {
     try {
@@ -303,20 +368,25 @@ function Account() {
     }
   };
 
-  const highlightedPosts = [
-    {
-      id: 1,
-      title: "Highlighted Post 1",
-      content: "This is the content of highlighted post 1.",
-      flyerUrl: ACMH1,
-    },
-    {
-      id: 2,
-      title: "Highlighted Post 2",
-      content: "This is the content of highlighted post 2.",
-      flyerUrl: ACMH2,
-    },
-  ];
+  const renderHighlightButton = (post) => {
+    const isHighlighted = highlightedPosts.includes(post.id);
+    const starStyle = {
+      cursor: "pointer",
+      color: isHighlighted ? "yellow" : "grey"
+    };
+
+    if (userId === localStorage.getItem("userId")) {
+      return (
+        <span
+          onClick={() => handleHighlightClick(post.id)}
+          style={starStyle}
+        >
+          ★
+        </span>
+      );
+    }
+    return null;
+  };
 
   return (
     <div className="account-container">
@@ -381,13 +451,15 @@ function Account() {
             <div className="post__themselves">
               {highlightedPosts.map((post) => (
                 <div key={post.id} className="post-item">
-                  <img src={post.flyerUrl} alt="Flyer" className="post-flyer" />
+                  <img src={post.imageUrl} alt="Flyer" className="post-flyer" />
                   <div className="post-content">
                     <h4>{post.name}</h4>
                     <h3>{post.title}</h3>
                     <p>{post.content}</p>
                   </div>
+                  {renderHighlightButton(post)}
                 </div>
+                
               ))}
             </div>
           ) : (
@@ -404,9 +476,8 @@ function Account() {
                     <h3>{post.title}</h3>
                     <p>{truncateText(post.text, 115)}</p>
                   </div>
-                  <button onClick={() => handleHighlightClick(post.id)}>
-                    Highlight Post
-                  </button>
+                  {renderHighlightButton(post)}
+
                 </div>
               ))}
             </div>
