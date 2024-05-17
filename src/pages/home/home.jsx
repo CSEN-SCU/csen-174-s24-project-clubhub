@@ -4,10 +4,13 @@ import "./home.css";
 import { firestore } from "../../Firebase";
 import { collection, query, orderBy, onSnapshot, doc, getDoc, where, getDocs } from "firebase/firestore";
 import { auth } from "../../Firebase";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faFaceFrown } from "@fortawesome/free-regular-svg-icons";
 
 function Home() {
   const [posts, setPosts] = useState([]);
   const [activeLink, setActiveLink] = useState("explore");
+  const [noFollowMessage, setNoFollowMessage] = useState("");
   
   useEffect(() => {
 
@@ -25,6 +28,7 @@ function Home() {
             ...doc.data(),
           }));
           setPosts(fetchedPosts);
+          setNoFollowMessage("");
         },
         (error) => {
 
@@ -50,6 +54,7 @@ function Home() {
                   ...doc.data(),
                 }));
                 setPosts(fetchedPosts);
+                setNoFollowMessage("");
               },
               (error) => {
                 console.error("Error fetching posts !!!:", error);
@@ -60,6 +65,7 @@ function Home() {
           } else {
             // Handle case where 'following' array is empty
             console.log("No users followed.");
+            setNoFollowMessage(" You do not currently follow any clubs.");
             setPosts([]); // Set posts to empty array
           }
         }
@@ -112,7 +118,13 @@ function Home() {
       </div>
 
       {/* Post */}
-      {posts.map((post) => (
+      {activeLink === 'following' && noFollowMessage ? (
+        <div className="no-follow-message">
+          <FontAwesomeIcon icon={faFaceFrown} />
+          {noFollowMessage}
+          </div>
+      ) : (
+      posts.map((post) => (
         <Post
           key={post.id}
           displayName={post.name}
@@ -123,7 +135,7 @@ function Home() {
           title={post.title}
           // avatar={post.avatar}
         />
-      ))}
+      )))}
     </div>
   );
 }
