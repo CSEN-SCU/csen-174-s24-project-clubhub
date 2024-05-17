@@ -11,6 +11,7 @@ import {
   setDoc,
   onSnapshot,
   updateDoc,
+  where
 } from "firebase/firestore";
 import {
   ref,
@@ -113,16 +114,24 @@ function Account() {
   const fetchUserPosts = async () => {
     if (!userId) return;
 
-    const userPostsRef = collection(firestore, `users/${userId}/posts`);
-    const q = query(userPostsRef, orderBy("timestamp", "desc"));
-    try {
-      onSnapshot(q, (snapshot) => {
-        const postData = snapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-        setUserPosts(postData);
-      });
+    try{
+      const postsCollection = collection(firestore, "posts");
+        const q = query(postsCollection, where('userID', '==', userId), orderBy('timestamp', 'desc'));
+        const unsubscribe = onSnapshot(
+          q,
+          (snapshot) => {
+            const fetchedPosts = snapshot.docs.map((doc) => ({
+              id: doc.id,
+              ...doc.data(),
+            }));
+            setUserPosts(fetchedPosts);
+          },
+          (error) => {
+            console.error("Error fetching posts !!!:", error);
+          }
+        );
+
+        return () => unsubscribe();
     } catch (error) {
       console.error("Error fetching user posts:", error);
     }
