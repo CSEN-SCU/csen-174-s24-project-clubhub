@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { followUser, unfollowUser } from './followUtils';
-import { firestore } from '../../Firebase.js';
+import { firestore } from './Firebase.js';
 import { doc, getDoc } from 'firebase/firestore';
-import "./FollowButton.css";
 
 const FollowButton = ({ currentUserId, targetUserId }) => {
   const [isFollowing, setIsFollowing] = useState(false);
@@ -33,7 +32,7 @@ const FollowButton = ({ currentUserId, targetUserId }) => {
   };
 
   return (
-    <button className = {`FollowButton ${isFollowing ? 'following' : 'not-following'}`} onClick={handleFollowToggle}>
+    <button onClick={handleFollowToggle}>
       {isFollowing ? 'Unfollow' : 'Follow'}
     </button>
   );

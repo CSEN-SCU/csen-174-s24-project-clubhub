@@ -1,6 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
-import { getFirestore, doc, setDoc, getDoc } from "firebase/firestore";
+import { getFirestore, doc, setDoc } from "firebase/firestore";
 import { collection, query, where, getDocs } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 
@@ -30,20 +30,15 @@ const studentSignInWithGoogle = async () => {
     }
 
     const userRef = doc(firestore, "users", user.uid);
-    const docSnap = await getDoc(userRef);
-
     await setDoc(
       userRef,
       {
         name: user.displayName,
         email: user.email,
-        profilePic: docSnap.exists()
-          ? docSnap.data().profilePic
-          : user.photoURL,
-        bio: docSnap.exists() ? docSnap.data().bio : "",
+        profilePic: user.photoURL,
         userType: "student",
-        following: docSnap.exists() ? docSnap.data().following : [],
-        follower: docSnap.exists() ? docSnap.data().follower : [],
+        following: [],
+        follower: []
       },
       { merge: true }
     );
@@ -61,20 +56,15 @@ const clubSignInWithGoogle = async () => {
     const user = result.user;
 
     const userRef = doc(firestore, "users", user.uid);
-    const docSnap = await getDoc(userRef);
-
     await setDoc(
       userRef,
       {
         name: user.displayName,
         email: user.email,
-        profilePic: docSnap.exists()
-          ? docSnap.data().profilePic
-          : user.photoURL,
-        bio: docSnap.exists() ? docSnap.data().bio : "",
+        profilePic: user.photoURL,
         userType: "club owner",
-        following: docSnap.exists() ? docSnap.data().following : [],
-        follower: docSnap.exists() ? docSnap.data().follower : [],
+        following: [],
+        follower: []
       },
       { merge: true }
     );
@@ -107,10 +97,4 @@ const clubSignInWithGoogle = async () => {
   }
 };
 
-export {
-  auth,
-  firestore,
-  storage,
-  studentSignInWithGoogle,
-  clubSignInWithGoogle,
-};
+export { auth, firestore, storage, studentSignInWithGoogle, clubSignInWithGoogle };

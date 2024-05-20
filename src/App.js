@@ -10,6 +10,7 @@ import GPT from "./pages/gpt/gpt";
 import Account from "./pages/account/account";
 import { Route, Routes, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "./context/AuthContext";
+import UserProfile from "./Profilepage";
 
 function PrivateRoute({ children }) {
   const { currentUser } = useAuth();
@@ -81,6 +82,14 @@ function App() {
                 </PrivateRoute>
               }
             />
+            <Route
+            path="/prof"
+            element={
+              <PrivateRoute>
+                <UserProfile />
+              </PrivateRoute>
+            }
+          />
           </Routes>
         </div>
       </div>
