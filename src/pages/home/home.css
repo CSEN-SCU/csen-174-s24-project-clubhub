@@ -42,3 +42,11 @@
     border-bottom: 5px solid var(--first-color);
     color: var(--title-color);
 }
+
+.no-follow-message{
+    /* background-color: pink; */
+    text-align: center;
+    font-size: x-large;
+    justify-content: center;
+    margin-top: 25%;
+}

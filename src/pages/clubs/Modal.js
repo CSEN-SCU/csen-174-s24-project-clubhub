@@ -1,7 +1,7 @@
 import "./Modal.css";
 import React, { useState, useEffect } from "react";
 import { firestore } from "../../Firebase";
-import { collection, query, where, getDocs } from "firebase/firestore";
+import { collection, query, where, onSnapshot } from "firebase/firestore";
 
 function slugify(input) {
   if (!input) return "";
@@ -9,7 +9,7 @@ function slugify(input) {
   // make lower case and trim
   var slug = input.toLowerCase().trim();
 
-  // remove accents from charaters
+  // remove accents from characters
   slug = slug.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 
   // replace invalid chars with spaces
@@ -21,17 +21,27 @@ function slugify(input) {
   return slug;
 }
 
-const checkIfClubHasAccount = async (clubInfo) => {
+const checkIfClubHasAccount = async (clubInfo, setHasAccount) => {
   const usersRef = collection(firestore, "users");
   const q = query(usersRef, where("email", "==", clubInfo.Contact));
-  const querySnapshot = await getDocs(q);
 
-  if (querySnapshot.empty) {
-    console.log("No matching user found for email:", clubInfo.Contact);
-    return false;
-  } else {
-    return true;
-  }
+  const unsubscribe = onSnapshot(
+    q,
+    (querySnapshot) => {
+      if (querySnapshot.empty) {
+        console.log("No matching user found for email:", clubInfo.Contact);
+        setHasAccount(false);
+      } else {
+        setHasAccount(true);
+      }
+    },
+    (error) => {
+      console.error("Error checking account:", error);
+    }
+  );
+
+  // Return the unsubscribe function to clean up the listener when the component unmounts
+  return unsubscribe;
 };
 
 const stopClickPropagation = (e) => {
@@ -42,12 +52,20 @@ function Modal({ closeModal, clubInfo }) {
   const [hasAccount, setHasAccount] = useState(false);
 
   useEffect(() => {
+    let unsubscribe;
+
     const checkAccount = async () => {
-      const hasAccount = await checkIfClubHasAccount(clubInfo);
-      setHasAccount(hasAccount);
+      unsubscribe = await checkIfClubHasAccount(clubInfo, setHasAccount);
     };
 
     checkAccount();
+
+    // Cleanup function to unsubscribe from the snapshot listener when the component unmounts
+    return () => {
+      if (unsubscribe) {
+        unsubscribe();
+      }
+    };
   }, [clubInfo]);
 
   return (
