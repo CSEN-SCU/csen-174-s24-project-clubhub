@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import Post from "../../components/post/post";
 import "./home.css";
 import { firestore } from "../../Firebase";
-import { collection, query, orderBy, onSnapshot, doc, getDoc, where, getDocs } from "firebase/firestore";
+import { collection, query, orderBy, onSnapshot, doc, getDoc, where } from "firebase/firestore";
 import { auth } from "../../Firebase";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFaceFrown } from "@fortawesome/free-regular-svg-icons";

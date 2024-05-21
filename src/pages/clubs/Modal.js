@@ -21,7 +21,7 @@ function slugify(input) {
   return slug;
 }
 
-const checkIfClubHasAccount = async (clubInfo, setHasAccount) => {
+const checkIfClubHasAccount = async (clubInfo, setHasAccount, setUserId) => {
   const usersRef = collection(firestore, "users");
   const q = query(usersRef, where("email", "==", clubInfo.Contact));
 
@@ -32,7 +32,9 @@ const checkIfClubHasAccount = async (clubInfo, setHasAccount) => {
         console.log("No matching user found for email:", clubInfo.Contact);
         setHasAccount(false);
       } else {
+        const userId = querySnapshot.docs[0].id;
         setHasAccount(true);
+        setUserId(userId);
       }
     },
     (error) => {
@@ -40,7 +42,6 @@ const checkIfClubHasAccount = async (clubInfo, setHasAccount) => {
     }
   );
 
-  // Return the unsubscribe function to clean up the listener when the component unmounts
   return unsubscribe;
 };
 
@@ -50,17 +51,20 @@ const stopClickPropagation = (e) => {
 
 function Modal({ closeModal, clubInfo }) {
   const [hasAccount, setHasAccount] = useState(false);
+  const [userId, setUserId] = useState(null);
 
   useEffect(() => {
     let unsubscribe;
 
     const checkAccount = async () => {
-      unsubscribe = await checkIfClubHasAccount(clubInfo, setHasAccount);
+      unsubscribe = await checkIfClubHasAccount(
+        clubInfo,
+        setHasAccount,
+        setUserId
+      );
     };
 
     checkAccount();
-
-    // Cleanup function to unsubscribe from the snapshot listener when the component unmounts
     return () => {
       if (unsubscribe) {
         unsubscribe();
@@ -78,7 +82,11 @@ function Modal({ closeModal, clubInfo }) {
           <h2>{clubInfo.ClubName}</h2>
           {hasAccount && (
             <div className="ProfileButton">
-              <button className="btn">Club Profile Page</button>
+              <button className="btn">
+                <a id="profile-link" href={`account?id=${userId}`} >
+                  Club Profile Page
+                </a>
+              </button>
             </div>
           )}
         </div>
