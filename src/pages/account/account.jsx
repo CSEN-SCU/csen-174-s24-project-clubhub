@@ -10,7 +10,6 @@ import {
   orderBy,
   arrayUnion,
   arrayRemove,
-  setDoc,
   onSnapshot,
   updateDoc,
   where
@@ -422,6 +421,7 @@ function Account() {
           <div className="nameEmailContainer">
             <h1>{name}</h1>
             <p>{email}</p>
+            {renderFollowButton()}
           </div>
           <div className="following__container">
             <h3>Following</h3>
@@ -429,7 +429,6 @@ function Account() {
           </div>
         </div>
         {renderBioSection()}
-        {renderFollowButton()}
       </div>
       <div className="main-content">
         <div className="posts-tabs">
