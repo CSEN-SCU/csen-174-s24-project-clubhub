@@ -1,7 +1,7 @@
 import "./Modal.css";
 import React, { useState, useEffect } from "react";
 import { firestore } from "../../Firebase";
-import { collection, query, where, getDocs } from "firebase/firestore";
+import { collection, query, where, onSnapshot } from "firebase/firestore";
 
 function slugify(input) {
   if (!input) return "";
@@ -9,7 +9,7 @@ function slugify(input) {
   // make lower case and trim
   var slug = input.toLowerCase().trim();
 
-  // remove accents from charaters
+  // remove accents from characters
   slug = slug.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 
   // replace invalid chars with spaces
@@ -21,17 +21,28 @@ function slugify(input) {
   return slug;
 }
 
-const checkIfClubHasAccount = async (clubInfo) => {
+const checkIfClubHasAccount = async (clubInfo, setHasAccount, setUserId) => {
   const usersRef = collection(firestore, "users");
   const q = query(usersRef, where("email", "==", clubInfo.Contact));
-  const querySnapshot = await getDocs(q);
 
-  if (querySnapshot.empty) {
-    console.log("No matching user found for email:", clubInfo.Contact);
-    return false;
-  } else {
-    return true;
-  }
+  const unsubscribe = onSnapshot(
+    q,
+    (querySnapshot) => {
+      if (querySnapshot.empty) {
+        console.log("No matching user found for email:", clubInfo.Contact);
+        setHasAccount(false);
+      } else {
+        const userId = querySnapshot.docs[0].id;
+        setHasAccount(true);
+        setUserId(userId);
+      }
+    },
+    (error) => {
+      console.error("Error checking account:", error);
+    }
+  );
+
+  return unsubscribe;
 };
 
 const stopClickPropagation = (e) => {
@@ -40,14 +51,25 @@ const stopClickPropagation = (e) => {
 
 function Modal({ closeModal, clubInfo }) {
   const [hasAccount, setHasAccount] = useState(false);
+  const [userId, setUserId] = useState(null);
 
   useEffect(() => {
+    let unsubscribe;
+
     const checkAccount = async () => {
-      const hasAccount = await checkIfClubHasAccount(clubInfo);
-      setHasAccount(hasAccount);
+      unsubscribe = await checkIfClubHasAccount(
+        clubInfo,
+        setHasAccount,
+        setUserId
+      );
     };
 
     checkAccount();
+    return () => {
+      if (unsubscribe) {
+        unsubscribe();
+      }
+    };
   }, [clubInfo]);
 
   return (
@@ -60,7 +82,11 @@ function Modal({ closeModal, clubInfo }) {
           <h2>{clubInfo.ClubName}</h2>
           {hasAccount && (
             <div className="ProfileButton">
-              <button className="btn">Club Profile Page</button>
+              <button className="btn">
+                <a id="profile-link" href={`account?id=${userId}`} >
+                  Club Profile Page
+                </a>
+              </button>
             </div>
           )}
         </div>
