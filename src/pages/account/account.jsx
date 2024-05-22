@@ -12,7 +12,7 @@ import {
   arrayRemove,
   onSnapshot,
   updateDoc,
-  where
+  where,
 } from "firebase/firestore";
 import {
   ref,
@@ -117,24 +117,28 @@ function Account() {
   const fetchUserPosts = async () => {
     if (!userId) return;
 
-    try{
+    try {
       const postsCollection = collection(firestore, "posts");
-        const q = query(postsCollection, where('userID', '==', userId), orderBy('timestamp', 'desc'));
-        const unsubscribe = onSnapshot(
-          q,
-          (snapshot) => {
-            const fetchedPosts = snapshot.docs.map((doc) => ({
-              id: doc.id,
-              ...doc.data(),
-            }));
-            setUserPosts(fetchedPosts);
-          },
-          (error) => {
-            console.error("Error fetching posts !!!:", error);
-          }
-        );
+      const q = query(
+        postsCollection,
+        where("userID", "==", userId),
+        orderBy("timestamp", "desc")
+      );
+      const unsubscribe = onSnapshot(
+        q,
+        (snapshot) => {
+          const fetchedPosts = snapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+          }));
+          setUserPosts(fetchedPosts);
+        },
+        (error) => {
+          console.error("Error fetching posts !!!:", error);
+        }
+      );
 
-        return () => unsubscribe();
+      return () => unsubscribe();
     } catch (error) {
       console.error("Error fetching user posts:", error);
     }
@@ -143,21 +147,24 @@ function Account() {
   const fetchHighlightedPosts = async () => {
     const userId = localStorage.getItem("userId");
     if (!userId) return;
-  
+
     const userRef = doc(firestore, "users", userId);
-  
+
     try {
       // Fetch the user's highlighted post IDs
       const userSnapshot = await getDoc(userRef);
       if (userSnapshot.exists()) {
         const userData = userSnapshot.data();
         const highlightedPostIds = userData.highlightedPosts || [];
-  
+
         if (highlightedPostIds.length > 0) {
           // Fetch the highlighted posts from the posts collection
           const postsCollectionRef = collection(firestore, "posts");
-          const postsQuery = query(postsCollectionRef, where("__name__", "in", highlightedPostIds));
-  
+          const postsQuery = query(
+            postsCollectionRef,
+            where("__name__", "in", highlightedPostIds)
+          );
+
           onSnapshot(postsQuery, (snapshot) => {
             const postData = snapshot.docs.map((doc) => ({
               id: doc.id,
@@ -176,26 +183,25 @@ function Account() {
       console.error("Error fetching highlighted posts:", error);
     }
   };
-  
 
   const handleHighlightClick = async (postId) => {
     const userId = localStorage.getItem("userId");
     if (!userId || !postId) return;
-  
+
     const userRef = doc(firestore, "users", userId);
-  
+
     try {
       const userSnapshot = await getDoc(userRef);
       if (userSnapshot.exists()) {
         const userData = userSnapshot.data();
         const highlightedPostIds = userData.highlightedPosts || [];
-  
+
         if (highlightedPostIds.includes(postId)) {
           await updateDoc(userRef, {
             highlightedPosts: arrayRemove(postId),
           });
           console.log("Post unhighlighted successfully!");
-  
+
           setHighlightedPosts((prevHighlightedPosts) =>
             prevHighlightedPosts.filter((post) => post.id !== postId)
           );
@@ -204,7 +210,7 @@ function Account() {
             highlightedPosts: arrayUnion(postId),
           });
           console.log("Post highlighted successfully!");
-  
+
           const postRef = doc(firestore, "posts", postId);
           const postSnapshot = await getDoc(postRef);
           if (postSnapshot.exists()) {
@@ -222,8 +228,6 @@ function Account() {
       console.error("Error toggling highlight:", error);
     }
   };
-  
-  
 
   const handleLogout = async () => {
     try {
@@ -371,15 +375,12 @@ function Account() {
     const isHighlighted = highlightedPosts.includes(post.id);
     const starStyle = {
       cursor: "pointer",
-      color: isHighlighted ? "yellow" : "grey"
+      color: isHighlighted ? "yellow" : "grey",
     };
 
     if (userId === localStorage.getItem("userId")) {
       return (
-        <span
-          onClick={() => handleHighlightClick(post.id)}
-          style={starStyle}
-        >
+        <span onClick={() => handleHighlightClick(post.id)} style={starStyle}>
           ★
         </span>
       );
@@ -410,6 +411,7 @@ function Account() {
           <input
             id="profilePicInput"
             type="file"
+            accept=".png, .jpg, .jpeg"
             onChange={handleFileChange}
             style={{ display: "none" }}
             disabled={!isEditing}
@@ -458,7 +460,6 @@ function Account() {
                   </div>
                   {renderHighlightButton(post)}
                 </div>
-                
               ))}
             </div>
           ) : (
@@ -476,7 +477,6 @@ function Account() {
                     <p>{truncateText(post.text, 115)}</p>
                   </div>
                   {renderHighlightButton(post)}
-
                 </div>
               ))}
             </div>
