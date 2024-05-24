@@ -187,21 +187,21 @@ function Account() {
   const handleHighlightClick = async (postId) => {
     const userId = localStorage.getItem("userId");
     if (!userId || !postId) return;
-
+  
     const userRef = doc(firestore, "users", userId);
-
+  
     try {
       const userSnapshot = await getDoc(userRef);
       if (userSnapshot.exists()) {
         const userData = userSnapshot.data();
         const highlightedPostIds = userData.highlightedPosts || [];
-
+  
         if (highlightedPostIds.includes(postId)) {
           await updateDoc(userRef, {
             highlightedPosts: arrayRemove(postId),
           });
           console.log("Post unhighlighted successfully!");
-
+  
           setHighlightedPosts((prevHighlightedPosts) =>
             prevHighlightedPosts.filter((post) => post.id !== postId)
           );
@@ -210,7 +210,7 @@ function Account() {
             highlightedPosts: arrayUnion(postId),
           });
           console.log("Post highlighted successfully!");
-
+  
           const postRef = doc(firestore, "posts", postId);
           const postSnapshot = await getDoc(postRef);
           if (postSnapshot.exists()) {
@@ -331,6 +331,7 @@ function Account() {
   };
 
   const renderBioSection = () => {
+    const isProfileOwner = searchParams.get("id") === "1111";
     if (isEditing) {
       return (
         <div className="render__bio__container">
@@ -358,27 +359,33 @@ function Account() {
       return (
         <div className="bio__option">
           <p className="bio__text">{bio}</p>
-          <div className="acc__btn__container">
-            <button className="btn edit__btn" onClick={handleEditClick}>
-              Edit
-            </button>
-            <button onClick={handleLogout} className="logout-button btn">
-              Log Out
-            </button>
-          </div>
+          {isProfileOwner && (
+            <div className="acc__btn__container">
+              <button className="btn edit__btn" onClick={handleEditClick}>
+                Edit
+              </button>
+              <button onClick={handleLogout} className="logout-button btn">
+                Log Out
+              </button>
+            </div>
+          )}
         </div>
       );
     }
   };
 
   const renderHighlightButton = (post) => {
-    const isHighlighted = highlightedPosts.includes(post.id);
+    const isHighlighted = highlightedPosts.some(
+      (highlightedPost) => highlightedPost.id === post.id
+    );
     const starStyle = {
       cursor: "pointer",
-      color: isHighlighted ? "yellow" : "grey",
+      color: isHighlighted ? "#FFA500" : "grey", 
+      fontSize: "24px", 
     };
-
-    if (userId === localStorage.getItem("userId")) {
+  
+    // Check if the user is allowed to highlight based on the search parameter
+    if (searchParams.get("id") === "1111") {
       return (
         <span onClick={() => handleHighlightClick(post.id)} style={starStyle}>
           ★
