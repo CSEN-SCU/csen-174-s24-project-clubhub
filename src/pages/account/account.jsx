@@ -23,8 +23,8 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPencilAlt } from "@fortawesome/free-solid-svg-icons";
 import "./account.css";
-import ACMH1 from "../../assets/ACMH1.png";
-import ACMH2 from "../../assets/ACMH2.png";
+// import ACMH1 from "../../assets/ACMH1.png";
+// import ACMH2 from "../../assets/ACMH2.png";
 import { useSearchParams } from "react-router-dom";
 import FollowButton from "../../components/follow/FollowButton";
 import AccPost from "./AccPost";
@@ -87,11 +87,11 @@ function Account() {
     return null;
   };
 
-  if (searchParams.get("id") === "1111") {
-    userId = localStorage.getItem("userId");
-  } else {
-    userId = searchParams.get("id");
-  }
+  // if (searchParams.get("id") === "1111") {
+  //   userId = localStorage.getItem("userId");
+  // } else {
+  //   userId = searchParams.get("id");
+  // }
 
   const fetchUserInfo = async () => {
     if (!userId) return;
