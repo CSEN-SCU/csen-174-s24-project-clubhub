@@ -16,9 +16,11 @@ function AccPost({ closeModal, post }) {
                 <div className='acc__post__container'>
                     <h3><span>{post.name}</span> presents...</h3>
                     <div className='acc__post__content'>
-                        <h2>{post.title}</h2>
-                        <div className='acc__post__component'><p>{post.text}</p></div>
                         <img src={post.imageUrl} alt={post.title} />
+                        <div className = "right_content">
+                            <h2>{post.title}</h2>
+                            <div className='acc__post__component'><p>{post.text}</p></div>
+                        </div>
                     </div>
                 </div>
             </div>

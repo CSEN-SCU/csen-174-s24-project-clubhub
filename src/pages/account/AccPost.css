@@ -7,24 +7,36 @@
     color: var(--title-color);
 }
 
+.acc__post__container{
+    height: 100%;
+}
+
 .acc__post__content h2 {
     font-size: 1.75rem;
-    margin-top: 5px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    text-align: center;
+
 }
 
 .acc__post__content {
     display: flex;
-    flex-direction: column;
     align-items: center;
     gap: 20px;
     padding: 20px;
+    height: 100%;
 }
 
 .acc__post__content img{
     border-radius: 20px;
     box-shadow: var(--shadow);
     border: 1px solid var(--light-gray);
-    width: 60%;
+    width: 50%;
+}
+
+.right_content{
+    width: 50%;
+
 }
 
 .acc__post__component {
