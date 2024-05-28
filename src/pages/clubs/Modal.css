@@ -72,42 +72,42 @@
   padding: 0;
 }
 
-  .OpenModalBtn{
-    text-align: left;
-    background-color: var(--white);
-    display: flex;
-    align-items: center;
-    border-radius: 20px;
-    height: 100px;
-    width: 80vw;
-    margin-bottom: 20px;
-    cursor: pointer;
-    border: 1px solid var(--light-gray);
-    padding-left: 30px;
-    font-size: var(--h2-font-size);
-    font-weight: var(--font-semibold);
-    color: var(--title-color);
-    box-shadow: var(--shadow);
-  }
+.OpenModalBtn {
+  text-align: left;
+  background-color: var(--white);
+  display: flex;
+  align-items: center;
+  border-radius: 20px;
+  height: 100px;
+  width: 80vw;
+  margin-bottom: 20px;
+  cursor: pointer;
+  border: 1px solid var(--light-gray);
+  padding-left: 30px;
+  font-size: var(--h2-font-size);
+  font-weight: var(--font-semibold);
+  color: var(--title-color);
+  box-shadow: var(--shadow);
+}
 
 .OpenModalBtn:hover {
   background-color: var(--light-gray); /* Change to your desired hover color */
 }
 
-  .component{
-    display: flex;
-    font-size: var(--normal-font-size);
-    margin-bottom: 30px;
-    justify-content: space-between; 
-    border: 1px solid var(--light-gray);
-    border-radius: 12px;
-    background-color: var(--white);
-    align-items: center;
-    padding: 25px;
-    box-sizing: border-box;
-    white-space: normal;
-    box-shadow: var(--shadow);
-  }
+.component {
+  display: flex;
+  font-size: var(--normal-font-size);
+  margin-bottom: 30px;
+  justify-content: space-between;
+  border: 1px solid var(--light-gray);
+  border-radius: 20px;
+  background-color: var(--white);
+  align-items: center;
+  padding: 25px;
+  box-sizing: border-box;
+  white-space: normal;
+  box-shadow: var(--shadow);
+}
 
 .component h5 {
   font-size: var(--small-font-size);
@@ -358,4 +358,9 @@
   padding: 2px 5px;
   border-radius: 8px;
   white-space: nowrap;
+}
+
+#profile-link {
+  color: var(--white);
+  text-decoration: none;
 }

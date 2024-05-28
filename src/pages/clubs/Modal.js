@@ -21,17 +21,29 @@ function slugify(input) {
   return slug;
 }
 
-const checkIfClubHasAccount = async (clubInfo) => {
+const checkIfClubHasAccount = async (clubInfo, setHasAccount, setUserId) => {
   const usersRef = collection(firestore, "users");
   const q = query(usersRef, where("email", "==", clubInfo.Contact));
   const querySnapshot = await getDocs(q);
 
-  if (querySnapshot.empty) {
-    console.log("No matching user found for email:", clubInfo.Contact);
-    return false;
-  } else {
-    return true;
-  }
+  const unsubscribe = onSnapshot(
+    q,
+    (querySnapshot) => {
+      if (querySnapshot.empty) {
+        console.log("No matching user found for email:", clubInfo.Contact);
+        setHasAccount(false);
+      } else {
+        const userId = querySnapshot.docs[0].id;
+        setHasAccount(true);
+        setUserId(userId);
+      }
+    },
+    (error) => {
+      console.error("Error checking account:", error);
+    }
+  );
+
+  return unsubscribe;
 };
 
 const stopClickPropagation = (e) => {
@@ -40,14 +52,23 @@ const stopClickPropagation = (e) => {
 
 function Modal({ closeModal, clubInfo }) {
   const [hasAccount, setHasAccount] = useState(false);
+  const [userId, setUserId] = useState(null);
 
   useEffect(() => {
     const checkAccount = async () => {
-      const hasAccount = await checkIfClubHasAccount(clubInfo);
-      setHasAccount(hasAccount);
+      unsubscribe = await checkIfClubHasAccount(
+        clubInfo,
+        setHasAccount,
+        setUserId
+      );
     };
 
     checkAccount();
+    return () => {
+      if (unsubscribe) {
+        unsubscribe();
+      }
+    };
   }, [clubInfo]);
 
   return (
@@ -60,7 +81,11 @@ function Modal({ closeModal, clubInfo }) {
           <h2>{clubInfo.ClubName}</h2>
           {hasAccount && (
             <div className="ProfileButton">
-              <button className="btn">Club Profile Page</button>
+              <button className="btn">
+                <a id="profile-link" href={`account?id=${userId}`} >
+                  Club Profile Page
+                </a>
+              </button>
             </div>
           )}
         </div>

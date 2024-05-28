@@ -124,6 +124,7 @@ function Post({ closeModal }) {
           <div className="postFileContainer">
             <input
               type="file"
+              accept=".png, .jpg, .jpeg"
               className="postFileInput"
               ref={fileInputRef} // Set the ref to the file input
               onChange={handleFileChange}

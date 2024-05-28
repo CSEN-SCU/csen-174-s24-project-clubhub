@@ -2,7 +2,26 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { auth, firestore } from "../../Firebase";
 import { signOut } from "firebase/auth";
-import { doc, getDoc, getDocs, collection, query, orderBy, setDoc } from "firebase/firestore";
+import {
+  doc,
+  getDoc,
+  collection,
+  query,
+  orderBy,
+  arrayUnion,
+  arrayRemove,
+  onSnapshot,
+  updateDoc,
+  where,
+} from "firebase/firestore";
+import {
+  ref,
+  uploadBytesResumable,
+  getDownloadURL,
+  deleteObject,
+} from "firebase/storage";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPencilAlt } from "@fortawesome/free-solid-svg-icons";
 import "./account.css";
 // import ACM_flyer from "../../assets/ACM_flyer.png";
 // import ACM2 from "../../assets/ACM2.png";
@@ -75,16 +94,70 @@ function Account(
     // const userId = localStorage.getItem("userId");
     if (!userId) return;
 
-    const userPostsRef = collection(firestore, `users/${userId}/posts`);
-    const q = query(userPostsRef, orderBy('timestamp', 'desc'));
     try {
-      const snapshot = await getDocs(q);
-      const postData = snapshot.docs.map((doc) => doc.data());
-      setUserPosts(postData);
+      const postsCollection = collection(firestore, "posts");
+      const q = query(
+        postsCollection,
+        where("userID", "==", userId),
+        orderBy("timestamp", "desc")
+      );
+      const unsubscribe = onSnapshot(
+        q,
+        (snapshot) => {
+          const fetchedPosts = snapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+          }));
+          setUserPosts(fetchedPosts);
+        },
+        (error) => {
+          console.error("Error fetching posts !!!:", error);
+        }
+      );
+
+      return () => unsubscribe();
     } catch (error) {
       console.error("Error fetching user posts:", error);
-    }finally {
-      setLoading(false);
+    }
+  };
+
+  const fetchHighlightedPosts = async () => {
+    const userId = localStorage.getItem("userId");
+    if (!userId) return;
+
+    const userRef = doc(firestore, "users", userId);
+
+    try {
+      // Fetch the user's highlighted post IDs
+      const userSnapshot = await getDoc(userRef);
+      if (userSnapshot.exists()) {
+        const userData = userSnapshot.data();
+        const highlightedPostIds = userData.highlightedPosts || [];
+
+        if (highlightedPostIds.length > 0) {
+          // Fetch the highlighted posts from the posts collection
+          const postsCollectionRef = collection(firestore, "posts");
+          const postsQuery = query(
+            postsCollectionRef,
+            where("__name__", "in", highlightedPostIds)
+          );
+
+          onSnapshot(postsQuery, (snapshot) => {
+            const postData = snapshot.docs.map((doc) => ({
+              id: doc.id,
+              ...doc.data(),
+            }));
+            setHighlightedPosts(postData);
+          });
+        } else {
+          // No highlighted posts
+          setHighlightedPosts([]);
+        }
+      } else {
+        console.log("User document does not exist.");
+      }
+    } catch (error) {
+      console.error("Error fetching highlighted posts:", error);
     }
   };
 
@@ -146,6 +219,7 @@ function Account(
   };
 
   const renderBioSection = () => {
+    const isProfileOwner = searchParams.get("id") === "1111";
     if (isEditing) {
       return (
         <div className="render__bio__container">
@@ -166,70 +240,70 @@ function Account(
       return (
         <div>
           <p className="bio__text">{bio}</p>
-          <button className="btn edit__btn" onClick={handleEditClick}>Edit</button>
+          {isProfileOwner && (
+            <div className="acc__btn__container">
+              <button className="btn edit__btn" onClick={handleEditClick}>
+                Edit
+              </button>
+              <button onClick={handleLogout} className="logout-button btn">
+                Log Out
+              </button>
+            </div>
+          )}
         </div>
       );
     }
   };
 
-  // const regularPosts = [
-  //   {
-  //     id: 1,
-  //     title: "Regular Post 1",
-  //     content: "This is the content of regular post 1.",
-  //     flyerUrl: ACM_flyer,
-  //   },
-  //   {
-  //     id: 2,
-  //     title: "Regular Post 2",
-  //     content: "This is the content of regular post 2.",
-  //     flyerUrl: ACM2,
-  //   },
-  //   {
-  //     id: 3,
-  //     title: "Regular Post 3",
-  //     content: "This is the content of regular post 3.",
-  //     flyerUrl: ACM3,
-  //   },
-  //   {
-  //     id: 4,
-  //     title: "Regular Post 4",
-  //     content: "This is the content of regular post 4.",
-  //     flyerUrl: ACM4,
-  //   },
-  //   {
-  //     id: 5,
-  //     title: "Regular Post 5",
-  //     content: "This is the content of regular post 5.",
-  //     flyerUrl: ACM5,
-  //   },
-  // ];
-
-  // Hardcoded sample highlighted posts with flyer images
-  const highlightedPosts = [
-    {
-      id: 1,
-      title: "Highlighted Post 1",
-      content: "This is the content of highlighted post 1.",
-      flyerUrl: ACMH1
-    },
-    {
-      id: 2,
-      title: "Highlighted Post 2",
-      content: "This is the content of highlighted post 2.",
-      flyerUrl: ACMH2
-    },
-  ];
-
-  if (loading) {
-    return <div>Loading...</div>;
-  }
+  const renderHighlightButton = (post) => {
+    const isHighlighted = highlightedPosts.some(
+      (highlightedPost) => highlightedPost.id === post.id
+    );
+    const starStyle = {
+      cursor: "pointer",
+      color: isHighlighted ? "#FFA500" : "grey", 
+      fontSize: "24px", 
+    };
+  
+    // Check if the user is allowed to highlight based on the search parameter
+    if (searchParams.get("id") === "1111") {
+      return (
+        <span onClick={() => handleHighlightClick(post.id)} style={starStyle}>
+          ★
+        </span>
+      );
+    }
+    return null;
+  };
 
   return (
     <div className="account-container">
       <div className="top-half">
         <div className="profile-info">
-          {profilePic && <img src={profilePic} alt="Profile" />}
+          <label
+            htmlFor="profilePicInput"
+            className={isEditing ? "lower-opacity" : ""}
+          >
+            {profilePic ? (
+              <div className="profile-pic-wrapper">
+                <img src={profilePic} alt="Profile" />
+                <FontAwesomeIcon
+                  icon={faPencilAlt}
+                  className={`edit-icon ${isEditing ? "icon-is-editing" : ""}`}
+                />
+              </div>
+            ) : (
+              <div>Profile Picture</div>
+            )}
+          </label>
+          <input
+            id="profilePicInput"
+            type="file"
+            accept=".png, .jpg, .jpeg"
+            onChange={handleFileChange}
+            style={{ display: "none" }}
+            disabled={!isEditing}
+          />
         </div>
       </div>
       <div className="bottom-half">
@@ -237,6 +311,7 @@ function Account(
           <div className="nameEmailContainer">
             <h1>{name}</h1>
             <p>{email}</p>
+            {renderFollowButton()}
           </div>
           <div className="following__container">
             <h3>Following</h3>
@@ -272,9 +347,9 @@ function Account(
                     <h4>{post.title}</h4>
                     <p>{post.text}</p>
                   </div>
-                  <button onClick={() => handleHighlightClick(post.id)}>Highlight Post</button>
-            </div>
-            ))}
+                  {renderHighlightButton(post)}
+                </div>
+              ))}
             </div>
           )}
         </div>

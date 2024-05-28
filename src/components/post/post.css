@@ -37,6 +37,10 @@
     font-size: var(--smaller-font-size);
 }
 
+.post__title {
+    margin-bottom: 10px;
+}
+
 .post__headerDesc {
     margin-bottom: 25px;
 }
