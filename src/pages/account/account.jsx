@@ -197,20 +197,18 @@ function Account() {
         const highlightedPostIds = userData.highlightedPosts || [];
   
         if (highlightedPostIds.includes(postId)) {
+          // Optimistically update the UI
+          setHighlightedPosts((prevHighlightedPosts) =>
+            prevHighlightedPosts.filter((post) => post.id !== postId)
+          );
+  
+          // Update Firestore
           await updateDoc(userRef, {
             highlightedPosts: arrayRemove(postId),
           });
           console.log("Post unhighlighted successfully!");
-  
-          setHighlightedPosts((prevHighlightedPosts) =>
-            prevHighlightedPosts.filter((post) => post.id !== postId)
-          );
         } else {
-          await updateDoc(userRef, {
-            highlightedPosts: arrayUnion(postId),
-          });
-          console.log("Post highlighted successfully!");
-  
+          // Optimistically update the UI
           const postRef = doc(firestore, "posts", postId);
           const postSnapshot = await getDoc(postRef);
           if (postSnapshot.exists()) {
@@ -220,6 +218,12 @@ function Account() {
               postData,
             ]);
           }
+  
+          // Update Firestore
+          await updateDoc(userRef, {
+            highlightedPosts: arrayUnion(postId),
+          });
+          console.log("Post highlighted successfully!");
         }
       } else {
         console.log("User document does not exist.");
@@ -228,6 +232,52 @@ function Account() {
       console.error("Error toggling highlight:", error);
     }
   };
+  
+
+  // const handleHighlightClick = async (postId) => {
+  //   const userId = localStorage.getItem("userId");
+  //   if (!userId || !postId) return;
+  
+  //   const userRef = doc(firestore, "users", userId);
+  
+  //   try {
+  //     const userSnapshot = await getDoc(userRef);
+  //     if (userSnapshot.exists()) {
+  //       const userData = userSnapshot.data();
+  //       const highlightedPostIds = userData.highlightedPosts || [];
+  
+  //       if (highlightedPostIds.includes(postId)) {
+  //         await updateDoc(userRef, {
+  //           highlightedPosts: arrayRemove(postId),
+  //         });
+  //         console.log("Post unhighlighted successfully!");
+  
+  //         setHighlightedPosts((prevHighlightedPosts) =>
+  //           prevHighlightedPosts.filter((post) => post.id !== postId)
+  //         );
+  //       } else {
+  //         await updateDoc(userRef, {
+  //           highlightedPosts: arrayUnion(postId),
+  //         });
+  //         console.log("Post highlighted successfully!");
+  
+  //         const postRef = doc(firestore, "posts", postId);
+  //         const postSnapshot = await getDoc(postRef);
+  //         if (postSnapshot.exists()) {
+  //           const postData = { id: postSnapshot.id, ...postSnapshot.data() };
+  //           setHighlightedPosts((prevHighlightedPosts) => [
+  //             ...prevHighlightedPosts,
+  //             postData,
+  //           ]);
+  //         }
+  //       }
+  //     } else {
+  //       console.log("User document does not exist.");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error toggling highlight:", error);
+  //   }
+  // };
 
   const handleLogout = async () => {
     try {
@@ -387,13 +437,19 @@ function Account() {
     // Check if the user is allowed to highlight based on the search parameter
     if (searchParams.get("id") === "1111") {
       return (
-        <span onClick={() => handleHighlightClick(post.id)} style={starStyle}>
+        <span
+          onClick={(e) => {
+            e.stopPropagation();
+            handleHighlightClick(post.id);
+          }}
+          style={starStyle}
+        >
           ★
         </span>
       );
     }
     return null;
-  };
+  };  
 
   return (
     <div className="account-container">
