@@ -25,8 +25,6 @@ function List(props) {
       }
       setData(clubsData);
     };
-    console.log(localStorage.getItem("clubsData"));
-
     fetchData();
   }, []);
 
