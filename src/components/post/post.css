@@ -19,6 +19,10 @@
     margin-top: 15px;
 }
 
+.postAvatarPic{
+    border-radius: 50px;
+}
+
 .post__image {
     border-radius: 20px;
     width: 500px;
