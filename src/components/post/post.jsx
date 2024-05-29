@@ -31,13 +31,13 @@ function post({
   image,
   userID,
   title,
-  // avatar
+  avatar
 }) {
   return (
     <div className="post">
       <div className="post__avatar">
         <Link to={`/account?id=${userID}`}>
-          <img src={Avatar} alt="Avatar" />
+          <img className = "postAvatarPic" src={avatar} alt="Avatar" />
         </Link>
       </div>
       <div className="post__body">

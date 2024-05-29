@@ -180,7 +180,7 @@ function Home() {
             image={post.imageUrl}
             userID={post.userID}
             title={post.title}
-            // avatar={post.avatar}
+            avatar={post.avatar}
           />
         ))
       )}

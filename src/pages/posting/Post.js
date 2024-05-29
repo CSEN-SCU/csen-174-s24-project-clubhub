@@ -45,6 +45,11 @@ function Post({ closeModal }) {
   };
 
   const handleSubmit = async () => {
+    if (!title || !text) {
+      alert("Posts must include a title and description before submission");
+      return;
+    }
+    
     alert(`You entered: ${text}`);
     try {
       let postData = {
@@ -56,6 +61,7 @@ function Post({ closeModal }) {
       if (userDocRef.exists()) {
         const userData = userDocRef.data();
         postData.name = userData.name; // Include the user's name in the post data
+        postData.avatar = userData.profilePic;
         postData.title = title;
       } else {
         console.log("No such document!");
