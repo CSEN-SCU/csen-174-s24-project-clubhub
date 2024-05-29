@@ -84,6 +84,7 @@ function Post({ closeModal }) {
         fileInputRef.current.value = ""; //either reset the feild and leave the modal open
 
         closeModal(false); //or close the modal
+        localStorage.removeItem(`userPosts_${userID}`);
 
         alert("Post submitted successfully!");
       } else {
@@ -92,7 +93,7 @@ function Post({ closeModal }) {
           text: text,
           timestamp: new Date(),
         });
-
+        localStorage.removeItem(`userPosts_${userID}`);
         alert("Post submitted successfully!");
       }
     } catch (error) {
@@ -134,10 +135,10 @@ function Post({ closeModal }) {
             )}
           </div>
 
-          <div className = "postDescContainer">
-          <textarea
+          <div className="postDescContainer">
+            <textarea
               type="text"
-              className = "postTitleInput"
+              className="postTitleInput"
               placeholder="Enter title of your event..."
               value={title}
               onChange={handleTitleChange}

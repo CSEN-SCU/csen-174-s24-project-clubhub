@@ -96,19 +96,33 @@ function Account() {
   const fetchUserInfo = async () => {
     if (!userId) return;
 
+    const cachedUserInfo = localStorage.getItem(`userInfo_${userId}`);
+    if (cachedUserInfo) {
+      const userData = JSON.parse(cachedUserInfo);
+      setName(userData.name);
+      setEmail(userData.email);
+      setBio(userData.bio || "Tell the community about yourself...");
+      setProfilePic(userData.profilePic || "");
+      console.log("Using cached user info");
+      return;
+    }
+
     const userRef = doc(firestore, "users", userId);
     try {
-      onSnapshot(userRef, (docSnap) => {
+      const unsubscribe = onSnapshot(userRef, (docSnap) => {
         if (docSnap.exists()) {
           const userData = docSnap.data();
           setName(userData.name);
           setEmail(userData.email);
           setBio(userData.bio || "Tell the community about yourself...");
           setProfilePic(userData.profilePic || "");
+          localStorage.setItem(`userInfo_${userId}`, JSON.stringify(userData));
+          console.log("Local storage userinfo set")
         } else {
           console.log("No user data available");
         }
       });
+      return () => unsubscribe();
     } catch (error) {
       console.error("Error fetching user info:", error);
     }
@@ -116,6 +130,13 @@ function Account() {
 
   const fetchUserPosts = async () => {
     if (!userId) return;
+
+    const cachedUserPosts = localStorage.getItem(`userPosts_${userId}`);
+    if (cachedUserPosts) {
+      console.log("Using cached user posts");
+      setUserPosts(JSON.parse(cachedUserPosts));
+      return;
+    }
 
     try {
       const postsCollection = collection(firestore, "posts");
@@ -132,9 +153,14 @@ function Account() {
             ...doc.data(),
           }));
           setUserPosts(fetchedPosts);
+          localStorage.setItem(
+            `userPosts_${userId}`,
+            JSON.stringify(fetchedPosts)
+          );
+          console.log("Local storage userposts set")
         },
         (error) => {
-          console.error("Error fetching posts !!!:", error);
+          console.error("Error fetching posts:", error);
         }
       );
 
@@ -147,6 +173,15 @@ function Account() {
   const fetchHighlightedPosts = async () => {
     const userId = localStorage.getItem("userId");
     if (!userId) return;
+
+    const cachedHighlightedPosts = localStorage.getItem(
+      `highlightedPosts_${userId}`
+    );
+    if (cachedHighlightedPosts) {
+      setHighlightedPosts(JSON.parse(cachedHighlightedPosts));
+      console.log("Using cached highlighted posts");
+      return;
+    }
 
     const userRef = doc(firestore, "users", userId);
 
@@ -171,6 +206,11 @@ function Account() {
               ...doc.data(),
             }));
             setHighlightedPosts(postData);
+            localStorage.setItem(
+              `highlightedPosts_${userId}`,
+              JSON.stringify(postData)
+            );
+            console.log("Local storage highlightedposts set")
           });
         } else {
           // No highlighted posts
@@ -187,28 +227,36 @@ function Account() {
   const handleHighlightClick = async (postId) => {
     const userId = localStorage.getItem("userId");
     if (!userId || !postId) return;
-  
+
     const userRef = doc(firestore, "users", userId);
-  
+
     try {
       const userSnapshot = await getDoc(userRef);
       if (userSnapshot.exists()) {
         const userData = userSnapshot.data();
         const highlightedPostIds = userData.highlightedPosts || [];
-  
+
         if (highlightedPostIds.includes(postId)) {
           // Optimistically update the UI
           setHighlightedPosts((prevHighlightedPosts) =>
             prevHighlightedPosts.filter((post) => post.id !== postId)
           );
-  
+
           // Update Firestore
           await updateDoc(userRef, {
             highlightedPosts: arrayRemove(postId),
           });
           console.log("Post unhighlighted successfully!");
+
+          setHighlightedPosts((prevHighlightedPosts) =>
+            prevHighlightedPosts.filter((post) => post.id !== postId)
+          );
         } else {
-          // Optimistically update the UI
+          await updateDoc(userRef, {
+            highlightedPosts: arrayUnion(postId),
+          });
+          console.log("Post highlighted successfully!");
+
           const postRef = doc(firestore, "posts", postId);
           const postSnapshot = await getDoc(postRef);
           if (postSnapshot.exists()) {
@@ -218,7 +266,7 @@ function Account() {
               postData,
             ]);
           }
-  
+
           // Update Firestore
           await updateDoc(userRef, {
             highlightedPosts: arrayUnion(postId),
@@ -232,26 +280,25 @@ function Account() {
       console.error("Error toggling highlight:", error);
     }
   };
-  
 
   // const handleHighlightClick = async (postId) => {
   //   const userId = localStorage.getItem("userId");
   //   if (!userId || !postId) return;
-  
+
   //   const userRef = doc(firestore, "users", userId);
-  
+
   //   try {
   //     const userSnapshot = await getDoc(userRef);
   //     if (userSnapshot.exists()) {
   //       const userData = userSnapshot.data();
   //       const highlightedPostIds = userData.highlightedPosts || [];
-  
+
   //       if (highlightedPostIds.includes(postId)) {
   //         await updateDoc(userRef, {
   //           highlightedPosts: arrayRemove(postId),
   //         });
   //         console.log("Post unhighlighted successfully!");
-  
+
   //         setHighlightedPosts((prevHighlightedPosts) =>
   //           prevHighlightedPosts.filter((post) => post.id !== postId)
   //         );
@@ -260,7 +307,7 @@ function Account() {
   //           highlightedPosts: arrayUnion(postId),
   //         });
   //         console.log("Post highlighted successfully!");
-  
+
   //         const postRef = doc(firestore, "posts", postId);
   //         const postSnapshot = await getDoc(postRef);
   //         if (postSnapshot.exists()) {
@@ -310,6 +357,8 @@ function Account() {
   };
 
   const handleSaveClick = () => {
+    localStorage.removeItem(`userInfo_${userId}`);
+    fetchUserInfo();
     updateBio();
     setIsEditing(false);
   };
@@ -430,10 +479,10 @@ function Account() {
     );
     const starStyle = {
       cursor: "pointer",
-      color: isHighlighted ? "#FFA500" : "grey", 
-      fontSize: "24px", 
+      color: isHighlighted ? "#FFA500" : "grey",
+      fontSize: "24px",
     };
-  
+
     // Check if the user is allowed to highlight based on the search parameter
     if (searchParams.get("id") === "1111") {
       return (
@@ -449,7 +498,7 @@ function Account() {
       );
     }
     return null;
-  };  
+  };
 
   return (
     <div className="account-container">
