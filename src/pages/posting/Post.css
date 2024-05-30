@@ -1,157 +1,167 @@
 .postBackground {
-    width: 100vw;
-    height: 100vh;
-    left: 0;
-    top: 0;
-    background-color: var(--light-gray);
-    position: absolute;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 998;
-  }
-  
-  .postContainer {
-    width: 65vw;
-    height: 80vh;
-    border-radius: 12px;
-    background-color: var(--body-color);
-    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
-    display: flex;
-    flex-direction: column;
-    padding: 30px;
-    /* max-height: 400px;  */
-    overflow-y: auto;
-    z-index: 999;
-  }
+  width: 100vw;
+  height: 100vh;
+  left: 0;
+  top: 0;
+  background-color: var(--light-gray);
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 998;
+}
 
-  .postTitle {
-    display: inline-block;
-    text-align: center;
-    margin-top: 10px;;
-    /* background-color: blue; */
-  }
-  
-  .postTitle h2 {
-    font-weight: var(--font-bold);
-    color: var(--title-color)
-  }
+.postContainer {
+  width: 65vw;
+  height: 80vh;
+  border-radius: 12px;
+  background-color: var(--body-color);
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+  display: flex;
+  flex-direction: column;
+  padding: 30px;
+  /* max-height: 400px;  */
+  overflow-y: auto;
+  z-index: 999;
+}
 
-  .postCloseBtn {
-    display: flex;
-    justify-content: flex-end;
-  }
-  
-  .postCloseBtn button {
-    background-color: transparent;
-    border: none;
-    cursor: pointer;
-    width: 20px;
-  }
-  
-  .postBody {
-    /* flex: 50%; */
-    margin-top: 30px;
-    display: flex;
-    text-align: center;
-    height: 80%;
-    /* background-color: pink; */
+.postTitle {
+  display: inline-block;
+  text-align: center;
+  margin-top: 10px;
+  /* background-color: blue; */
+}
 
-  }
+.postTitle h2 {
+  font-weight: var(--font-bold);
+  color: var(--title-color);
+}
 
-  .imagePreview{
-    display: flex;
-    flex-direction: column;
-    align-items: center; /* Center vertically within the preview container */
-    justify-content: center; /* Center horizontally within the preview container */
-    margin-top: 10px;
-  }
+.postCloseBtn {
+  display: flex;
+  justify-content: flex-end;
+}
 
-  .postDescInput{
-    width:100%;
-    height: 85%;
-    border-radius: 20px;
-    background-color: var(--white);
-    border: 1px solid var(--light-gray);
-    box-shadow: var(--shadow);
-    padding: 20px;
-    resize: none;
-  }
+.postCloseBtn button {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  width: 20px;
+}
 
-  .postTitleInput{
-    width: 100%;
-    height: 17%;
-    border-radius: 20px;
-    background-color: var(--white);
-    border: 1px solid #ccc;
-    box-shadow: var(--shadow);
-    padding: 20px;
-    resize: none;
-  }
-  
-  .postFileContainer{
-    width: 50%;
-    /* background-color: red; */
-    /* display: flex;
+.postBody {
+  /* flex: 50%; */
+  margin-top: 30px;
+  display: flex;
+  text-align: center;
+  height: 80%;
+  /* background-color: pink; */
+}
+
+.imagePreview {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Center vertically within the preview container */
+  justify-content: center; /* Center horizontally within the preview container */
+  margin-top: 10px;
+}
+
+.postDescInput {
+  width: 100%;
+  height: 85%;
+  border-radius: 20px;
+  background-color: var(--white);
+  border: 1px solid var(--light-gray);
+  box-shadow: var(--shadow);
+  padding: 20px;
+  resize: none;
+}
+
+.postTitleInput {
+  width: 100%;
+  height: 17%;
+  border-radius: 20px;
+  background-color: var(--white);
+  border: 1px solid #ccc;
+  box-shadow: var(--shadow);
+  padding: 20px;
+  resize: none;
+}
+
+.postFileContainer {
+  width: 50%;
+  /* background-color: red; */
+  /* display: flex;
     justify-content: center; */
-    display: flex; /* Flexbox for easy centering */
-    flex-direction: column; /* Column direction to stack elements vertically */
-    align-items: center; /* Center horizontally */
-    justify-content: center; /* Center vertically */
-    gap: 10px;
+  display: flex; /* Flexbox for easy centering */
+  flex-direction: column; /* Column direction to stack elements vertically */
+  align-items: center; /* Center horizontally */
+  justify-content: center; /* Center vertically */
+  gap: 10px;
+}
+
+.postRemoveFileBtn {
+  margin-top: 15px;
+  box-shadow: 0 -1px 0 rgba(0, 0, 0, 0.04), 0 1px 1px rgba(0, 0, 0, 0.25);
+  font-size: var(--small-font-size);
+  background-color: var(--white);
+  color: var(--title-color);
+}
+
+.postImage {
+  max-width: 250px;
+  border: 1px solid #ccc;
+  border-radius: 20px;
+  box-shadow: var(--shadow);
+}
+
+.postDescContainer {
+  width: 50%;
+  padding: 20px;
+}
+
+.PostFooter {
+  margin-top: 30px;
+  /* background-color: orange; */
+}
+
+.postSubmitBtn {
+  box-shadow: 0 -1px 0 rgba(0, 0, 0, 0.04), 0 1px 1px rgba(0, 0, 0, 0.25);
+  margin-bottom: 10px;
+  margin-top: 10px;
+}
+
+.spinner {
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-left-color: #000;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  animation: spin 1s linear infinite;
+  margin: auto;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 1200px) {
+  .postBody {
+    flex-direction: column;
   }
 
-  .postRemoveFileBtn{
-    margin-top: 15px;
-    box-shadow: 0 -1px 0 rgba(0, 0, 0, 0.04), 0 1px 1px rgba(0, 0, 0, 0.25);
-    font-size: var(--small-font-size);
-    background-color: var(--white);
-    color: var(--title-color)
+  .postFileContainer {
+    width: 100%;
   }
 
-  .postImage{
-    max-width: 250px;
-    border: 1px solid #ccc;
-    border-radius: 20px;
-    box-shadow: var(--shadow);
+  .postDescContainer {
+    width: 100%;
+    height: 100%;
   }
 
-  .postDescContainer{
-    width:50%;
-    padding: 20px;
+  .postImage {
+    max-height: 275px;
   }
-
-  .PostFooter{
-    margin-top: 30px;
-    /* background-color: orange; */
-  }
-
-  .postSubmitBtn{
-    box-shadow: 0 -1px 0 rgba(0, 0, 0, 0.04), 0 1px 1px rgba(0, 0, 0, 0.25);
-    margin-bottom: 10px;
-    margin-top: 10px;
-  }
-
-  @media (max-width: 1200px) {
-    .postBody {
-      flex-direction: column;
-    }
-
-    .postFileContainer{
-      width:100%;
-    }
-
-    .postDescContainer{
-      width:100%;
-      height: 100%;
-    }
-
-    .postImage{
-      max-height: 275px;
-    }
-  } 
-
-  
-
-
-  
+}

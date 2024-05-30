@@ -11,6 +11,7 @@ function Post({ closeModal }) {
   const [text, setText] = useState("");
   const [title, setTitle] = useState("");
   const [imageUrl, setImageUrl] = useState("");
+  const [loading, setLoading] = useState(false);
   const user = auth.currentUser;
   const userID = user.uid;
   const fileInputRef = useRef();
@@ -56,7 +57,8 @@ function Post({ closeModal }) {
       return;
     }
 
-    alert(`You entered: ${text}`);
+    setLoading(true);
+
     try {
       let postData = {
         text: text,
@@ -100,18 +102,18 @@ function Post({ closeModal }) {
         fileInputRef.current.value = "";
         closeModal(false);
         localStorage.removeItem(`userPosts_${userID}`);
-        alert("Post submitted successfully!");
       } else {
         const docRef = await addDoc(collection(firestore, "posts"), {
           text: text,
           timestamp: new Date(),
         });
         localStorage.removeItem(`userPosts_${userID}`);
-        alert("Post submitted successfully!");
       }
     } catch (error) {
       console.error("Error submitting post: ", error);
       alert("There was an error submitting your post. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -162,9 +164,13 @@ function Post({ closeModal }) {
         </div>
 
         <div className="PostFooter">
-          <button className="postSubmitBtn btn" onClick={handleSubmit}>
-            Submit
-          </button>
+          {loading ? (
+            <div className="spinner"></div>
+          ) : (
+            <button className="postSubmitBtn btn" onClick={handleSubmit}>
+              Submit
+            </button>
+          )}
         </div>
       </div>
     </div>
