@@ -117,7 +117,7 @@ function Account() {
           setBio(userData.bio || "Tell the community about yourself...");
           setProfilePic(userData.profilePic || "");
           localStorage.setItem(`userInfo_${userId}`, JSON.stringify(userData));
-          console.log("Local storage userinfo set")
+          console.log("Local storage userinfo set");
         } else {
           console.log("No user data available");
         }
@@ -157,7 +157,7 @@ function Account() {
             `userPosts_${userId}`,
             JSON.stringify(fetchedPosts)
           );
-          console.log("Local storage userposts set")
+          console.log("Local storage userposts set");
         },
         (error) => {
           console.error("Error fetching posts:", error);
@@ -210,7 +210,7 @@ function Account() {
               `highlightedPosts_${userId}`,
               JSON.stringify(postData)
             );
-            console.log("Local storage highlightedposts set")
+            console.log("Local storage highlightedposts set");
           });
         } else {
           // No highlighted posts
@@ -247,6 +247,7 @@ function Account() {
             highlightedPosts: arrayRemove(postId),
           });
           console.log("Post unhighlighted successfully!");
+          localStorage.removeItem(`highlightedPosts_${userId}`);
 
           setHighlightedPosts((prevHighlightedPosts) =>
             prevHighlightedPosts.filter((post) => post.id !== postId)
@@ -256,6 +257,7 @@ function Account() {
             highlightedPosts: arrayUnion(postId),
           });
           console.log("Post highlighted successfully!");
+          localStorage.removeItem(`highlightedPosts_${userId}`);
 
           const postRef = doc(firestore, "posts", postId);
           const postSnapshot = await getDoc(postRef);
