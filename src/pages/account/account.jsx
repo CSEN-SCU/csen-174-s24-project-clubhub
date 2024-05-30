@@ -186,14 +186,12 @@ function Account() {
     const userRef = doc(firestore, "users", userId);
 
     try {
-      // Fetch the user's highlighted post IDs
       const userSnapshot = await getDoc(userRef);
       if (userSnapshot.exists()) {
         const userData = userSnapshot.data();
         const highlightedPostIds = userData.highlightedPosts || [];
 
         if (highlightedPostIds.length > 0) {
-          // Fetch the highlighted posts from the posts collection
           const postsCollectionRef = collection(firestore, "posts");
           const postsQuery = query(
             postsCollectionRef,
@@ -213,7 +211,6 @@ function Account() {
             console.log("Local storage highlightedposts set");
           });
         } else {
-          // No highlighted posts
           setHighlightedPosts([]);
         }
       } else {
@@ -237,7 +234,6 @@ function Account() {
         const highlightedPostIds = userData.highlightedPosts || [];
 
         if (highlightedPostIds.includes(postId)) {
-          // Optimistically update the UI
           setHighlightedPosts((prevHighlightedPosts) =>
             prevHighlightedPosts.filter((post) => post.id !== postId)
           );
@@ -340,7 +336,7 @@ function Account() {
 
   const handleEditClick = () => {
     setIsEditing(true);
-    setEditedBio(bio); // Set the editedBio state to the current bio
+    setEditedBio(bio);
   };
 
   const updateBio = async () => {
@@ -494,6 +490,7 @@ function Account() {
             handleHighlightClick(post.id);
           }}
           style={starStyle}
+          className="highlight-star"
         >
           ★
         </span>
