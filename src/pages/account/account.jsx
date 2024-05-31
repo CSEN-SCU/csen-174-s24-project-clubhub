@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { auth, firestore, storage } from "../../Firebase";
 import { signOut } from "firebase/auth";
 import {
@@ -23,16 +23,15 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPencilAlt } from "@fortawesome/free-solid-svg-icons";
 import "./account.css";
-// import ACMH1 from "../../assets/ACMH1.png";
-// import ACMH2 from "../../assets/ACMH2.png";
-import { useSearchParams } from "react-router-dom";
 import FollowButton from "../../components/follow/FollowButton";
 import AccPost from "./AccPost";
+import imageCompression from "browser-image-compression";
 
 function Account() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [profilePic, setProfilePic] = useState("");
+  const [tempProfilePic, setTempProfilePic] = useState("");
   const navigate = useNavigate();
   const [bio, setBio] = useState("Tell the community about yourself...");
   const [isEditing, setIsEditing] = useState(false);
@@ -86,12 +85,6 @@ function Account() {
     }
     return null;
   };
-
-  // if (searchParams.get("id") === "1111") {
-  //   userId = localStorage.getItem("userId");
-  // } else {
-  //   userId = searchParams.get("id");
-  // }
 
   const fetchUserInfo = async () => {
     if (!userId) return;
@@ -186,14 +179,12 @@ function Account() {
     const userRef = doc(firestore, "users", userId);
 
     try {
-      // Fetch the user's highlighted post IDs
       const userSnapshot = await getDoc(userRef);
       if (userSnapshot.exists()) {
         const userData = userSnapshot.data();
         const highlightedPostIds = userData.highlightedPosts || [];
 
         if (highlightedPostIds.length > 0) {
-          // Fetch the highlighted posts from the posts collection
           const postsCollectionRef = collection(firestore, "posts");
           const postsQuery = query(
             postsCollectionRef,
@@ -213,7 +204,6 @@ function Account() {
             console.log("Local storage highlightedposts set");
           });
         } else {
-          // No highlighted posts
           setHighlightedPosts([]);
         }
       } else {
@@ -237,12 +227,10 @@ function Account() {
         const highlightedPostIds = userData.highlightedPosts || [];
 
         if (highlightedPostIds.includes(postId)) {
-          // Optimistically update the UI
           setHighlightedPosts((prevHighlightedPosts) =>
             prevHighlightedPosts.filter((post) => post.id !== postId)
           );
 
-          // Update Firestore
           await updateDoc(userRef, {
             highlightedPosts: arrayRemove(postId),
           });
@@ -269,7 +257,6 @@ function Account() {
             ]);
           }
 
-          // Update Firestore
           await updateDoc(userRef, {
             highlightedPosts: arrayUnion(postId),
           });
@@ -283,51 +270,6 @@ function Account() {
     }
   };
 
-  // const handleHighlightClick = async (postId) => {
-  //   const userId = localStorage.getItem("userId");
-  //   if (!userId || !postId) return;
-
-  //   const userRef = doc(firestore, "users", userId);
-
-  //   try {
-  //     const userSnapshot = await getDoc(userRef);
-  //     if (userSnapshot.exists()) {
-  //       const userData = userSnapshot.data();
-  //       const highlightedPostIds = userData.highlightedPosts || [];
-
-  //       if (highlightedPostIds.includes(postId)) {
-  //         await updateDoc(userRef, {
-  //           highlightedPosts: arrayRemove(postId),
-  //         });
-  //         console.log("Post unhighlighted successfully!");
-
-  //         setHighlightedPosts((prevHighlightedPosts) =>
-  //           prevHighlightedPosts.filter((post) => post.id !== postId)
-  //         );
-  //       } else {
-  //         await updateDoc(userRef, {
-  //           highlightedPosts: arrayUnion(postId),
-  //         });
-  //         console.log("Post highlighted successfully!");
-
-  //         const postRef = doc(firestore, "posts", postId);
-  //         const postSnapshot = await getDoc(postRef);
-  //         if (postSnapshot.exists()) {
-  //           const postData = { id: postSnapshot.id, ...postSnapshot.data() };
-  //           setHighlightedPosts((prevHighlightedPosts) => [
-  //             ...prevHighlightedPosts,
-  //             postData,
-  //           ]);
-  //         }
-  //       }
-  //     } else {
-  //       console.log("User document does not exist.");
-  //     }
-  //   } catch (error) {
-  //     console.error("Error toggling highlight:", error);
-  //   }
-  // };
-
   const handleLogout = async () => {
     try {
       localStorage.removeItem("userId");
@@ -340,7 +282,7 @@ function Account() {
 
   const handleEditClick = () => {
     setIsEditing(true);
-    setEditedBio(bio); // Set the editedBio state to the current bio
+    setEditedBio(bio);
   };
 
   const updateBio = async () => {
@@ -358,15 +300,56 @@ function Account() {
     }
   };
 
-  const handleSaveClick = () => {
+  const handleSaveClick = async () => {
+    const userId = localStorage.getItem("userId");
+    if (!userId) return;
+
+    if (tempProfilePic) {
+      const oldProfilePic = profilePic;
+      setProfilePic(tempProfilePic);
+      setTempProfilePic("");
+
+      const userRef = doc(firestore, "users", userId);
+      try {
+        await updateDoc(userRef, {
+          bio: editedBio,
+          profilePic: tempProfilePic,
+        });
+
+        if (oldProfilePic) {
+          const oldProfilePicRef = ref(storage, oldProfilePic);
+          deleteObject(oldProfilePicRef).catch((error) => {
+            console.error("Error deleting old profile picture:", error);
+          });
+        }
+      } catch (error) {
+        console.error("Error updating profile picture:", error);
+      }
+    } else {
+      await updateBio();
+    }
+
     localStorage.removeItem(`userInfo_${userId}`);
     fetchUserInfo();
-    updateBio();
     setIsEditing(false);
   };
 
   const handleCancelClick = () => {
     setIsEditing(false);
+    deleteTempProfilePic();
+    setTempProfilePic("");
+  };
+
+  const deleteTempProfilePic = async () => {
+    if (tempProfilePic) {
+      const tempProfilePicRef = ref(storage, tempProfilePic);
+      try {
+        await deleteObject(tempProfilePicRef);
+        console.log("Temporary profile picture deleted successfully.");
+      } catch (error) {
+        console.error("Error deleting temporary profile picture:", error);
+      }
+    }
   };
 
   const handleInputChange = (e) => {
@@ -395,40 +378,31 @@ function Account() {
   const handleUpload = async (file) => {
     if (!file) return;
 
-    const storageRef = ref(storage, `profilePics/${file.name}`);
-    const uploadTask = uploadBytesResumable(storageRef, file);
+    const options = {
+      maxSizeMB: 0.2,
+      maxWidthOrHeight: 500,
+      useWebWorker: true,
+    };
 
-    uploadTask.on(
-      "state_changed",
-      (snapshot) => {},
-      (error) => {
-        console.error("Upload failed:", error);
-      },
-      async () => {
-        const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-        const oldProfilePic = profilePic;
-        setProfilePic(downloadURL);
+    try {
+      const compressedFile = await imageCompression(file, options);
+      const storageRef = ref(storage, `profilePics/${compressedFile.name}`);
+      const uploadTask = uploadBytesResumable(storageRef, compressedFile);
 
-        const userId = localStorage.getItem("userId");
-        if (!userId) return;
-
-        const userRef = doc(firestore, "users", userId);
-        try {
-          await updateDoc(userRef, {
-            profilePic: downloadURL,
-          });
-
-          if (oldProfilePic) {
-            const oldProfilePicRef = ref(storage, oldProfilePic);
-            deleteObject(oldProfilePicRef).catch((error) => {
-              console.error("Error deleting old profile picture:", error);
-            });
-          }
-        } catch (error) {
-          console.error("Error updating profile picture:", error);
+      uploadTask.on(
+        "state_changed",
+        (snapshot) => {},
+        (error) => {
+          console.error("Upload failed:", error);
+        },
+        async () => {
+          const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+          setTempProfilePic(downloadURL);
         }
-      }
-    );
+      );
+    } catch (error) {
+      console.error("Error compressing image:", error);
+    }
   };
 
   const renderBioSection = () => {
@@ -485,7 +459,6 @@ function Account() {
       fontSize: "24px",
     };
 
-    // Check if the user is allowed to highlight based on the search parameter
     if (searchParams.get("id") === "1111") {
       return (
         <span
@@ -510,9 +483,9 @@ function Account() {
             htmlFor="profilePicInput"
             className={isEditing ? "lower-opacity" : ""}
           >
-            {profilePic ? (
+            {tempProfilePic || profilePic ? (
               <div className="profile-pic-wrapper">
-                <img src={profilePic} alt="Profile" />
+                <img src={tempProfilePic || profilePic} alt="Profile" />
                 <FontAwesomeIcon
                   icon={faPencilAlt}
                   className={`edit-icon ${isEditing ? "icon-is-editing" : ""}`}
@@ -522,6 +495,7 @@ function Account() {
               <div>Profile Picture</div>
             )}
           </label>
+
           <input
             id="profilePicInput"
             type="file"
