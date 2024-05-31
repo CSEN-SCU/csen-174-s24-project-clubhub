@@ -40,6 +40,7 @@ function Account() {
   const [userPosts, setUserPosts] = useState([]);
   const [highlightedPosts, setHighlightedPosts] = useState([]);
   const [characterCount, setCharacterCount] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
 
   const [searchParams] = useSearchParams();
 
@@ -389,6 +390,7 @@ function Account() {
     };
 
     try {
+      setIsLoading(true);
       const compressedFile = await imageCompression(file, options);
       const storageRef = ref(storage, `profilePics/${compressedFile.name}`);
       const uploadTask = uploadBytesResumable(storageRef, compressedFile);
@@ -398,14 +400,17 @@ function Account() {
         (snapshot) => {},
         (error) => {
           console.error("Upload failed:", error);
+          setIsLoading(false);
         },
         async () => {
           const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
           setTempProfilePic(downloadURL);
+          setIsLoading(false);
         }
       );
     } catch (error) {
       console.error("Error compressing image:", error);
+      setIsLoading(false);
     }
   };
 
@@ -487,17 +492,21 @@ function Account() {
             htmlFor="profilePicInput"
             className={isEditing ? "lower-opacity" : ""}
           >
-            {tempProfilePic || profilePic ? (
-              <div className="profile-pic-wrapper">
-                <img src={tempProfilePic || profilePic} alt="Profile" />
-                <FontAwesomeIcon
-                  icon={faPencilAlt}
-                  className={`edit-icon ${isEditing ? "icon-is-editing" : ""}`}
-                />
-              </div>
-            ) : (
-              <div>Profile Picture</div>
-            )}
+            <div className="profile-pic-wrapper">
+              <img src={tempProfilePic || profilePic} alt="Profile" />
+              {isLoading ? (
+                <div className="profile-spinner"></div>
+              ) : (
+                isEditing && (
+                  <FontAwesomeIcon
+                    icon={faPencilAlt}
+                    className={`edit-icon ${
+                      isEditing ? "icon-is-editing" : ""
+                    }`}
+                  />
+                )
+              )}
+            </div>
           </label>
 
           <input
