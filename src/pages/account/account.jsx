@@ -304,7 +304,7 @@ function Account() {
     const userId = localStorage.getItem("userId");
     if (!userId) return;
 
-    if (tempProfilePic) {
+    if (tempProfilePic && isProfilePicChanged()) {
       const oldProfilePic = profilePic;
       setProfilePic(tempProfilePic);
       setTempProfilePic("");
@@ -316,7 +316,7 @@ function Account() {
           profilePic: tempProfilePic,
         });
 
-        if (oldProfilePic) {
+        if (oldProfilePic && oldProfilePic !== tempProfilePic) {
           const oldProfilePicRef = ref(storage, oldProfilePic);
           deleteObject(oldProfilePicRef).catch((error) => {
             console.error("Error deleting old profile picture:", error);
@@ -334,14 +334,14 @@ function Account() {
     setIsEditing(false);
   };
 
-  const handleCancelClick = () => {
+  const handleCancelClick = async () => {
+    await deleteTempProfilePic();
     setIsEditing(false);
-    deleteTempProfilePic();
     setTempProfilePic("");
   };
 
   const deleteTempProfilePic = async () => {
-    if (tempProfilePic) {
+    if (tempProfilePic && tempProfilePic !== profilePic) {
       const tempProfilePicRef = ref(storage, tempProfilePic);
       try {
         await deleteObject(tempProfilePicRef);
@@ -363,6 +363,10 @@ function Account() {
 
   const handleHighlightedClick = () => {
     setShowHighlighted(true);
+  };
+
+  const isProfilePicChanged = () => {
+    return tempProfilePic && tempProfilePic !== profilePic;
   };
 
   const handleTextAreaClick = () => {
