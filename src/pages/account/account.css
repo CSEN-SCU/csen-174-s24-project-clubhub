@@ -25,6 +25,24 @@
   width: 50px;
 }
 
+.banner-edit-icon {
+  display: none;
+  position: absolute;
+  top: 50px;
+  left: 600px;
+  height: 100px;
+  width: 100px;
+}
+.custom-picker {
+  position: absolute !important;
+  display: none !important;
+  width: 225px !important;
+}
+
+.custom-picker-editing {
+  display: flex !important;
+}
+
 .icon-is-editing {
   display: block;
 }

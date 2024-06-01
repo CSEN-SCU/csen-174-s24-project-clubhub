@@ -26,6 +26,7 @@ import "./account.css";
 import FollowButton from "../../components/follow/FollowButton";
 import AccPost from "./AccPost";
 import imageCompression from "browser-image-compression";
+import { GithubPicker } from "react-color";
 
 function Account() {
   const [name, setName] = useState("");
@@ -41,7 +42,8 @@ function Account() {
   const [highlightedPosts, setHighlightedPosts] = useState([]);
   const [characterCount, setCharacterCount] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
-
+  const [backgroundColor, setBackgroundColor] = useState("#ffffff");
+  const [tempBackgroundColor, setTempBackgroundColor] = useState("#ffffff"); // Default color
   const [searchParams] = useSearchParams();
 
   let userId;
@@ -98,6 +100,21 @@ function Account() {
       setBio(userData.bio || "Tell the community about yourself...");
       setProfilePic(userData.profilePic || "");
       console.log("Using cached user info");
+
+      const cachedBackgroundColor = localStorage.getItem(
+        `backgroundColor_${userId}`
+      );
+      if (cachedBackgroundColor) {
+        setBackgroundColor(cachedBackgroundColor);
+        console.log("Using cached background color");
+      } else if (userData.backgroundColor) {
+        setBackgroundColor(userData.backgroundColor);
+        localStorage.setItem(
+          `backgroundColor_${userId}`,
+          userData.backgroundColor
+        );
+        console.log("Local storage background color set");
+      }
       return;
     }
 
@@ -112,6 +129,21 @@ function Account() {
           setProfilePic(userData.profilePic || "");
           localStorage.setItem(`userInfo_${userId}`, JSON.stringify(userData));
           console.log("Local storage userinfo set");
+
+          const cachedBackgroundColor = localStorage.getItem(
+            `backgroundColor_${userId}`
+          );
+          if (cachedBackgroundColor) {
+            setBackgroundColor(cachedBackgroundColor);
+            console.log("Using cached background color");
+          } else if (userData.backgroundColor) {
+            setBackgroundColor(userData.backgroundColor);
+            localStorage.setItem(
+              `backgroundColor_${userId}`,
+              userData.backgroundColor
+            );
+            console.log("Local storage background color set");
+          }
         } else {
           console.log("No user data available");
         }
@@ -284,6 +316,7 @@ function Account() {
   const handleEditClick = () => {
     setIsEditing(true);
     setEditedBio(bio);
+    setTempBackgroundColor(backgroundColor);
   };
 
   const updateBio = async () => {
@@ -315,6 +348,7 @@ function Account() {
         await updateDoc(userRef, {
           bio: editedBio,
           profilePic: tempProfilePic,
+          backgroundColor: tempBackgroundColor,
         });
 
         if (oldProfilePic && oldProfilePic !== tempProfilePic) {
@@ -328,9 +362,14 @@ function Account() {
       }
     } else {
       await updateBio();
+      await updateDoc(doc(firestore, "users", userId), {
+        backgroundColor: tempBackgroundColor,
+      });
     }
 
+    setBackgroundColor(tempBackgroundColor);
     localStorage.removeItem(`userInfo_${userId}`);
+    localStorage.removeItem(`backgroundColor_${userId}`);
     fetchUserInfo();
     setIsEditing(false);
   };
@@ -339,6 +378,7 @@ function Account() {
     await deleteTempProfilePic();
     setIsEditing(false);
     setTempProfilePic("");
+    setTempBackgroundColor(backgroundColor);
   };
 
   const deleteTempProfilePic = async () => {
@@ -374,6 +414,11 @@ function Account() {
     if (bio === "Tell the community about yourself...") {
       setEditedBio("");
     }
+  };
+
+  const handleBackgroundColorChange = (color) => {
+    const newColor = color.hex;
+    setTempBackgroundColor(newColor);
   };
 
   const handleFileChange = (e) => {
@@ -486,7 +531,21 @@ function Account() {
 
   return (
     <div className="account-container">
-      <div className="top-half">
+      <div
+        className="top-half"
+        style={{
+          backgroundColor: isEditing ? tempBackgroundColor : backgroundColor,
+        }}
+      >
+        <GithubPicker
+          color={tempBackgroundColor}
+          onChangeComplete={(color) => handleBackgroundColorChange(color)}
+          className={`custom-picker ${
+            isEditing ? "custom-picker-editing" : ""
+          }`}
+          triangle="hide"
+        />
+
         <div className="profile-info">
           <label
             htmlFor="profilePicInput"
@@ -519,6 +578,7 @@ function Account() {
           />
         </div>
       </div>
+
       <div className="bottom-half">
         <div className="bottom__half__container">
           <div className="nameEmailContainer">
