@@ -256,10 +256,6 @@ function Account() {
           });
           console.log("Post unhighlighted successfully!");
           localStorage.removeItem(`highlightedPosts_${userId}`);
-
-          setHighlightedPosts((prevHighlightedPosts) =>
-            prevHighlightedPosts.filter((post) => post.id !== postId)
-          );
         } else {
           await updateDoc(userRef, {
             highlightedPosts: arrayUnion(postId),
@@ -272,15 +268,10 @@ function Account() {
           if (postSnapshot.exists()) {
             const postData = { id: postSnapshot.id, ...postSnapshot.data() };
             setHighlightedPosts((prevHighlightedPosts) => [
-              ...prevHighlightedPosts,
               postData,
+              ...prevHighlightedPosts,
             ]);
           }
-
-          await updateDoc(userRef, {
-            highlightedPosts: arrayUnion(postId),
-          });
-          console.log("Post highlighted successfully!");
         }
       } else {
         console.log("User document does not exist.");
