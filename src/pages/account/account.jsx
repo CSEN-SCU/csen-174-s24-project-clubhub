@@ -71,7 +71,7 @@ function Account() {
     fetchHighlightedPosts();
   }, [searchParams.get("id")]);
 
-  if (searchParams.get("id") === "1111") {
+  if (!searchParams.get("id")) {
     userId = localStorage.getItem("userId");
   } else {
     userId = searchParams.get("id");
@@ -452,7 +452,7 @@ function Account() {
   };
 
   const renderBioSection = () => {
-    const isProfileOwner = searchParams.get("id") === "1111";
+    const isProfileOwner = !searchParams.get("id");
     if (isEditing) {
       return (
         <div className="render__bio__container">
@@ -505,7 +505,7 @@ function Account() {
       fontSize: "24px",
     };
 
-    if (searchParams.get("id") === "1111") {
+    if (!searchParams.get("id")) {
       return (
         <span
           onClick={(e) => {
