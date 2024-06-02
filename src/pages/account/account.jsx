@@ -582,12 +582,16 @@ function Account() {
           {showHighlighted ? (
             <div className="post__themselves">
               {highlightedPosts.map((post) => (
-                <div key={post.id} className="post-item">
+                <div
+                  key={post.id}
+                  className="post-item"
+                  onClick={() => handlePostClick(post)}
+                >
                   <img src={post.imageUrl} alt="Flyer" className="post-flyer" />
                   <div className="post-content">
                     <h4>{post.name}</h4>
                     <h3>{post.title}</h3>
-                    <p>{post.content}</p>
+                    <p>{truncateText(post.text, 115)}</p>
                   </div>
                   {renderHighlightButton(post)}
                 </div>
