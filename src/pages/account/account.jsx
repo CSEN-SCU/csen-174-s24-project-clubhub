@@ -92,16 +92,18 @@ function Account() {
   const fetchUserInfo = async () => {
     if (!userId) return;
 
-    const cachedUserInfo = localStorage.getItem(`userInfo_${userId}`);
-    if (cachedUserInfo) {
-      const userData = JSON.parse(cachedUserInfo);
-      setName(userData.name);
-      setEmail(userData.email);
-      setBio(userData.bio || "Tell the community about yourself...");
-      setProfilePic(userData.profilePic || "");
-      setBackgroundColor(userData.backgroundColor || "#ffffff");
-      console.log("Using cached user info");
-      return;
+    if (!searchParams.get("id")) {
+      const cachedUserInfo = localStorage.getItem(`userInfo_${userId}`);
+      if (cachedUserInfo) {
+        const userData = JSON.parse(cachedUserInfo);
+        setName(userData.name);
+        setEmail(userData.email);
+        setBio(userData.bio || "Tell the community about yourself...");
+        setProfilePic(userData.profilePic || "");
+        setBackgroundColor(userData.backgroundColor || "#ffffff");
+        console.log("Using cached user info");
+        return;
+      }
     }
 
     const userRef = doc(firestore, "users", userId);
@@ -114,8 +116,13 @@ function Account() {
           setBio(userData.bio || "Tell the community about yourself...");
           setProfilePic(userData.profilePic || "");
           setBackgroundColor(userData.backgroundColor || "#ffffff");
-          localStorage.setItem(`userInfo_${userId}`, JSON.stringify(userData));
-          console.log("Local storage userinfo set");
+          if (!searchParams.get("id")) {
+            localStorage.setItem(
+              `userInfo_${userId}`,
+              JSON.stringify(userData)
+            );
+            console.log("Local storage userinfo set");
+          }
         } else {
           console.log("No user data available");
         }
@@ -129,11 +136,13 @@ function Account() {
   const fetchUserPosts = async () => {
     if (!userId) return;
 
-    const cachedUserPosts = localStorage.getItem(`userPosts_${userId}`);
-    if (cachedUserPosts) {
-      console.log("Using cached user posts");
-      setUserPosts(JSON.parse(cachedUserPosts));
-      return;
+    if (!searchParams.get("id")) {
+      const cachedUserPosts = localStorage.getItem(`userPosts_${userId}`);
+      if (cachedUserPosts) {
+        console.log("Using cached user posts");
+        setUserPosts(JSON.parse(cachedUserPosts));
+        return;
+      }
     }
 
     try {
@@ -151,11 +160,13 @@ function Account() {
             ...doc.data(),
           }));
           setUserPosts(fetchedPosts);
-          localStorage.setItem(
-            `userPosts_${userId}`,
-            JSON.stringify(fetchedPosts)
-          );
-          console.log("Local storage userposts set");
+          if (!searchParams.get("id")) {
+            localStorage.setItem(
+              `userPosts_${userId}`,
+              JSON.stringify(fetchedPosts)
+            );
+            console.log("Local storage userposts set");
+          }
         },
         (error) => {
           console.error("Error fetching posts:", error);
@@ -172,13 +183,15 @@ function Account() {
     const userId = localStorage.getItem("userId");
     if (!userId) return;
 
-    const cachedHighlightedPosts = localStorage.getItem(
-      `highlightedPosts_${userId}`
-    );
-    if (cachedHighlightedPosts) {
-      setHighlightedPosts(JSON.parse(cachedHighlightedPosts));
-      console.log("Using cached highlighted posts");
-      return;
+    if (!searchParams.get("id")) {
+      const cachedHighlightedPosts = localStorage.getItem(
+        `highlightedPosts_${userId}`
+      );
+      if (cachedHighlightedPosts) {
+        setHighlightedPosts(JSON.parse(cachedHighlightedPosts));
+        console.log("Using cached highlighted posts");
+        return;
+      }
     }
 
     const userRef = doc(firestore, "users", userId);
@@ -202,11 +215,13 @@ function Account() {
               ...doc.data(),
             }));
             setHighlightedPosts(postData);
-            localStorage.setItem(
-              `highlightedPosts_${userId}`,
-              JSON.stringify(postData)
-            );
-            console.log("Local storage highlightedposts set");
+            if (!searchParams.get("id")) {
+              localStorage.setItem(
+                `highlightedPosts_${userId}`,
+                JSON.stringify(postData)
+              );
+              console.log("Local storage highlightedposts set");
+            }
           });
         } else {
           setHighlightedPosts([]);
