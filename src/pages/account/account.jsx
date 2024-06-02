@@ -339,7 +339,6 @@ function Account() {
     if (!userId) return;
 
     if (tempProfilePic && isProfilePicChanged()) {
-      const oldProfilePic = profilePic;
       setProfilePic(tempProfilePic);
       setTempProfilePic("");
 
@@ -350,13 +349,6 @@ function Account() {
           profilePic: tempProfilePic,
           backgroundColor: tempBackgroundColor,
         });
-
-        if (oldProfilePic && oldProfilePic !== tempProfilePic) {
-          const oldProfilePicRef = ref(storage, oldProfilePic);
-          deleteObject(oldProfilePicRef).catch((error) => {
-            console.error("Error deleting old profile picture:", error);
-          });
-        }
       } catch (error) {
         console.error("Error updating profile picture:", error);
       }
