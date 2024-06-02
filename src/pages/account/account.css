@@ -183,6 +183,12 @@
   border-radius: 20px;
   box-shadow: var(--shadow);
   width: 600px;
+  cursor: pointer;
+  transition: background-color 0.1s ease;
+}
+
+.post-item:hover {
+  background-color: var(--light-gray);
 }
 
 .post-flyer {
@@ -240,4 +246,18 @@
     margin-right: 0;
     margin-bottom: 20px;
   }
+}
+
+@keyframes button-push {
+  50% {
+    transform: scale(0.8);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+.highlight-star:hover {
+  animation: button-push 0.3s linear 1;
 }

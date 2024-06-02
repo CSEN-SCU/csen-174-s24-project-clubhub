@@ -513,6 +513,7 @@ function Account() {
             handleHighlightClick(post.id);
           }}
           style={starStyle}
+          className="highlight-star"
         >
           ★
         </span>
