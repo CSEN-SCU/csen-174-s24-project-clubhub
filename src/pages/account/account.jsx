@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { auth, firestore, storage } from "../../Firebase";
 import { signOut } from "firebase/auth";
 import {
@@ -23,16 +23,16 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPencilAlt } from "@fortawesome/free-solid-svg-icons";
 import "./account.css";
-// import ACMH1 from "../../assets/ACMH1.png";
-// import ACMH2 from "../../assets/ACMH2.png";
-import { useSearchParams } from "react-router-dom";
 import FollowButton from "../../components/follow/FollowButton";
 import AccPost from "./AccPost";
+import imageCompression from "browser-image-compression";
+import { GithubPicker } from "react-color";
 
 function Account() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [profilePic, setProfilePic] = useState("");
+  const [tempProfilePic, setTempProfilePic] = useState("");
   const navigate = useNavigate();
   const [bio, setBio] = useState("Tell the community about yourself...");
   const [isEditing, setIsEditing] = useState(false);
@@ -41,7 +41,9 @@ function Account() {
   const [userPosts, setUserPosts] = useState([]);
   const [highlightedPosts, setHighlightedPosts] = useState([]);
   const [characterCount, setCharacterCount] = useState(0);
-
+  const [isLoading, setIsLoading] = useState(false);
+  const [backgroundColor, setBackgroundColor] = useState("#ffffff");
+  const [tempBackgroundColor, setTempBackgroundColor] = useState("#ffffff"); // Default color
   const [searchParams] = useSearchParams();
 
   let userId;
@@ -87,12 +89,6 @@ function Account() {
     return null;
   };
 
-  // if (searchParams.get("id") === "1111") {
-  //   userId = localStorage.getItem("userId");
-  // } else {
-  //   userId = searchParams.get("id");
-  // }
-
   const fetchUserInfo = async () => {
     if (!userId) return;
 
@@ -104,6 +100,21 @@ function Account() {
       setBio(userData.bio || "Tell the community about yourself...");
       setProfilePic(userData.profilePic || "");
       console.log("Using cached user info");
+
+      const cachedBackgroundColor = localStorage.getItem(
+        `backgroundColor_${userId}`
+      );
+      if (cachedBackgroundColor) {
+        setBackgroundColor(cachedBackgroundColor);
+        console.log("Using cached background color");
+      } else if (userData.backgroundColor) {
+        setBackgroundColor(userData.backgroundColor);
+        localStorage.setItem(
+          `backgroundColor_${userId}`,
+          userData.backgroundColor
+        );
+        console.log("Local storage background color set");
+      }
       return;
     }
 
@@ -118,6 +129,21 @@ function Account() {
           setProfilePic(userData.profilePic || "");
           localStorage.setItem(`userInfo_${userId}`, JSON.stringify(userData));
           console.log("Local storage userinfo set");
+
+          const cachedBackgroundColor = localStorage.getItem(
+            `backgroundColor_${userId}`
+          );
+          if (cachedBackgroundColor) {
+            setBackgroundColor(cachedBackgroundColor);
+            console.log("Using cached background color");
+          } else if (userData.backgroundColor) {
+            setBackgroundColor(userData.backgroundColor);
+            localStorage.setItem(
+              `backgroundColor_${userId}`,
+              userData.backgroundColor
+            );
+            console.log("Local storage background color set");
+          }
         } else {
           console.log("No user data available");
         }
@@ -238,7 +264,6 @@ function Account() {
             prevHighlightedPosts.filter((post) => post.id !== postId)
           );
 
-          // Update Firestore
           await updateDoc(userRef, {
             highlightedPosts: arrayRemove(postId),
           });
@@ -265,7 +290,6 @@ function Account() {
             ]);
           }
 
-          // Update Firestore
           await updateDoc(userRef, {
             highlightedPosts: arrayUnion(postId),
           });
@@ -278,51 +302,6 @@ function Account() {
       console.error("Error toggling highlight:", error);
     }
   };
-
-  // const handleHighlightClick = async (postId) => {
-  //   const userId = localStorage.getItem("userId");
-  //   if (!userId || !postId) return;
-
-  //   const userRef = doc(firestore, "users", userId);
-
-  //   try {
-  //     const userSnapshot = await getDoc(userRef);
-  //     if (userSnapshot.exists()) {
-  //       const userData = userSnapshot.data();
-  //       const highlightedPostIds = userData.highlightedPosts || [];
-
-  //       if (highlightedPostIds.includes(postId)) {
-  //         await updateDoc(userRef, {
-  //           highlightedPosts: arrayRemove(postId),
-  //         });
-  //         console.log("Post unhighlighted successfully!");
-
-  //         setHighlightedPosts((prevHighlightedPosts) =>
-  //           prevHighlightedPosts.filter((post) => post.id !== postId)
-  //         );
-  //       } else {
-  //         await updateDoc(userRef, {
-  //           highlightedPosts: arrayUnion(postId),
-  //         });
-  //         console.log("Post highlighted successfully!");
-
-  //         const postRef = doc(firestore, "posts", postId);
-  //         const postSnapshot = await getDoc(postRef);
-  //         if (postSnapshot.exists()) {
-  //           const postData = { id: postSnapshot.id, ...postSnapshot.data() };
-  //           setHighlightedPosts((prevHighlightedPosts) => [
-  //             ...prevHighlightedPosts,
-  //             postData,
-  //           ]);
-  //         }
-  //       }
-  //     } else {
-  //       console.log("User document does not exist.");
-  //     }
-  //   } catch (error) {
-  //     console.error("Error toggling highlight:", error);
-  //   }
-  // };
 
   const handleLogout = async () => {
     try {
@@ -337,6 +316,7 @@ function Account() {
   const handleEditClick = () => {
     setIsEditing(true);
     setEditedBio(bio);
+    setTempBackgroundColor(backgroundColor);
   };
 
   const updateBio = async () => {
@@ -354,15 +334,55 @@ function Account() {
     }
   };
 
-  const handleSaveClick = () => {
+  const handleSaveClick = async () => {
+    const userId = localStorage.getItem("userId");
+    if (!userId) return;
+
+    if (tempProfilePic && isProfilePicChanged()) {
+      setProfilePic(tempProfilePic);
+      setTempProfilePic("");
+
+      const userRef = doc(firestore, "users", userId);
+      try {
+        await updateDoc(userRef, {
+          bio: editedBio,
+          profilePic: tempProfilePic,
+          backgroundColor: tempBackgroundColor,
+        });
+      } catch (error) {
+        console.error("Error updating profile picture:", error);
+      }
+    } else {
+      await updateBio();
+      await updateDoc(doc(firestore, "users", userId), {
+        backgroundColor: tempBackgroundColor,
+      });
+    }
+
+    setBackgroundColor(tempBackgroundColor);
     localStorage.removeItem(`userInfo_${userId}`);
+    localStorage.removeItem(`backgroundColor_${userId}`);
     fetchUserInfo();
-    updateBio();
     setIsEditing(false);
   };
 
-  const handleCancelClick = () => {
+  const handleCancelClick = async () => {
+    await deleteTempProfilePic();
     setIsEditing(false);
+    setTempProfilePic("");
+    setTempBackgroundColor(backgroundColor);
+  };
+
+  const deleteTempProfilePic = async () => {
+    if (tempProfilePic && tempProfilePic !== profilePic) {
+      const tempProfilePicRef = ref(storage, tempProfilePic);
+      try {
+        await deleteObject(tempProfilePicRef);
+        console.log("Temporary profile picture deleted successfully.");
+      } catch (error) {
+        console.error("Error deleting temporary profile picture:", error);
+      }
+    }
   };
 
   const handleInputChange = (e) => {
@@ -378,10 +398,19 @@ function Account() {
     setShowHighlighted(true);
   };
 
+  const isProfilePicChanged = () => {
+    return tempProfilePic && tempProfilePic !== profilePic;
+  };
+
   const handleTextAreaClick = () => {
     if (bio === "Tell the community about yourself...") {
       setEditedBio("");
     }
+  };
+
+  const handleBackgroundColorChange = (color) => {
+    const newColor = color.hex;
+    setTempBackgroundColor(newColor);
   };
 
   const handleFileChange = (e) => {
@@ -391,40 +420,35 @@ function Account() {
   const handleUpload = async (file) => {
     if (!file) return;
 
-    const storageRef = ref(storage, `profilePics/${file.name}`);
-    const uploadTask = uploadBytesResumable(storageRef, file);
+    const options = {
+      maxSizeMB: 0.2,
+      maxWidthOrHeight: 500,
+      useWebWorker: true,
+    };
 
-    uploadTask.on(
-      "state_changed",
-      (snapshot) => {},
-      (error) => {
-        console.error("Upload failed:", error);
-      },
-      async () => {
-        const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-        const oldProfilePic = profilePic;
-        setProfilePic(downloadURL);
+    try {
+      setIsLoading(true);
+      const compressedFile = await imageCompression(file, options);
+      const storageRef = ref(storage, `profilePics/${compressedFile.name}`);
+      const uploadTask = uploadBytesResumable(storageRef, compressedFile);
 
-        const userId = localStorage.getItem("userId");
-        if (!userId) return;
-
-        const userRef = doc(firestore, "users", userId);
-        try {
-          await updateDoc(userRef, {
-            profilePic: downloadURL,
-          });
-
-          if (oldProfilePic) {
-            const oldProfilePicRef = ref(storage, oldProfilePic);
-            deleteObject(oldProfilePicRef).catch((error) => {
-              console.error("Error deleting old profile picture:", error);
-            });
-          }
-        } catch (error) {
-          console.error("Error updating profile picture:", error);
+      uploadTask.on(
+        "state_changed",
+        (snapshot) => {},
+        (error) => {
+          console.error("Upload failed:", error);
+          setIsLoading(false);
+        },
+        async () => {
+          const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+          setTempProfilePic(downloadURL);
+          setIsLoading(false);
         }
-      }
-    );
+      );
+    } catch (error) {
+      console.error("Error compressing image:", error);
+      setIsLoading(false);
+    }
   };
 
   const renderBioSection = () => {
@@ -481,7 +505,6 @@ function Account() {
       fontSize: "24px",
     };
 
-    // Check if the user is allowed to highlight based on the search parameter
     if (searchParams.get("id") === "1111") {
       return (
         <span
@@ -501,24 +524,43 @@ function Account() {
 
   return (
     <div className="account-container">
-      <div className="top-half">
+      <div
+        className="top-half"
+        style={{
+          backgroundColor: isEditing ? tempBackgroundColor : backgroundColor,
+        }}
+      >
+        <GithubPicker
+          color={tempBackgroundColor}
+          onChangeComplete={(color) => handleBackgroundColorChange(color)}
+          className={`custom-picker ${
+            isEditing ? "custom-picker-editing" : ""
+          }`}
+          triangle="hide"
+        />
+
         <div className="profile-info">
           <label
             htmlFor="profilePicInput"
             className={isEditing ? "lower-opacity" : ""}
           >
-            {profilePic ? (
-              <div className="profile-pic-wrapper">
-                <img src={profilePic} alt="Profile" />
-                <FontAwesomeIcon
-                  icon={faPencilAlt}
-                  className={`edit-icon ${isEditing ? "icon-is-editing" : ""}`}
-                />
-              </div>
-            ) : (
-              <div>Profile Picture</div>
-            )}
+            <div className="profile-pic-wrapper">
+              <img src={tempProfilePic || profilePic} alt="Profile" />
+              {isLoading ? (
+                <div className="profile-spinner"></div>
+              ) : (
+                isEditing && (
+                  <FontAwesomeIcon
+                    icon={faPencilAlt}
+                    className={`edit-icon ${
+                      isEditing ? "icon-is-editing" : ""
+                    }`}
+                  />
+                )
+              )}
+            </div>
           </label>
+
           <input
             id="profilePicInput"
             type="file"
@@ -529,6 +571,7 @@ function Account() {
           />
         </div>
       </div>
+
       <div className="bottom-half">
         <div className="bottom__half__container">
           <div className="nameEmailContainer">
