@@ -99,22 +99,8 @@ function Account() {
       setEmail(userData.email);
       setBio(userData.bio || "Tell the community about yourself...");
       setProfilePic(userData.profilePic || "");
+      setBackgroundColor(userData.backgroundColor || "#ffffff");
       console.log("Using cached user info");
-
-      const cachedBackgroundColor = localStorage.getItem(
-        `backgroundColor_${userId}`
-      );
-      if (cachedBackgroundColor) {
-        setBackgroundColor(cachedBackgroundColor);
-        console.log("Using cached background color");
-      } else if (userData.backgroundColor) {
-        setBackgroundColor(userData.backgroundColor);
-        localStorage.setItem(
-          `backgroundColor_${userId}`,
-          userData.backgroundColor
-        );
-        console.log("Local storage background color set");
-      }
       return;
     }
 
@@ -127,23 +113,9 @@ function Account() {
           setEmail(userData.email);
           setBio(userData.bio || "Tell the community about yourself...");
           setProfilePic(userData.profilePic || "");
+          setBackgroundColor(userData.backgroundColor || "#ffffff");
           localStorage.setItem(`userInfo_${userId}`, JSON.stringify(userData));
           console.log("Local storage userinfo set");
-
-          const cachedBackgroundColor = localStorage.getItem(
-            `backgroundColor_${userId}`
-          );
-          if (cachedBackgroundColor) {
-            setBackgroundColor(cachedBackgroundColor);
-            console.log("Using cached background color");
-          } else if (userData.backgroundColor) {
-            setBackgroundColor(userData.backgroundColor);
-            localStorage.setItem(
-              `backgroundColor_${userId}`,
-              userData.backgroundColor
-            );
-            console.log("Local storage background color set");
-          }
         } else {
           console.log("No user data available");
         }
@@ -361,7 +333,6 @@ function Account() {
 
     setBackgroundColor(tempBackgroundColor);
     localStorage.removeItem(`userInfo_${userId}`);
-    localStorage.removeItem(`backgroundColor_${userId}`);
     fetchUserInfo();
     setIsEditing(false);
   };
