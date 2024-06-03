@@ -66,10 +66,17 @@ function Account() {
   };
 
   useEffect(() => {
+    const currentUserId = localStorage.getItem("userId");
+    const idFromParams = searchParams.get("id");
+
+    if (idFromParams && idFromParams === currentUserId) {
+      navigate("/account");
+    }
+
     fetchUserInfo();
     fetchUserPosts();
     fetchHighlightedPosts();
-  }, [searchParams.get("id")]);
+  }, [navigate, searchParams]);
 
   if (!searchParams.get("id")) {
     userId = localStorage.getItem("userId");
