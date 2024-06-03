@@ -71,7 +71,7 @@ function Account() {
     fetchHighlightedPosts();
   }, [searchParams.get("id")]);
 
-  if (searchParams.get("id") === "1111") {
+  if (!searchParams.get("id")) {
     userId = localStorage.getItem("userId");
   } else {
     userId = searchParams.get("id");
@@ -92,30 +92,18 @@ function Account() {
   const fetchUserInfo = async () => {
     if (!userId) return;
 
-    const cachedUserInfo = localStorage.getItem(`userInfo_${userId}`);
-    if (cachedUserInfo) {
-      const userData = JSON.parse(cachedUserInfo);
-      setName(userData.name);
-      setEmail(userData.email);
-      setBio(userData.bio || "Tell the community about yourself...");
-      setProfilePic(userData.profilePic || "");
-      console.log("Using cached user info");
-
-      const cachedBackgroundColor = localStorage.getItem(
-        `backgroundColor_${userId}`
-      );
-      if (cachedBackgroundColor) {
-        setBackgroundColor(cachedBackgroundColor);
-        console.log("Using cached background color");
-      } else if (userData.backgroundColor) {
-        setBackgroundColor(userData.backgroundColor);
-        localStorage.setItem(
-          `backgroundColor_${userId}`,
-          userData.backgroundColor
-        );
-        console.log("Local storage background color set");
+    if (!searchParams.get("id")) {
+      const cachedUserInfo = localStorage.getItem(`userInfo_${userId}`);
+      if (cachedUserInfo) {
+        const userData = JSON.parse(cachedUserInfo);
+        setName(userData.name);
+        setEmail(userData.email);
+        setBio(userData.bio || "Tell the community about yourself...");
+        setProfilePic(userData.profilePic || "");
+        setBackgroundColor(userData.backgroundColor || "#ffffff");
+        console.log("Using cached user info");
+        return;
       }
-      return;
     }
 
     const userRef = doc(firestore, "users", userId);
@@ -127,22 +115,13 @@ function Account() {
           setEmail(userData.email);
           setBio(userData.bio || "Tell the community about yourself...");
           setProfilePic(userData.profilePic || "");
-          localStorage.setItem(`userInfo_${userId}`, JSON.stringify(userData));
-          console.log("Local storage userinfo set");
-
-          const cachedBackgroundColor = localStorage.getItem(
-            `backgroundColor_${userId}`
-          );
-          if (cachedBackgroundColor) {
-            setBackgroundColor(cachedBackgroundColor);
-            console.log("Using cached background color");
-          } else if (userData.backgroundColor) {
-            setBackgroundColor(userData.backgroundColor);
+          setBackgroundColor(userData.backgroundColor || "#ffffff");
+          if (!searchParams.get("id")) {
             localStorage.setItem(
-              `backgroundColor_${userId}`,
-              userData.backgroundColor
+              `userInfo_${userId}`,
+              JSON.stringify(userData)
             );
-            console.log("Local storage background color set");
+            console.log("Local storage userinfo set");
           }
         } else {
           console.log("No user data available");
@@ -157,11 +136,13 @@ function Account() {
   const fetchUserPosts = async () => {
     if (!userId) return;
 
-    const cachedUserPosts = localStorage.getItem(`userPosts_${userId}`);
-    if (cachedUserPosts) {
-      console.log("Using cached user posts");
-      setUserPosts(JSON.parse(cachedUserPosts));
-      return;
+    if (!searchParams.get("id")) {
+      const cachedUserPosts = localStorage.getItem(`userPosts_${userId}`);
+      if (cachedUserPosts) {
+        console.log("Using cached user posts");
+        setUserPosts(JSON.parse(cachedUserPosts));
+        return;
+      }
     }
 
     try {
@@ -179,11 +160,13 @@ function Account() {
             ...doc.data(),
           }));
           setUserPosts(fetchedPosts);
-          localStorage.setItem(
-            `userPosts_${userId}`,
-            JSON.stringify(fetchedPosts)
-          );
-          console.log("Local storage userposts set");
+          if (!searchParams.get("id")) {
+            localStorage.setItem(
+              `userPosts_${userId}`,
+              JSON.stringify(fetchedPosts)
+            );
+            console.log("Local storage userposts set");
+          }
         },
         (error) => {
           console.error("Error fetching posts:", error);
@@ -200,13 +183,15 @@ function Account() {
     const userId = localStorage.getItem("userId");
     if (!userId) return;
 
-    const cachedHighlightedPosts = localStorage.getItem(
-      `highlightedPosts_${userId}`
-    );
-    if (cachedHighlightedPosts) {
-      setHighlightedPosts(JSON.parse(cachedHighlightedPosts));
-      console.log("Using cached highlighted posts");
-      return;
+    if (!searchParams.get("id")) {
+      const cachedHighlightedPosts = localStorage.getItem(
+        `highlightedPosts_${userId}`
+      );
+      if (cachedHighlightedPosts) {
+        setHighlightedPosts(JSON.parse(cachedHighlightedPosts));
+        console.log("Using cached highlighted posts");
+        return;
+      }
     }
 
     const userRef = doc(firestore, "users", userId);
@@ -230,11 +215,13 @@ function Account() {
               ...doc.data(),
             }));
             setHighlightedPosts(postData);
-            localStorage.setItem(
-              `highlightedPosts_${userId}`,
-              JSON.stringify(postData)
-            );
-            console.log("Local storage highlightedposts set");
+            if (!searchParams.get("id")) {
+              localStorage.setItem(
+                `highlightedPosts_${userId}`,
+                JSON.stringify(postData)
+              );
+              console.log("Local storage highlightedposts set");
+            }
           });
         } else {
           setHighlightedPosts([]);
@@ -269,10 +256,6 @@ function Account() {
           });
           console.log("Post unhighlighted successfully!");
           localStorage.removeItem(`highlightedPosts_${userId}`);
-
-          setHighlightedPosts((prevHighlightedPosts) =>
-            prevHighlightedPosts.filter((post) => post.id !== postId)
-          );
         } else {
           await updateDoc(userRef, {
             highlightedPosts: arrayUnion(postId),
@@ -285,15 +268,10 @@ function Account() {
           if (postSnapshot.exists()) {
             const postData = { id: postSnapshot.id, ...postSnapshot.data() };
             setHighlightedPosts((prevHighlightedPosts) => [
-              ...prevHighlightedPosts,
               postData,
+              ...prevHighlightedPosts,
             ]);
           }
-
-          await updateDoc(userRef, {
-            highlightedPosts: arrayUnion(postId),
-          });
-          console.log("Post highlighted successfully!");
         }
       } else {
         console.log("User document does not exist.");
@@ -361,7 +339,6 @@ function Account() {
 
     setBackgroundColor(tempBackgroundColor);
     localStorage.removeItem(`userInfo_${userId}`);
-    localStorage.removeItem(`backgroundColor_${userId}`);
     fetchUserInfo();
     setIsEditing(false);
   };
@@ -452,7 +429,7 @@ function Account() {
   };
 
   const renderBioSection = () => {
-    const isProfileOwner = searchParams.get("id") === "1111";
+    const isProfileOwner = !searchParams.get("id");
     if (isEditing) {
       return (
         <div className="render__bio__container">
@@ -505,7 +482,7 @@ function Account() {
       fontSize: "24px",
     };
 
-    if (searchParams.get("id") === "1111") {
+    if (!searchParams.get("id")) {
       return (
         <span
           onClick={(e) => {
@@ -605,12 +582,16 @@ function Account() {
           {showHighlighted ? (
             <div className="post__themselves">
               {highlightedPosts.map((post) => (
-                <div key={post.id} className="post-item">
+                <div
+                  key={post.id}
+                  className="post-item"
+                  onClick={() => handlePostClick(post)}
+                >
                   <img src={post.imageUrl} alt="Flyer" className="post-flyer" />
                   <div className="post-content">
                     <h4>{post.name}</h4>
                     <h3>{post.title}</h3>
-                    <p>{post.content}</p>
+                    <p>{truncateText(post.text, 115)}</p>
                   </div>
                   {renderHighlightButton(post)}
                 </div>
