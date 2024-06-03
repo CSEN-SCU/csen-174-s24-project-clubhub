@@ -29,6 +29,7 @@ function Post({
   image,
   userID,
   title,
+  avatar,
   likes, // Add likes prop
   likedBy, // Add likedBy prop
   currentUserId // Add currentUserId prop
@@ -37,17 +38,20 @@ function Post({
     <div className="post">
       <div className="post__avatar">
         <Link to={`/account?id=${userID}`}>
-          <img src={Avatar} alt="Avatar" />
+          <img className = "postAvatarPic" src={avatar} alt="Avatar" />
         </Link>
       </div>
       <div className="post__body">
         <div className="post__header">
           <div className="post__headerText">
             <Link to={`/account?id=${userID}`}>
-              <h2>{displayName}</h2>
+              <h3>{displayName}</h3>
             </Link>
             <p className="post__time">{formatDate(timestamp)}</p>
-            <h3>{title}</h3>
+            {/* <p className='post__time'>Feb 12 • 3:00 pm</p> */}
+            <h3>
+                {title}
+            </h3>
           </div>
           <div className="post__headerDesc">
             <p>{text}</p>

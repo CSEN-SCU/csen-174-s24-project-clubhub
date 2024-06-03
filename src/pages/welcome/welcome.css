@@ -1,7 +1,7 @@
 .welcome-container {
   display: flex;
   align-items: center;
-  margin: 12.5% 15%;
+  margin: 12.5% 10%;
 }
 #logo {
   width: 100%;
@@ -58,4 +58,25 @@
 
 .club:active {
   background-color: var(--white);
+}
+
+.slider-container {
+  margin: 0 auto;
+  width: 500px;
+}
+
+.slideshow-wrapper {
+  width: 325px;
+  height: 325px;
+  border-radius: 50%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.slideshow-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }

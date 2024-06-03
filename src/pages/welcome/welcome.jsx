@@ -1,12 +1,58 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { studentSignInWithGoogle, clubSignInWithGoogle } from "../../Firebase";
-import SCULogo from "../../assets/sculogo.png";
+import Slider from "react-slick";
 import "./welcome.css";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+
+function importAll(r) {
+  let images = [];
+  r.keys().map((item, index) => {
+    images[index] = r(item);
+  });
+  return images;
+}
+
+const images = importAll(
+  require.context("../../assets/logos", false, /\.(png|jpe?g|svg)$/)
+);
+
+function shuffle(array) {
+  let currentIndex = array.length,
+    randomIndex;
+
+  while (currentIndex !== 0) {
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex--;
+
+    [array[currentIndex], array[randomIndex]] = [
+      array[randomIndex],
+      array[currentIndex],
+    ];
+  }
+
+  return array;
+}
 
 function Welcome() {
+  const [shuffledImages, setShuffledImages] = useState([]);
   const navigate = useNavigate();
-  const [error, setError] = useState(null);
+  const settings = {
+    dots: false,
+    arrows: false,
+    infinite: true,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    autoplay: true,
+    speed: 2000,
+    autoplaySpeed: 0,
+    cssEase: "linear",
+  };
+
+  useEffect(() => {
+    setShuffledImages(shuffle([...images]));
+  }, []);
 
   const handleStudentLogin = async () => {
     localStorage.setItem("userType", "student");
@@ -22,8 +68,6 @@ function Welcome() {
         navigate("/error", {
           state: { message: "Please sign in with a scu.edu email." },
         });
-      } else {
-        setError("Failed to authenticate. Please try again.");
       }
     }
   };
@@ -42,8 +86,6 @@ function Welcome() {
         navigate("/error", {
           state: { message: "Your email is not associated with a club." },
         });
-      } else {
-        setError("Failed to authenticate. Please try again.");
       }
     }
   };
@@ -74,10 +116,19 @@ function Welcome() {
           </button>
         </div>
       </div>
-      <div className="right-container">
-        <img id="logo" src={SCULogo} alt="logo" />
+      <div className="slider-container">
+        <Slider {...settings}>
+          {shuffledImages.map((image, index) => (
+            <div key={index} className="slideshow-wrapper">
+              <img
+                className="slideshow-image"
+                src={image}
+                alt={`logo-${index}`}
+              />
+            </div>
+          ))}
+        </Slider>
       </div>
-      {error && <p className="error-message">{error}</p>}
     </div>
   );
 }

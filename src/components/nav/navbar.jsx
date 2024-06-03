@@ -63,7 +63,7 @@ function Navbar() {
                   </Link>
                 </li>
                 <li className="nav__item">
-                  <Link to="/account?id=1111" className="nav__link">
+                  <Link to="/account" className="nav__link">
                     <i className="icon-user"></i>
                   </Link>
                 </li>

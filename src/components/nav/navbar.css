@@ -74,21 +74,3 @@
   line-height: 1;
   border-radius: 1.875rem;
 }
-
-@media screen and (max-width: 1024px) {
-  .aside {
-    left: -110px;
-  }
-
-  .nav__toggle {
-      display: flex;
-  }
-
-  .nav__toggle-open {
-      left: 140px;
-  }
-
-  .show-menu {
-      left: 0;
-  }
-}

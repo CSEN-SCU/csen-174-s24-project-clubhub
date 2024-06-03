@@ -5,18 +5,17 @@ import { collection, addDoc } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { getDoc } from "firebase/firestore";
 import { doc } from "firebase/firestore";
+import imageCompression from "browser-image-compression";
 
 function Post({ closeModal }) {
   const [text, setText] = useState("");
   const [title, setTitle] = useState("");
-  const [imageUrl, setImageUrl] = useState(""); // State for image preview URL
+  const [imageUrl, setImageUrl] = useState("");
+  const [loading, setLoading] = useState(false);
   const user = auth.currentUser;
   const userID = user.uid;
-
-  // Ref to control the file input element
   const fileInputRef = useRef();
 
-  // Handle text input change
   const handleTextChange = (e) => {
     setText(e.target.value);
   };
@@ -25,19 +24,27 @@ function Post({ closeModal }) {
     setTitle(e.target.value);
   };
 
-  // Handle file input change and create a preview URL
-  const handleFileChange = (e) => {
+  const handleFileChange = async (e) => {
     const file = e.target.files[0];
     if (file) {
-      const url = URL.createObjectURL(file); // Create URL for the selected file
-      setImageUrl(url); // Store the preview URL
+      const options = {
+        maxSizeMB: 1,
+        maxWidthOrHeight: 1024,
+        useWebWorker: true,
+      };
+      try {
+        const compressedFile = await imageCompression(file, options);
+        const url = URL.createObjectURL(compressedFile);
+        setImageUrl(url);
+      } catch (error) {
+        console.error("Error compressing file: ", error);
+      }
     }
   };
 
-  // Clear the file selection and image preview
   const removeFile = () => {
-    setImageUrl(""); // Clear the preview URL
-    fileInputRef.current.value = ""; // Reset the file input
+    setImageUrl("");
+    fileInputRef.current.value = "";
   };
 
   const stopClickPropagation = (e) => {
@@ -45,7 +52,13 @@ function Post({ closeModal }) {
   };
 
   const handleSubmit = async () => {
-    alert(`You entered: ${text}`);
+    if (!title || !text) {
+      alert("Posts must include a title and description before submission");
+      return;
+    }
+
+    setLoading(true);
+
     try {
       let postData = {
         text: text,
@@ -55,7 +68,8 @@ function Post({ closeModal }) {
       const userDocRef = await getDoc(doc(firestore, `users/${userID}`));
       if (userDocRef.exists()) {
         const userData = userDocRef.data();
-        postData.name = userData.name; // Include the user's name in the post data
+        postData.name = userData.name;
+        postData.avatar = userData.profilePic;
         postData.title = title;
       } else {
         console.log("No such document!");
@@ -63,50 +77,43 @@ function Post({ closeModal }) {
 
       if (fileInputRef.current.files.length > 0) {
         const file = fileInputRef.current.files[0];
-        const storageRef = ref(storage, `images/${file.name}`);
-        const uploadResult = await uploadBytes(storageRef, file);
+        const options = {
+          maxSizeMB: 0.5,
+          maxWidthOrHeight: 1024,
+          useWebWorker: true,
+        };
+        const compressedFile = await imageCompression(file, options);
+        const storageRef = ref(storage, `images/${compressedFile.name}`);
+        const uploadResult = await uploadBytes(storageRef, compressedFile);
         const downloadURL = await getDownloadURL(uploadResult.ref);
 
-        postData.imageUrl = downloadURL; // Include the image URL
+        postData.imageUrl = downloadURL;
       }
 
-      // Add to the main collection (e.g., "posts")
       const docRef = await addDoc(collection(firestore, "posts"), {
         ...postData,
-        userID: userID, // Add user ID to the main post
+        userID: userID,
       });
 
-      // Add to the user's document or collection
       if (userID) {
-        const userPostsCollection = collection(
-          firestore,
-          `users/${userID}/posts`
-        ); // Collection under the user
-        await addDoc(userPostsCollection, {
-          ...postData,
-          mainPostRef: docRef.id, // Optionally store a reference to the main post
-        });
-
         setText("");
         setImageUrl("");
         setTitle("");
-        fileInputRef.current.value = ""; //either reset the feild and leave the modal open
-
-        closeModal(false); //or close the modal
-
-        alert("Post submitted successfully!");
+        fileInputRef.current.value = "";
+        closeModal(false);
+        localStorage.removeItem(`userPosts_${userID}`);
       } else {
-        // If no file is selected, just add the text to Firestore
         const docRef = await addDoc(collection(firestore, "posts"), {
           text: text,
           timestamp: new Date(),
         });
-
-        alert("Post submitted successfully!");
+        localStorage.removeItem(`userPosts_${userID}`);
       }
     } catch (error) {
       console.error("Error submitting post: ", error);
       alert("There was an error submitting your post. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -120,35 +127,28 @@ function Post({ closeModal }) {
           <h2>Tell us about your event...</h2>
         </div>
         <div className="postBody">
-          {/* File input for image upload */}
           <div className="postFileContainer">
             <input
               type="file"
+              accept=".png, .jpg, .jpeg"
               className="postFileInput"
-              ref={fileInputRef} // Set the ref to the file input
+              ref={fileInputRef}
               onChange={handleFileChange}
             />
             {imageUrl && (
               <div className="imagePreview">
-                <img
-                  src={imageUrl}
-                  alt="Preview"
-                  className="postImage" // CSS class for styling
-                />
-                <button className="postRemoveFileBtn" onClick={removeFile}>
+                <img src={imageUrl} alt="Preview" className="postImage" />
+                <button className="postRemoveFileBtn btn" onClick={removeFile}>
                   Remove File
                 </button>{" "}
-                {/* "Remove File" button */}
               </div>
             )}
           </div>
 
-          {/* Text input for description */}
-
-          <div className = "postDescContainer">
-          <textarea
+          <div className="postDescContainer">
+            <textarea
               type="text"
-              className = "postTitleInput"
+              className="postTitleInput"
               placeholder="Enter title of your event..."
               value={title}
               onChange={handleTitleChange}
@@ -161,14 +161,16 @@ function Post({ closeModal }) {
               onChange={handleTextChange}
             />
           </div>
-
-          {/* Submit button */}
         </div>
 
         <div className="PostFooter">
-          <button className="postSubmitBtn" onClick={handleSubmit}>
-            Submit
-          </button>
+          {loading ? (
+            <div className="spinner"></div>
+          ) : (
+            <button className="postSubmitBtn btn" onClick={handleSubmit}>
+              Submit
+            </button>
+          )}
         </div>
       </div>
     </div>
