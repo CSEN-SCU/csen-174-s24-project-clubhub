@@ -167,7 +167,7 @@ function Home() {
       {/* Post */}
       {activeLink === "following" && noFollowMessage ? (
         <div className="no-follow-message">
-          <FontAwesomeIcon icon={faFaceFrown} />
+          <FontAwesomeIcon icon={faFaceFrown} className="sad-face"/>
           {noFollowMessage}
         </div>
       ) : (
@@ -188,7 +188,7 @@ function Home() {
       {/* Load More Button */}
       {posts.length > 0 && hasMorePosts && (
         <button
-          className="load__more"
+          className="load__more btn"
           onClick={handleLoadMore}
           disabled={loading}
         >

@@ -44,13 +44,13 @@ function Post({
         <div className="post__header">
           <div className="post__headerText">
             <Link to={`/account?id=${userID}`}>
-              <h3>{displayName}</h3>
+              <h2>{displayName}</h2>
             </Link>
             <p className="post__time">{formatDate(timestamp)}</p>
           </div>
 
           {/* <p className='post__time'>Feb 12 • 3:00 pm</p> */}
-          <h2 className="post__title">{title}</h2>
+          <h3 className="post__title">{title}</h3>
           <div className="post__headerDesc">
             <p>{text}</p>
           </div>
