@@ -1,6 +1,5 @@
 import React from "react";
 import "./post.css";
-import Avatar from "../../assets/sculogo.png";
 import { Link } from "react-router-dom";
 import LikeButton from "../../likeButton";
 

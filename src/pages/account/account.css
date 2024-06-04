@@ -41,6 +41,8 @@
 
 .custom-picker-editing {
   display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
 }
 
 .icon-is-editing {
