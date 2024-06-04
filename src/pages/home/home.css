@@ -44,20 +44,21 @@
 }
 
 .no-follow-message {
-  /* background-color: pink; */
   text-align: center;
   font-size: x-large;
   justify-content: center;
   margin-top: 25%;
 }
 
+
+.no-follow-message .sad-face {
+  margin-right: 5px;
+}
+
 .load__more {
   display: flex;
   justify-content: center;
-  margin: auto;
-  margin-top: 10px;
-  margin-bottom: 10px;
-  padding: 10px;
-  background-color: var(--body-color);
-  border: 1px solid var(--light-gray);
+  margin: 20px auto;
+  background-color: #fefefe;
+  color: var(--text-color);
 }
