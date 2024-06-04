@@ -32,13 +32,13 @@ function Post({
   avatar,
   likes, // Add likes prop
   likedBy, // Add likedBy prop
-  currentUserId // Add currentUserId prop
+  currentUserId, // Add currentUserId prop
 }) {
   return (
     <div className="post">
       <div className="post__avatar">
         <Link to={`/account?id=${userID}`}>
-          <img className = "postAvatarPic" src={avatar} alt="Avatar" />
+          <img className="postAvatarPic" src={avatar} alt="Avatar" />
         </Link>
       </div>
       <div className="post__body">
@@ -48,17 +48,16 @@ function Post({
               <h3>{displayName}</h3>
             </Link>
             <p className="post__time">{formatDate(timestamp)}</p>
-            {/* <p className='post__time'>Feb 12 • 3:00 pm</p> */}
-            <h3>
-                {title}
-            </h3>
           </div>
+
+          {/* <p className='post__time'>Feb 12 • 3:00 pm</p> */}
+          <h2 className="post__title">{title}</h2>
           <div className="post__headerDesc">
             <p>{text}</p>
           </div>
         </div>
         <img className="post__image" src={image} alt="" />
-        <LikeButton 
+        <LikeButton
           postId={postId} // Pass postId to LikeButton
           initialLikes={likes} // Pass initialLikes to LikeButton
           initialLikedBy={likedBy} // Pass initialLikedBy to LikeButton
