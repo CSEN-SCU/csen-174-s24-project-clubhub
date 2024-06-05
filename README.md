@@ -20,7 +20,7 @@ Follow these simple steps to get ClubHub up and running on your local machine:
 
 Before you begin, ensure you have the following installed:
 
-- Python 3.7 or higher
+- Python 3.8 or higher
 - Pip (Python package manager)
 
 ### Installation
@@ -39,3 +39,9 @@ Before you begin, ensure you have the following installed:
 4. Run the app:
    ```bash
    npm start 
+
+### Credit
+
+Much of the chatbot code was adjusted from Robby-chatbot by yvann-ba.
+See https://github.com/yvann-ba/Robby-chatbot for the original chatbot.
+The Lisense is included in this github.
