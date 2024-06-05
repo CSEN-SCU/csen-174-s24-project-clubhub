@@ -1,4 +1,3 @@
-// src/App.js
 import React from "react";
 import "./App.css";
 import Navbar from "./components/nav/navbar";
@@ -23,9 +22,7 @@ function PublicRoute({ children }) {
 
 function App() {
   const userId = localStorage.getItem("userId");
-  // if(userId){
-  //   console.log(userId.type())
-  // }
+
   return (
     <AuthProvider>
       <div id="appBody">
