@@ -1,5 +1,5 @@
 import { doc, writeBatch, increment, arrayUnion, arrayRemove } from 'firebase/firestore';
-import { firestore } from './Firebase';
+import { firestore } from '../../Firebase';
 
 export const likePost = async (postId, userId) => {
   try {
