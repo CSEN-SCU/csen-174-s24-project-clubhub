@@ -1,10 +1,19 @@
-import React from 'react'
-import "./gpt.css"
+import React from 'react';
+import "./gpt.css";
 
 function Gpt() {
   return (
-    <div>GPT</div>
-  )
+    <div className="gpt-container">
+      <iframe
+        src="http://localhost:8501"
+        width="100%"
+        height="1000px"
+        style={{ border: 'none' }}
+        title="Clubo Chat-Bot"
+      ></iframe>
+    </div>
+  );
 }
 
-export default Gpt
+export default Gpt;
+
