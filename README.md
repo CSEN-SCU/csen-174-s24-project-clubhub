@@ -34,6 +34,7 @@ Before you begin, ensure you have the following installed:
 3. Install the required packages:
    ```bash
    npm install
+   npm install concurrently
    pip install -r requirements.txt
 4. Run the app:
    ```bash
