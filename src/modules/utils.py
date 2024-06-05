@@ -1,8 +1,6 @@
 import os
-import pandas as pd
 import streamlit as st
 from dotenv import load_dotenv
-import pdfplumber
 import io
 
 from modules.chatbot import Chatbot
@@ -19,7 +17,6 @@ class Utilities:
         load_dotenv()
         user_api_key = os.getenv("OPENAI_API_KEY")
         return user_api_key
-
     
     @staticmethod
     def handle_upload(file_types):
@@ -35,27 +32,7 @@ class Utilities:
         uploaded_file = io.BytesIO(pdf_bytes)
         uploaded_file.name = 'ClubInfo.pdf'
         
-        if uploaded_file is not None:
-            def show_pdf_file(uploaded_file):
-                file_container = st.expander("Your PDF file :")
-                with pdfplumber.open(uploaded_file) as pdf:
-                    pdf_text = ""
-                    for page in pdf.pages:
-                        pdf_text += page.extract_text() + "\n\n"
-                file_container.write(pdf_text)
-            
-            def get_file_extension(uploaded_file):
-                return os.path.splitext(uploaded_file)[1].lower()
-            
-            file_extension = get_file_extension(uploaded_file.name)
-
-            # Show the contents of the file based on its extension
-            if file_extension== ".pdf" : 
-                show_pdf_file(uploaded_file)
-
-
-        else:
-            st.session_state["reset_chat"] = True
+        st.session_state["reset_chat"] = True
 
         #print(uploaded_file)
         return uploaded_file
@@ -78,6 +55,3 @@ class Utilities:
         st.session_state["ready"] = True
 
         return chatbot
-
-
-    
