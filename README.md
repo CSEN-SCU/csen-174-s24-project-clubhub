@@ -33,6 +33,7 @@ Before you begin, ensure you have the following installed:
    cd csen-174-s24-project-clubhub
 3. Install the required packages:
    ```bash
+   npm install
    pip install -r requirements.txt
 4. Run the app:
    ```bash
