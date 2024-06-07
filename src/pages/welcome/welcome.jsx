@@ -42,7 +42,7 @@ function Welcome() {
     dots: false,
     arrows: false,
     infinite: true,
-    slidesToShow: 1,
+    slidesToShow: 1.5,
     slidesToScroll: 1,
     autoplay: true,
     speed: 2000,

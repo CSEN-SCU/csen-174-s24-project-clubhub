@@ -118,10 +118,14 @@ function Home() {
 
   // Function to handle link click
   const handleLinkClick = (linkName) => {
+    if (linkName === activeLink) {
+      return;
+    }
     setActiveLink(linkName); // Update the active link in state
     setPosts([]); // Clear the posts array
     setLastVisible(null); // Reset the last visible document
   };
+  
 
   // Function to load more posts when the user scrolls
   const handleLoadMore = () => {
