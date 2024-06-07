@@ -13,6 +13,9 @@
 /build
 
 # misc
+credential.json
+import_images.js
+import_json.js
 .DS_Store
 .env
 .env.local
