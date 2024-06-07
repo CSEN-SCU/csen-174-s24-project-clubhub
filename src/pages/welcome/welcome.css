@@ -66,9 +66,8 @@
 }
 
 .slideshow-wrapper {
-  width: 325px;
-  height: 325px;
-  border-radius: 50%;
+  width: 300px;
+  height: 300px;
   overflow: hidden;
   display: flex;
   align-items: center;
