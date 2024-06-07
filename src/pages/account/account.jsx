@@ -135,7 +135,12 @@ function Account() {
           const userData = docSnap.data();
           setName(userData.name);
           setEmail(userData.email);
-          setBio(userData.bio || "Tell the community about yourself...");
+          setBio(
+            userData.bio ||
+              (searchParams.get("id")
+                ? ""
+                : "Tell the community about yourself...")
+          );
           setProfilePic(userData.profilePic || "");
           setBackgroundColor(userData.backgroundColor || "#ffffff");
           setUserType(userData.userType); // Set userType from Firestore
