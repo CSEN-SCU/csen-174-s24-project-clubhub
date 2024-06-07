@@ -45,6 +45,11 @@ function Account() {
   const [backgroundColor, setBackgroundColor] = useState("#ffffff");
   const [tempBackgroundColor, setTempBackgroundColor] = useState("#ffffff"); // Default color
   const [searchParams] = useSearchParams();
+  const [followerCount, setFollowerCount] = useState(0);
+  const [followingCount, setFollowingCount] = useState(0);
+  const [userType, setUserType] = useState("");
+
+
 
   let userId;
   const [showModal, setShowModal] = useState(false);
@@ -108,6 +113,9 @@ function Account() {
         setBio(userData.bio || "Tell the community about yourself...");
         setProfilePic(userData.profilePic || "");
         setBackgroundColor(userData.backgroundColor || "#ffffff");
+        setUserType(userData.userType); // Set userType from cached data
+        setFollowerCount(userData.follower ? userData.follower.length : 0);
+        setFollowingCount(userData.following ? userData.following.length : 0);
         console.log("Using cached user info");
         return;
       }
@@ -123,6 +131,9 @@ function Account() {
           setBio(userData.bio || "Tell the community about yourself...");
           setProfilePic(userData.profilePic || "");
           setBackgroundColor(userData.backgroundColor || "#ffffff");
+          setUserType(userData.userType); // Set userType from Firestore
+          setFollowerCount(userData.follower ? userData.follower.length : 0);
+          setFollowingCount(userData.following ? userData.following.length : 0);
           if (!searchParams.get("id")) {
             localStorage.setItem(
               `userInfo_${userId}`,
@@ -139,6 +150,7 @@ function Account() {
       console.error("Error fetching user info:", error);
     }
   };
+
 
   const fetchUserPosts = async () => {
     if (!userId) return;
@@ -564,8 +576,18 @@ function Account() {
             {renderFollowButton()}
           </div>
           <div className="following__container">
+            {userType === "club owner" && (
+              <>
+                <h3>Followers</h3>
+                <p>{followerCount}</p>
+              </>
+            )}
+            {userType === "student" && (
+              <>
             <h3>Following</h3>
-            <p>10</p>
+                <p>{followingCount}</p>
+              </>
+            )}
           </div>
         </div>
         {renderBioSection()}
