@@ -621,11 +621,13 @@ function Account() {
                     className="post-item"
                     onClick={() => handlePostClick(post)}
                   >
-                    <img
-                      src={post.imageUrl}
-                      alt="Flyer"
-                      className="post-flyer"
-                    />
+                    {post.imageUrl && (
+                      <img
+                        src={post.imageUrl}
+                        alt="Flyer"
+                        className="post-flyer"
+                      />
+                    )}
                     <div className="post-content">
                       <h4>{post.name}</h4>
                       <h3>{post.title}</h3>
@@ -643,11 +645,13 @@ function Account() {
                     className="post-item"
                     onClick={() => handlePostClick(post)}
                   >
-                    <img
-                      src={post.imageUrl}
-                      alt="Flyer"
-                      className="post-flyer"
-                    />
+                    {post.imageUrl && (
+                      <img
+                        src={post.imageUrl}
+                        alt="Flyer"
+                        className="post-flyer"
+                      />
+                    )}
                     <div className="post-content">
                       <h4>{post.name}</h4>
                       <h3>{post.title}</h3>

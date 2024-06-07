@@ -52,7 +52,11 @@ function Post({
             <p>{text}</p>
           </div>
         </div>
-        <img className="post__image" src={image} alt="" />
+        {image && (
+          <div className="post__image">
+            <img src={image} alt="Post" />
+          </div>
+        )}
         <LikeButton
           postId={postId} // Ensure postId is passed
           initialLikes={likes}
