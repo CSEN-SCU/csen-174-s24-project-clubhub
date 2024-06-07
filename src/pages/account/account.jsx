@@ -6,6 +6,7 @@ import {
   doc,
   getDoc,
   collection,
+  deleteDoc,
   query,
   orderBy,
   arrayUnion,
@@ -22,9 +23,11 @@ import {
 } from "firebase/storage";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPencilAlt } from "@fortawesome/free-solid-svg-icons";
+import { faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 import "./account.css";
 import FollowButton from "../../components/follow/FollowButton";
 import AccPost from "./AccPost";
+import DeletePost from "./DeletePost";
 import imageCompression from "browser-image-compression";
 import { GithubPicker } from "react-color";
 
@@ -49,12 +52,22 @@ function Account() {
   const [followingCount, setFollowingCount] = useState(0);
   const [userType, setUserType] = useState("");
   const [likedPosts, setLikedPosts] = useState([]);
-
-
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [postToDelete, setPostToDelete] = useState(null);
 
   let userId;
   const [showModal, setShowModal] = useState(false);
   const [selectedPost, setSelectedPost] = useState(null);
+
+  const openDeleteModal = (post) => {
+    setPostToDelete(post);
+    setShowDeleteModal(true);
+  };
+
+  const closeDeleteModal = () => {
+    setShowDeleteModal(false);
+    setPostToDelete(null);
+  };
 
   const handlePostClick = (post) => {
     setSelectedPost(post);
@@ -97,7 +110,7 @@ function Account() {
 
   const fetchUserInfo = async () => {
     if (!userId) return;
-  
+
     if (!searchParams.get("id")) {
       const cachedUserInfo = localStorage.getItem(`userInfo_${userId}`);
       if (cachedUserInfo) {
@@ -114,7 +127,7 @@ function Account() {
         return;
       }
     }
-  
+
     const userRef = doc(firestore, "users", userId);
     try {
       const unsubscribe = onSnapshot(userRef, (docSnap) => {
@@ -144,7 +157,6 @@ function Account() {
       console.error("Error fetching user info:", error);
     }
   };
-  
 
   const fetchUserPosts = async () => {
     if (!userId) return;
@@ -254,18 +266,20 @@ function Account() {
       if (userSnapshot.exists()) {
         const userData = userSnapshot.data();
         const likedPostIds = userData.likedPosts || [];
-        const fetchedPosts = await Promise.all(likedPostIds.map(async (postId) => {
-          const postRef = doc(firestore, "posts", postId);
-          const postSnapshot = await getDoc(postRef);
-          if (postSnapshot.exists()) {
-            return {
-              id: postSnapshot.id,
-              ...postSnapshot.data(),
-            };
-          }
-          return null;
-        }));
-        return fetchedPosts.filter(post => post !== null);
+        const fetchedPosts = await Promise.all(
+          likedPostIds.map(async (postId) => {
+            const postRef = doc(firestore, "posts", postId);
+            const postSnapshot = await getDoc(postRef);
+            if (postSnapshot.exists()) {
+              return {
+                id: postSnapshot.id,
+                ...postSnapshot.data(),
+              };
+            }
+            return null;
+          })
+        );
+        return fetchedPosts.filter((post) => post !== null);
       }
       return [];
     } catch (error) {
@@ -273,14 +287,30 @@ function Account() {
       return [];
     }
   };
-  
-
 
   useEffect(() => {
     if (userType === "student") {
       fetchLikedPosts().then(setLikedPosts);
     }
   }, [userType]);
+
+  const handleDeletePost = async () => {
+    if (!postToDelete) return;
+
+    try {
+      await deleteDoc(doc(firestore, "posts", postToDelete.id));
+      console.log("Post deleted successfully");
+      setUserPosts((prevPosts) =>
+        prevPosts.filter((post) => post.id !== postToDelete.id)
+      );
+      setHighlightedPosts((prevHighlightedPosts) =>
+        prevHighlightedPosts.filter((post) => post.id !== postToDelete.id)
+      );
+      closeDeleteModal();
+    } catch (error) {
+      console.error("Error deleting post:", error);
+    }
+  };
 
   const handleHighlightClick = async (postId) => {
     const userId = localStorage.getItem("userId");
@@ -520,7 +550,7 @@ function Account() {
     }
   };
 
-  const renderHighlightButton = (post) => {
+  const renderPostButtons = (post) => {
     const isHighlighted = highlightedPosts.some(
       (highlightedPost) => highlightedPost.id === post.id
     );
@@ -532,16 +562,27 @@ function Account() {
 
     if (!searchParams.get("id")) {
       return (
-        <span
-          onClick={(e) => {
-            e.stopPropagation();
-            handleHighlightClick(post.id);
-          }}
-          style={starStyle}
-          className="highlight-star"
-        >
-          ★
-        </span>
+        <div className="post-buttons">
+          <span
+            onClick={(e) => {
+              e.stopPropagation();
+              handleHighlightClick(post.id);
+            }}
+            style={starStyle}
+            className="highlight-star"
+          >
+            ★
+          </span>
+          <FontAwesomeIcon
+            icon={faTrashAlt}
+            className="delete-icon"
+            onClick={(e) => {
+              e.stopPropagation();
+              openDeleteModal(post);
+            }}
+            style={{ cursor: "pointer", color: "red", fontSize: "24px" }}
+          />
+        </div>
       );
     }
     return null;
@@ -575,13 +616,17 @@ function Account() {
                     className="post-item"
                     onClick={() => handlePostClick(post)}
                   >
-                    <img src={post.imageUrl} alt="Flyer" className="post-flyer" />
+                    <img
+                      src={post.imageUrl}
+                      alt="Flyer"
+                      className="post-flyer"
+                    />
                     <div className="post-content">
                       <h4>{post.name}</h4>
                       <h3>{post.title}</h3>
                       <p>{truncateText(post.text, 115)}</p>
                     </div>
-                    {renderHighlightButton(post)}
+                    {renderPostButtons(post)}
                   </div>
                 ))}
               </div>
@@ -593,13 +638,17 @@ function Account() {
                     className="post-item"
                     onClick={() => handlePostClick(post)}
                   >
-                    <img src={post.imageUrl} alt="Flyer" className="post-flyer" />
+                    <img
+                      src={post.imageUrl}
+                      alt="Flyer"
+                      className="post-flyer"
+                    />
                     <div className="post-content">
                       <h4>{post.name}</h4>
                       <h3>{post.title}</h3>
                       <p>{truncateText(post.text, 115)}</p>
                     </div>
-                    {renderHighlightButton(post)}
+                    {renderPostButtons(post)}
                   </div>
                 ))}
               </div>
@@ -636,7 +685,6 @@ function Account() {
             ))}
           </div>
         </>
-        
       );
     } else {
       return null;
@@ -717,10 +765,15 @@ function Account() {
         </div>
         {renderBioSection()}
       </div>
-      <div className="main-content">
-        {renderPosts()}
-      </div>
+      <div className="main-content">{renderPosts()}</div>
       {showModal && <AccPost closeModal={closeModal} post={selectedPost} />}
+      {showDeleteModal && (
+        <DeletePost
+          closeModal={closeDeleteModal}
+          post={postToDelete}
+          deletePost={handleDeletePost}
+        />
+      )}
     </div>
   );
 }

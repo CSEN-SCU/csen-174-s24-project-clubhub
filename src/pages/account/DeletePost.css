@@ -1,0 +1,23 @@
+.deleteModalContainer {
+  width: 35vw;
+  height: 22.5vh;
+}
+
+.delete__post__container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  gap: 20px;
+}
+
+.cancel_btn {
+  background-color: #fefefe;
+  color: var(--title-color);
+}
+
+.button-container {
+  display: flex;
+  gap: 1rem;
+}
