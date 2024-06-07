@@ -585,7 +585,6 @@ function Account() {
               e.stopPropagation();
               openDeleteModal(post);
             }}
-            style={{ cursor: "pointer", color: "red", fontSize: "24px" }}
           />
         </div>
       );
