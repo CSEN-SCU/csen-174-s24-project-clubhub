@@ -48,6 +48,7 @@ function Account() {
   const [followerCount, setFollowerCount] = useState(0);
   const [followingCount, setFollowingCount] = useState(0);
   const [userType, setUserType] = useState("");
+  const [likedPosts, setLikedPosts] = useState([]);
 
 
 
@@ -71,17 +72,10 @@ function Account() {
   };
 
   useEffect(() => {
-    const currentUserId = localStorage.getItem("userId");
-    const idFromParams = searchParams.get("id");
-
-    if (idFromParams && idFromParams === currentUserId) {
-      navigate("/account");
-    }
-
     fetchUserInfo();
     fetchUserPosts();
     fetchHighlightedPosts();
-  }, [navigate, searchParams]);
+  }, [searchParams.get("id")]);
 
   if (!searchParams.get("id")) {
     userId = localStorage.getItem("userId");
@@ -103,7 +97,7 @@ function Account() {
 
   const fetchUserInfo = async () => {
     if (!userId) return;
-
+  
     if (!searchParams.get("id")) {
       const cachedUserInfo = localStorage.getItem(`userInfo_${userId}`);
       if (cachedUserInfo) {
@@ -120,7 +114,7 @@ function Account() {
         return;
       }
     }
-
+  
     const userRef = doc(firestore, "users", userId);
     try {
       const unsubscribe = onSnapshot(userRef, (docSnap) => {
@@ -150,7 +144,7 @@ function Account() {
       console.error("Error fetching user info:", error);
     }
   };
-
+  
 
   const fetchUserPosts = async () => {
     if (!userId) return;
@@ -252,6 +246,41 @@ function Account() {
       console.error("Error fetching highlighted posts:", error);
     }
   };
+
+  const fetchLikedPosts = async () => {
+    try {
+      const userRef = doc(firestore, "users", userId);
+      const userSnapshot = await getDoc(userRef);
+      if (userSnapshot.exists()) {
+        const userData = userSnapshot.data();
+        const likedPostIds = userData.likedPosts || [];
+        const fetchedPosts = await Promise.all(likedPostIds.map(async (postId) => {
+          const postRef = doc(firestore, "posts", postId);
+          const postSnapshot = await getDoc(postRef);
+          if (postSnapshot.exists()) {
+            return {
+              id: postSnapshot.id,
+              ...postSnapshot.data(),
+            };
+          }
+          return null;
+        }));
+        return fetchedPosts.filter(post => post !== null);
+      }
+      return [];
+    } catch (error) {
+      console.error("Error fetching liked posts:", error);
+      return [];
+    }
+  };
+  
+
+
+  useEffect(() => {
+    if (userType === "student") {
+      fetchLikedPosts().then(setLikedPosts);
+    }
+  }, [userType]);
 
   const handleHighlightClick = async (postId) => {
     const userId = localStorage.getItem("userId");
@@ -518,6 +547,102 @@ function Account() {
     return null;
   };
 
+  const renderPosts = () => {
+    if (userType === "club owner") {
+      // If user is a club owner, show regular and highlighted posts
+      return (
+        <>
+          <div className="posts-tabs">
+            <button
+              onClick={handleRegularClick}
+              className={`header__btn__acc ${!showHighlighted ? "active" : ""}`}
+            >
+              Regular Posts
+            </button>
+            <button
+              onClick={handleHighlightedClick}
+              className={`header__btn__acc ${showHighlighted ? "active" : ""}`}
+            >
+              Highlighted Posts
+            </button>
+          </div>
+          <div className="posts-list">
+            {showHighlighted ? (
+              <div className="post__themselves">
+                {highlightedPosts.map((post) => (
+                  <div
+                    key={post.id}
+                    className="post-item"
+                    onClick={() => handlePostClick(post)}
+                  >
+                    <img src={post.imageUrl} alt="Flyer" className="post-flyer" />
+                    <div className="post-content">
+                      <h4>{post.name}</h4>
+                      <h3>{post.title}</h3>
+                      <p>{truncateText(post.text, 115)}</p>
+                    </div>
+                    {renderHighlightButton(post)}
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="post__themselves">
+                {userPosts.map((post) => (
+                  <div
+                    key={post.id}
+                    className="post-item"
+                    onClick={() => handlePostClick(post)}
+                  >
+                    <img src={post.imageUrl} alt="Flyer" className="post-flyer" />
+                    <div className="post-content">
+                      <h4>{post.name}</h4>
+                      <h3>{post.title}</h3>
+                      <p>{truncateText(post.text, 115)}</p>
+                    </div>
+                    {renderHighlightButton(post)}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </>
+      );
+    } else if (userType === "student") {
+      return (
+        <>
+          <div className="posts-tabs">
+            <button
+              onClick={handleRegularClick}
+              className={`header__btn__acc ${!showHighlighted ? "active" : ""}`}
+            >
+              Your Liked Posts
+            </button>
+          </div>
+          <div className="posts-list">
+            {likedPosts.map((post) => (
+              <div
+                key={post.id}
+                className="post-item"
+                onClick={() => handlePostClick(post)}
+              >
+                <img src={post.imageUrl} alt="Flyer" className="post-flyer" />
+                <div className="post-content">
+                  <h4>{post.name}</h4>
+                  <h3>{post.title}</h3>
+                  <p>{truncateText(post.text, 115)}</p>
+                </div>
+                {/* You may need to add a different icon or indicator for liked posts */}
+              </div>
+            ))}
+          </div>
+        </>
+        
+      );
+    } else {
+      return null;
+    }
+  };
+
   return (
     <div className="account-container">
       <div
@@ -584,7 +709,7 @@ function Account() {
             )}
             {userType === "student" && (
               <>
-            <h3>Following</h3>
+                <h3>Following</h3>
                 <p>{followingCount}</p>
               </>
             )}
@@ -593,59 +718,7 @@ function Account() {
         {renderBioSection()}
       </div>
       <div className="main-content">
-        <div className="posts-tabs">
-          <button
-            onClick={handleRegularClick}
-            className={`header__btn__acc ${!showHighlighted ? "active" : ""}`}
-          >
-            Regular Posts
-          </button>
-          <button
-            onClick={handleHighlightedClick}
-            className={`header__btn__acc ${showHighlighted ? "active" : ""}`}
-          >
-            Highlighted Posts
-          </button>
-        </div>
-        <div className="posts-list">
-          {showHighlighted ? (
-            <div className="post__themselves">
-              {highlightedPosts.map((post) => (
-                <div
-                  key={post.id}
-                  className="post-item"
-                  onClick={() => handlePostClick(post)}
-                >
-                  <img src={post.imageUrl} alt="Flyer" className="post-flyer" />
-                  <div className="post-content">
-                    <h4>{post.name}</h4>
-                    <h3>{post.title}</h3>
-                    <p>{truncateText(post.text, 115)}</p>
-                  </div>
-                  {renderHighlightButton(post)}
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="post__themselves">
-              {userPosts.map((post) => (
-                <div
-                  key={post.id}
-                  className="post-item"
-                  onClick={() => handlePostClick(post)}
-                >
-                  <img src={post.imageUrl} alt="Flyer" className="post-flyer" />
-                  <div className="post-content">
-                    <h4>{post.name}</h4>
-                    <h3>{post.title}</h3>
-                    <p>{truncateText(post.text, 115)}</p>
-                  </div>
-                  {renderHighlightButton(post)}
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
+        {renderPosts()}
       </div>
       {showModal && <AccPost closeModal={closeModal} post={selectedPost} />}
     </div>
