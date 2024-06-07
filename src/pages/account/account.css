@@ -25,6 +25,12 @@
   width: 50px;
 }
 
+.delete-icon {
+  color: var(--first-color);
+  cursor: pointer;
+  font-size: 24px;
+}
+
 .banner-edit-icon {
   display: none;
   position: absolute;
@@ -221,7 +227,6 @@
   gap: 10px;
   justify-content: center;
   align-items: center;
-
 }
 
 .post-content p {
