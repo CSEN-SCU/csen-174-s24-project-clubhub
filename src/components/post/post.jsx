@@ -1,7 +1,7 @@
 import React from "react";
 import "./post.css";
 import { Link } from "react-router-dom";
-import LikeButton from "../../likeButton";
+import LikeButton from "../like/likeButton";
 
 const formatDate = (timestamp) => {
   let date;
