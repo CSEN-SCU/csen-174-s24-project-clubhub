@@ -216,6 +216,14 @@
   font-size: 1.35rem;
 }
 
+.post-buttons {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
+
+}
+
 .post-content p {
   font-size: var(--small-font-size);
 }

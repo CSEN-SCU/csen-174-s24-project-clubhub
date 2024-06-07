@@ -83,7 +83,7 @@ function Modal({ closeModal, clubInfo }) {
           {hasAccount && (
             <div className="ProfileButton">
               <button className="btn">
-                <a id="profile-link" href={`account?id=${userId}`} >
+                <a id="profile-link" href={`account?id=${userId}`}>
                   Club Profile Page
                 </a>
               </button>
@@ -176,16 +176,9 @@ function Modal({ closeModal, clubInfo }) {
             </div>
           </div>
 
-          <div className="twoStack">
-            <div className="component" id="IntroductionVideo">
-              <h5>Introduction Video</h5>
-              <p className="modal__text">{clubInfo.IntroductionVideo}</p>
-            </div>
-            <div className="component" id="CoverPhoto">
-              <h5>Cover Photo</h5>
-              <p className="modal__text">{clubInfo.CoverPhoto}</p>
-              {/* Need to find how to access this */}
-            </div>
+          <div className="component" id="IntroductionVideo">
+            <h5>Introduction Video</h5>
+            <p className="modal__text">{clubInfo.IntroductionVideo}</p>
           </div>
         </div>
       </div>
