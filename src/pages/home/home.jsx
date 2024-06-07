@@ -181,6 +181,7 @@ function Home() {
             userID={post.userID}
             title={post.title}
             avatar={post.avatar}
+            postId = {post.id}
           />
         ))
       )}

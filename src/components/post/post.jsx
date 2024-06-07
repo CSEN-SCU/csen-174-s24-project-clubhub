@@ -1,7 +1,7 @@
 import React from "react";
 import "./post.css";
 import { Link } from "react-router-dom";
-import LikeButton from "../../likeButton";
+import LikeButton from "../likeButton/likeButton";
 
 const formatDate = (timestamp) => {
   let date;
@@ -21,7 +21,7 @@ const formatDate = (timestamp) => {
 };
 
 function Post({
-  postId, // Add postId prop
+  postId,
   displayName,
   timestamp,
   text,
@@ -29,9 +29,8 @@ function Post({
   userID,
   title,
   avatar,
-  likes, // Add likes prop
-  likedBy, // Add likedBy prop
-  currentUserId, // Add currentUserId prop
+  likes,
+  currentUserId = localStorage.getItem("userId"), // Ensure currentUserId prop is passed
 }) {
   return (
     <div className="post">
@@ -48,8 +47,6 @@ function Post({
             </Link>
             <p className="post__time">{formatDate(timestamp)}</p>
           </div>
-
-          {/* <p className='post__time'>Feb 12 • 3:00 pm</p> */}
           <h3 className="post__title">{title}</h3>
           <div className="post__headerDesc">
             <p>{text}</p>
@@ -57,10 +54,9 @@ function Post({
         </div>
         <img className="post__image" src={image} alt="" />
         <LikeButton
-          postId={postId} // Pass postId to LikeButton
-          initialLikes={likes} // Pass initialLikes to LikeButton
-          initialLikedBy={likedBy} // Pass initialLikedBy to LikeButton
-          userId={currentUserId} // Pass currentUserId to LikeButton
+          postId={postId} // Ensure postId is passed
+          initialLikes={likes}
+          userId={currentUserId} // Ensure currentUserId is passed
         />
       </div>
     </div>

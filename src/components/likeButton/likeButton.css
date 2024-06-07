@@ -1,0 +1,19 @@
+.like-button {
+    background-color: transparent;
+    border: none;
+    color: grey;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    font-size: 16px;
+    transition: color 0.3s ease;
+  }
+  
+  .like-button .fa-thumbs-up {
+    margin-right: 8px;
+  }
+  
+  .like-button.liked {
+    color: rgb(0, 153, 255);
+  }
+  
