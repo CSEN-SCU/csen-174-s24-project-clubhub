@@ -114,6 +114,7 @@ function Post({ closeModal }) {
       alert("There was an error submitting your post. Please try again.");
     } finally {
       setLoading(false);
+      window.location.reload();
     }
   };
 
