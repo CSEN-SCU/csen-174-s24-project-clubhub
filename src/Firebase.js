@@ -63,8 +63,26 @@ const clubSignInWithGoogle = async () => {
     const userRef = doc(firestore, "users", user.uid);
     const docSnap = await getDoc(userRef);
 
+    const userQuery = query(
+      collection(firestore, "users"),
+      where("email", "==", user.email)
+    );
+    const userQuerySnapshot = await getDocs(userQuery);
+    let existingUserRef;
+    let existingUserId;
+
+    if (!userQuerySnapshot.empty) {
+      userQuerySnapshot.forEach((doc) => {
+        existingUserRef = doc.ref;
+        existingUserId = doc.id;
+      });
+    } else {
+      existingUserRef = userRef;
+      existingUserId = user.uid;
+    }
+
     await setDoc(
-      userRef,
+      existingUserRef,
       {
         name: user.displayName,
         email: user.email,
@@ -79,7 +97,8 @@ const clubSignInWithGoogle = async () => {
       { merge: true }
     );
 
-    localStorage.setItem("userId", user.uid);
+    localStorage.setItem("userId", existingUserId);
+
     const clubsRef = collection(firestore, "clubs");
     const q = query(clubsRef, where("Contact", "==", user.email));
     const querySnapshot = await getDocs(q);
@@ -88,9 +107,8 @@ const clubSignInWithGoogle = async () => {
       console.error("No matching club found for email:", user.email);
       throw new Error("NOT_A_CLUB_OWNER");
     } else {
-      const userRef = doc(firestore, "users", user.uid);
       await setDoc(
-        userRef,
+        existingUserRef,
         {
           name: user.displayName,
           email: user.email,
@@ -99,7 +117,7 @@ const clubSignInWithGoogle = async () => {
         },
         { merge: true }
       );
-      localStorage.setItem("userId", user.uid);
+      localStorage.setItem("userId", existingUserId);
     }
   } catch (error) {
     console.error("Failed to sign in with Google:", error.message);
