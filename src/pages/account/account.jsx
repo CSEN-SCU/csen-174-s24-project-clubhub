@@ -213,7 +213,6 @@ function Account() {
   };
 
   const fetchHighlightedPosts = async () => {
-    const userId = localStorage.getItem("userId");
     if (!userId) return;
 
     if (!searchParams.get("id")) {
