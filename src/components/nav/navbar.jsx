@@ -16,7 +16,7 @@ function Navbar() {
   useEffect(() => {
     const fetchUserType = async () => {
       if (currentUser) {
-        const userRef = doc(firestore, "users", currentUser.uid);
+        const userRef = doc(firestore, "users", localStorage.getItem("userId"));
         const docSnap = await getDoc(userRef);
         if (docSnap.exists()) {
           setUserType(docSnap.data().userType);
@@ -25,6 +25,7 @@ function Navbar() {
         }
       }
     };
+
 
     fetchUserType();
   }, [currentUser]);
