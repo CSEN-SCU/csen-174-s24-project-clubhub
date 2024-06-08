@@ -95,10 +95,15 @@
 
 .nameEmailContainer {
   display: flex;
-  align-items: flex-end;
-  gap: 15px;
-  margin: 10px 0;
+  flex-direction: column;
   margin-bottom: 0;
+}
+
+.nameEmailContainer__inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
 }
 
 .nameEmailContainer h1 {
