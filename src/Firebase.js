@@ -1,6 +1,12 @@
 import { initializeApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
-import { getFirestore, doc, setDoc, getDoc } from "firebase/firestore";
+import {
+  getFirestore,
+  doc,
+  setDoc,
+  getDoc,
+  deleteDoc,
+} from "firebase/firestore";
 import { collection, query, where, getDocs } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 
@@ -68,21 +74,19 @@ const clubSignInWithGoogle = async () => {
       where("email", "==", user.email)
     );
     const userQuerySnapshot = await getDocs(userQuery);
-    let existingUserRef;
-    let existingUserId;
 
     if (!userQuerySnapshot.empty) {
-      userQuerySnapshot.forEach((doc) => {
-        existingUserRef = doc.ref;
-        existingUserId = doc.id;
+      userQuerySnapshot.forEach(async (doc) => {
+        const existingData = doc.data();
+        if (doc.id !== user.uid) {
+          await setDoc(userRef, existingData, { merge: true });
+          await deleteDoc(doc.ref);
+        }
       });
-    } else {
-      existingUserRef = userRef;
-      existingUserId = user.uid;
     }
 
     await setDoc(
-      existingUserRef,
+      userRef,
       {
         name: user.displayName,
         email: user.email,
@@ -97,7 +101,7 @@ const clubSignInWithGoogle = async () => {
       { merge: true }
     );
 
-    localStorage.setItem("userId", existingUserId);
+    localStorage.setItem("userId", user.uid);
 
     const clubsRef = collection(firestore, "clubs");
     const q = query(clubsRef, where("Contact", "==", user.email));
@@ -108,7 +112,7 @@ const clubSignInWithGoogle = async () => {
       throw new Error("NOT_A_CLUB_OWNER");
     } else {
       await setDoc(
-        existingUserRef,
+        userRef,
         {
           name: user.displayName,
           email: user.email,
@@ -117,7 +121,7 @@ const clubSignInWithGoogle = async () => {
         },
         { merge: true }
       );
-      localStorage.setItem("userId", existingUserId);
+      localStorage.setItem("userId", user.uid);
     }
   } catch (error) {
     console.error("Failed to sign in with Google:", error.message);

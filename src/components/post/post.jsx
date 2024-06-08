@@ -2,6 +2,7 @@ import React from "react";
 import "./post.css";
 import { Link } from "react-router-dom";
 import LikeButton from "../likeButton/likeButton";
+import { useAuth } from "../../context/AuthContext";
 
 const formatDate = (timestamp) => {
   let date;
@@ -30,8 +31,10 @@ function Post({
   title,
   avatar,
   likes,
-  currentUserId = localStorage.getItem("userId"), // Ensure currentUserId prop is passed
 }) {
+
+  const { currentUser } = useAuth();
+
   return (
     <div className="post">
       <div className="post__avatar">
@@ -60,7 +63,7 @@ function Post({
         <LikeButton
           postId={postId} // Ensure postId is passed
           initialLikes={likes}
-          userId={currentUserId} // Ensure currentUserId is passed
+          userId={currentUser.uid} // Ensure currentUserId is passed
         />
       </div>
     </div>
