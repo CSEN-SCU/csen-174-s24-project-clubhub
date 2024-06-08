@@ -93,6 +93,9 @@ function Account() {
   if (!searchParams.get("id")) {
     userId = localStorage.getItem("userId");
   } else {
+    if (localStorage.getItem("userId") === searchParams.get("id")) {
+      navigate("/account");
+    }
     userId = searchParams.get("id");
   }
 

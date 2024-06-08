@@ -15,13 +15,18 @@ function Navbar() {
 
   useEffect(() => {
     const fetchUserType = async () => {
-      if (currentUser) {
-        const userRef = doc(firestore, "users", currentUser.uid);
-        const docSnap = await getDoc(userRef);
-        if (docSnap.exists()) {
-          setUserType(docSnap.data().userType);
-        } else {
-          console.log("No such document!");
+      const userId = localStorage.getItem("userId");
+      if (currentUser && userId) {
+        try {
+          const userRef = doc(firestore, "users", userId);
+          const docSnap = await getDoc(userRef);
+          if (docSnap.exists()) {
+            setUserType(docSnap.data().userType);
+          } else {
+            console.log("No such document!");
+          }
+        } catch (error) {
+          console.error("Error fetching user type:", error);
         }
       }
     };
@@ -29,7 +34,7 @@ function Navbar() {
     fetchUserType();
   }, [currentUser]);
 
-  const handleOpenModal = (item) => {
+  const handleOpenModal = () => {
     setOpenModal(true);
   };
 
@@ -69,15 +74,12 @@ function Navbar() {
                 </li>
                 {userType === "club owner" && (
                   <li className="nav__item">
-                    <button 
-                      className="nav__btn btn"
-                      onClick={() => handleOpenModal()}
-                    >+</button>
+                    <button className="nav__btn btn" onClick={handleOpenModal}>
+                      +
+                    </button>
                   </li>
                 )}
-                {openModal && (
-                  <Post closeModal={handleCloseModal} />
-                )}
+                {openModal && <Post closeModal={handleCloseModal} />}
               </ul>
             ) : (
               <ul>

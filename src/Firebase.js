@@ -1,6 +1,12 @@
 import { initializeApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
-import { getFirestore, doc, setDoc, getDoc } from "firebase/firestore";
+import {
+  getFirestore,
+  doc,
+  setDoc,
+  getDoc,
+  deleteDoc,
+} from "firebase/firestore";
 import { collection, query, where, getDocs } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 
@@ -63,6 +69,22 @@ const clubSignInWithGoogle = async () => {
     const userRef = doc(firestore, "users", user.uid);
     const docSnap = await getDoc(userRef);
 
+    const userQuery = query(
+      collection(firestore, "users"),
+      where("email", "==", user.email)
+    );
+    const userQuerySnapshot = await getDocs(userQuery);
+
+    if (!userQuerySnapshot.empty) {
+      userQuerySnapshot.forEach(async (doc) => {
+        const existingData = doc.data();
+        if (doc.id !== user.uid) {
+          await setDoc(userRef, existingData, { merge: true });
+          await deleteDoc(doc.ref);
+        }
+      });
+    }
+
     await setDoc(
       userRef,
       {
@@ -80,6 +102,7 @@ const clubSignInWithGoogle = async () => {
     );
 
     localStorage.setItem("userId", user.uid);
+
     const clubsRef = collection(firestore, "clubs");
     const q = query(clubsRef, where("Contact", "==", user.email));
     const querySnapshot = await getDocs(q);
@@ -88,7 +111,6 @@ const clubSignInWithGoogle = async () => {
       console.error("No matching club found for email:", user.email);
       throw new Error("NOT_A_CLUB_OWNER");
     } else {
-      const userRef = doc(firestore, "users", user.uid);
       await setDoc(
         userRef,
         {
