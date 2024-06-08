@@ -213,7 +213,6 @@ function Account() {
   };
 
   const fetchHighlightedPosts = async () => {
-    const userId = localStorage.getItem("userId");
     if (!userId) return;
 
     if (!searchParams.get("id")) {
@@ -725,7 +724,7 @@ function Account() {
             className={isEditing ? "lower-opacity" : ""}
           >
             <div className="profile-pic-wrapper">
-              <img src={tempProfilePic || profilePic} alt="Profile" />
+              <img src={tempProfilePic || profilePic} alt="" />
               {isLoading ? (
                 <div className="profile-spinner"></div>
               ) : (
@@ -755,9 +754,11 @@ function Account() {
       <div className="bottom-half">
         <div className="bottom__half__container">
           <div className="nameEmailContainer">
-            <h1>{name}</h1>
-            <p>{email}</p>
-            {renderFollowButton()}
+            <div className="nameEmailContainer__inner">
+              <h1>{name}</h1>
+              <p>{email}</p>
+            </div>
+            <div className="follow__button">{renderFollowButton()}</div>
           </div>
           <div className="following__container">
             {userType === "club owner" && (
