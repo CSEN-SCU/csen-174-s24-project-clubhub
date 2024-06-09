@@ -3,7 +3,7 @@
   align-items: flex-start;
   margin: 0 auto;
   padding: 20px 10px;
-  padding-bottom: 25px;
+  padding-bottom: 10px;
   width: 700px;
   border-bottom: 1px solid var(--light-gray);
 }
@@ -33,6 +33,7 @@
 .post__image {
   border-radius: 20px;
   width: 500px;
+  border: 1px solid var(--light-gray);
   box-shadow: var(--shadow);
 }
 
@@ -49,7 +50,7 @@
 }
 
 .post__title {
-  margin-bottom: 5px;
+  margin-bottom: 8px;
 }
 
 .post__headerDesc {

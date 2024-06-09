@@ -43,6 +43,7 @@
   position: absolute !important;
   display: none !important;
   width: 225px !important;
+  padding: 8px !important;
 }
 
 .custom-picker-editing {
@@ -153,6 +154,7 @@
   background-color: var(--body-color);
   padding: 25px;
   width: 50%;
+  color: var(--text-color);
 }
 
 .header__btn__acc:hover {
@@ -165,8 +167,22 @@
   color: var(--title-color);
 }
 
+.header__btn__acc__student {
+  background-color: var(--body-color);
+  padding: 25px;
+  width: 50%;
+  color: var(--title-color);
+  border-bottom: 5px solid var(--first-color);
+  cursor: default;
+}
+
 .posts-tabs {
   margin-left: 0%;
+  border-bottom: 1px solid var(--light-gray);
+}
+
+.posts-tabs__student {
+  text-align: center;
   border-bottom: 1px solid var(--light-gray);
 }
 
@@ -174,6 +190,8 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
+  align-items: center;
+  flex-direction: column;
   margin-left: 0%;
   width: 100%;
   padding: 10px;

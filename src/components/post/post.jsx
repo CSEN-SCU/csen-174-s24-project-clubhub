@@ -55,8 +55,8 @@ function Post({
           </div>
         </div>
         {image && (
-          <div className="post__image">
-            <img src={image} alt="Post" />
+          <div>
+            <img className="post__image" src={image} alt="Post" />
           </div>
         )}
         <div className="post__footer">
