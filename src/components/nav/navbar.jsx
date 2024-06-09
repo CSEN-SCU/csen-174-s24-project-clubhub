@@ -15,8 +15,8 @@ function Navbar() {
 
   useEffect(() => {
     const fetchUserType = async () => {
-      const userId = localStorage.getItem("userId");
-      if (currentUser && userId) {
+      if (currentUser) {
+        const userId = currentUser.uid;
         try {
           const userRef = doc(firestore, "users", userId);
           const docSnap = await getDoc(userRef);
