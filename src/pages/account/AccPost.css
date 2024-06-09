@@ -21,7 +21,7 @@
 .acc__post__content {
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 25px;
   padding: 20px;
   height: 100%;
 }
@@ -35,6 +35,10 @@
 
 .right_content {
   width: 50%;
+}
+
+.right_content h2 {
+  margin-bottom: 20px;
 }
 
 .center {

@@ -669,15 +669,17 @@ function Account() {
     } else if (userType === "student") {
       return (
         <>
-          <div className="posts-tabs">
+          <div className="posts-tabs__student">
             <button
               onClick={handleRegularClick}
-              className={`header__btn__acc ${!showHighlighted ? "active" : ""}`}
+              // className={`header__btn__acc ${!showHighlighted ? "active" : ""}`}
+              className="header__btn__acc__student"
             >
               Your Liked Posts
             </button>
           </div>
           <div className="posts-list">
+          <div className="post__themselves">
             {likedPosts.map((post) => (
               <div
                 key={post.id}
@@ -693,6 +695,7 @@ function Account() {
                 {/* You may need to add a different icon or indicator for liked posts */}
               </div>
             ))}
+          </div>
           </div>
         </>
       );
