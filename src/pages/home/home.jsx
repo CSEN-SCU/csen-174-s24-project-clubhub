@@ -24,7 +24,7 @@ function Home() {
   const [lastVisible, setLastVisible] = useState(null);
   const [loading, setLoading] = useState(false);
   const [hasMorePosts, setHasMorePosts] = useState(true);
-  const postsPerPage = 3;
+  const postsPerPage = 5;
 
   const fetchPosts = async (isInitialLoad = true) => {
     setLoading(true);
