@@ -32,7 +32,6 @@ function Post({
   avatar,
   likes,
 }) {
-
   const { currentUser } = useAuth();
 
   return (
@@ -60,11 +59,13 @@ function Post({
             <img src={image} alt="Post" />
           </div>
         )}
-        <LikeButton
-          postId={postId} // Ensure postId is passed
-          initialLikes={likes}
-          userId={currentUser.uid} // Ensure currentUserId is passed
-        />
+        <div className="post__footer">
+          <LikeButton
+            postId={postId} // Ensure postId is passed
+            initialLikes={likes}
+            userId={currentUser.uid} // Ensure currentUserId is passed
+          />
+        </div>
       </div>
     </div>
   );
