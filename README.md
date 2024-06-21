@@ -44,4 +44,4 @@ Before you begin, ensure you have the following installed:
 
 Much of the chatbot code was adjusted from Robby-chatbot by yvann-ba.
 See https://github.com/yvann-ba/Robby-chatbot for the original chatbot.
-The Lisense is included in this github.
+The License is included in this github.
