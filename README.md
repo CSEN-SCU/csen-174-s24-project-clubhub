@@ -14,7 +14,8 @@ ClubHub is a website designed specifically for SCU students and organizations. I
 
 ## Getting Started
 
-Follow these simple steps to get ClubHub up and running on your local machine:
+For online access, visit https://www.club-hub.live/
+For access on local machine, follow these simple steps:
 
 ### Prerequisites
 
